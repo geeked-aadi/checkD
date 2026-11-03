@@ -1,0 +1,9 @@
+## This file should NOT be checked into Version Control Systems.
+# Location of the SDK. This is only used by Gradle.
+# For customization when using a Version Control System, please read the
+# header note.
+sdk.dir=/path/to/your/android/sdk
+
+# Supabase Credentials Configuration Placeholders
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.your-anon-key-placeholder
