@@ -107,7 +107,6 @@ private data class SpocFilterConfig(
     ) { directory, matrixData, participantsMap, filter ->
         val selectedEventId = filter.eventId
         val sort = filter.sort
-        val onlyAtRisk = filter.onlyAtRisk
         val spocs = directory?.spocs ?: emptyList()
         val events = matrixData?.events ?: emptyList()
 
@@ -181,15 +180,6 @@ private data class SpocFilterConfig(
                 pct = if (total > 0) (checked.toFloat() / total.toFloat()).coerceIn(0f, 1f) else null
             }
 
-            val status = when {
-                teamCount == 0 -> SpocHealthStatus.NO_TEAMS
-                studentCount == 0 -> SpocHealthStatus.NO_TEAMS
-                pct == null -> SpocHealthStatus.NO_TEAMS
-                pct >= SpocAnalyticsThresholds.ON_TRACK -> SpocHealthStatus.ON_TRACK
-                pct >= SpocAnalyticsThresholds.NEEDS_ATTENTION -> SpocHealthStatus.NEEDS_ATTENTION
-                else -> SpocHealthStatus.CRITICAL
-            }
-
             SpocAnalytics(
                 spocId = spocId,
                 name = spoc.name,
@@ -200,7 +190,6 @@ private data class SpocFilterConfig(
                 total = total,
                 pct = pct,
                 pending = pending,
-                status = status,
                 perEventPct = perEventPct
             )
         }
@@ -208,13 +197,13 @@ private data class SpocFilterConfig(
         // Sort SPOCs
         val sortedSpocs = when (sort) {
             SpocAnalyticsSort.LOWEST -> spocList.sortedWith(
-                compareBy<SpocAnalytics> { it.status == SpocHealthStatus.NO_TEAMS }
+                compareBy<SpocAnalytics> { it.pct == null }
                     .thenBy { it.pct ?: 0f }
                     .thenByDescending { it.pending }
                     .thenBy { it.name.lowercase() }
             )
             SpocAnalyticsSort.HIGHEST -> spocList.sortedWith(
-                compareBy<SpocAnalytics> { it.status == SpocHealthStatus.NO_TEAMS }
+                compareBy<SpocAnalytics> { it.pct == null }
                     .thenByDescending { it.pct ?: 0f }
                     .thenBy { it.pending }
                     .thenBy { it.name.lowercase() }
@@ -222,20 +211,11 @@ private data class SpocFilterConfig(
             SpocAnalyticsSort.NAME -> spocList.sortedBy { it.name.lowercase() }
         }
 
-        val displayedSpocs = if (onlyAtRisk) {
-            sortedSpocs.filter { it.status == SpocHealthStatus.NEEDS_ATTENTION || it.status == SpocHealthStatus.CRITICAL }
-        } else {
-            sortedSpocs
-        }
-
         SpocAnalyticsUiState(
-            spocs = displayedSpocs,
+            spocs = sortedSpocs,
             totalSpocs = spocList.size,
-            needsAttentionCount = spocList.count { it.status == SpocHealthStatus.NEEDS_ATTENTION || it.status == SpocHealthStatus.CRITICAL },
-            onTrackCount = spocList.count { it.status == SpocHealthStatus.ON_TRACK },
             selectedEventId = selectedEventId,
-            sortOption = sort,
-            onlyAtRisk = onlyAtRisk
+            sortOption = sort
         )
     }.stateIn(
         scope = viewModelScope,
@@ -259,10 +239,6 @@ private data class SpocFilterConfig(
 
     fun setSpocAnalyticsSort(sort: SpocAnalyticsSort) {
         _spocFilter.update { it.copy(sort = sort) }
-    }
-
-    fun setOnlyAtRiskSpocs(enabled: Boolean) {
-        _spocFilter.update { it.copy(onlyAtRisk = enabled) }
     }
 
     fun setDirectorySearch(query: String) {

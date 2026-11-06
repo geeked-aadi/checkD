@@ -1,5 +1,6 @@
 package com.example.eventattendance.presentation.eventdetails
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -84,6 +85,8 @@ fun EventDetailScreen(
 
     val scannedCount by viewModel.scopedScannedCount.collectAsStateWithLifecycle()
     val totalExpected by viewModel.scopedTotalCount.collectAsStateWithLifecycle()
+
+    BackHandler(onBack = onBackClick)
 
     val progress = if (totalExpected > 0) (scannedCount.toFloat() / totalExpected.toFloat()).coerceIn(0f, 1f) else 0f
     val percentage = (progress * 100).toInt()

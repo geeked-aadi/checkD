@@ -6,39 +6,6 @@ import org.junit.Test
 
 class SpocAnalyticsTest {
 
-    private fun computeStatus(teamCount: Int, studentCount: Int, pct: Float?): SpocHealthStatus {
-        return when {
-            teamCount == 0 -> SpocHealthStatus.NO_TEAMS
-            studentCount == 0 -> SpocHealthStatus.NO_TEAMS
-            pct == null -> SpocHealthStatus.NO_TEAMS
-            pct >= SpocAnalyticsThresholds.ON_TRACK -> SpocHealthStatus.ON_TRACK
-            pct >= SpocAnalyticsThresholds.NEEDS_ATTENTION -> SpocHealthStatus.NEEDS_ATTENTION
-            else -> SpocHealthStatus.CRITICAL
-        }
-    }
-
-    @Test
-    fun testStatusThresholds() {
-        assertEquals(0.70f, SpocAnalyticsThresholds.ON_TRACK, 0.001f)
-        assertEquals(0.40f, SpocAnalyticsThresholds.NEEDS_ATTENTION, 0.001f)
-
-        // >= 70% is On Track
-        assertEquals(SpocHealthStatus.ON_TRACK, computeStatus(2, 10, 0.85f))
-        assertEquals(SpocHealthStatus.ON_TRACK, computeStatus(2, 10, 0.70f))
-
-        // 40% - 69% is Needs Attention
-        assertEquals(SpocHealthStatus.NEEDS_ATTENTION, computeStatus(2, 10, 0.69f))
-        assertEquals(SpocHealthStatus.NEEDS_ATTENTION, computeStatus(2, 10, 0.40f))
-
-        // < 40% is Critical
-        assertEquals(SpocHealthStatus.CRITICAL, computeStatus(2, 10, 0.39f))
-        assertEquals(SpocHealthStatus.CRITICAL, computeStatus(2, 10, 0.00f))
-
-        // No teams or 0 students is NO_TEAMS
-        assertEquals(SpocHealthStatus.NO_TEAMS, computeStatus(0, 0, null))
-        assertEquals(SpocHealthStatus.NO_TEAMS, computeStatus(1, 0, null))
-    }
-
     @Test
     fun testDivisionByZeroHandled() {
         val studentCount = 0
@@ -51,7 +18,20 @@ class SpocAnalyticsTest {
         assertEquals(0, total)
         assertEquals(0, pending)
         assertNull(pct)
-        assertEquals(SpocHealthStatus.NO_TEAMS, computeStatus(0, studentCount, pct))
+    }
+
+    @Test
+    fun testPercentageAndPendingCalculation() {
+        val studentCount = 10
+        val eventCount = 2
+        val total = studentCount * eventCount
+        val checked = 15
+        val pending = if (total > 0) (total - checked).coerceAtLeast(0) else 0
+        val pct = if (total > 0) (checked.toFloat() / total.toFloat()).coerceIn(0f, 1f) else null
+
+        assertEquals(20, total)
+        assertEquals(5, pending)
+        assertEquals(0.75f, pct ?: 0f, 0.001f)
     }
 
     @Test
@@ -65,8 +45,7 @@ class SpocAnalyticsTest {
             checked = 8,
             total = 10,
             pct = 0.80f,
-            pending = 2,
-            status = SpocHealthStatus.ON_TRACK
+            pending = 2
         )
 
         val spoc2 = SpocAnalytics(
@@ -78,8 +57,7 @@ class SpocAnalyticsTest {
             checked = 3,
             total = 10,
             pct = 0.30f,
-            pending = 7,
-            status = SpocHealthStatus.CRITICAL
+            pending = 7
         )
 
         val spoc3 = SpocAnalytics(
@@ -91,24 +69,23 @@ class SpocAnalyticsTest {
             checked = 0,
             total = 0,
             pct = null,
-            pending = 0,
-            status = SpocHealthStatus.NO_TEAMS
+            pending = 0
         )
 
         val spocs = listOf(spoc1, spoc2, spoc3)
 
-        // Lowest completion first (needs attention / critical on top, NO_TEAMS at bottom)
+        // Lowest completion first (pct == null at bottom)
         val sortedLowest = spocs.sortedWith(
-            compareBy<SpocAnalytics> { it.status == SpocHealthStatus.NO_TEAMS }
+            compareBy<SpocAnalytics> { it.pct == null }
                 .thenBy { it.pct ?: 0f }
                 .thenByDescending { it.pending }
                 .thenBy { it.name.lowercase() }
         )
         assertEquals(listOf("spoc2", "spoc1", "spoc3"), sortedLowest.map { it.spocId })
 
-        // Highest completion first
+        // Highest completion first (pct == null at bottom)
         val sortedHighest = spocs.sortedWith(
-            compareBy<SpocAnalytics> { it.status == SpocHealthStatus.NO_TEAMS }
+            compareBy<SpocAnalytics> { it.pct == null }
                 .thenByDescending { it.pct ?: 0f }
                 .thenBy { it.pending }
                 .thenBy { it.name.lowercase() }

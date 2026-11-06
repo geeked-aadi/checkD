@@ -1,5 +1,6 @@
 package com.example.eventattendance.presentation.authentication
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,6 +66,8 @@ fun StaffAuthScreen(
     val isPasswordVisible by viewModel.isPasswordVisible.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val errorMessage by viewModel.errorMessage.collectAsStateWithLifecycle()
+
+    BackHandler(onBack = onBackClick)
 
     Scaffold(
         topBar = {

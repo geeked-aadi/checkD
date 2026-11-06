@@ -186,9 +186,8 @@ fun AppNavigation(
                         is UserRole.Admin -> Screen.AdminDashboard.route
                         is UserRole.Volunteer -> Screen.Home.route
                     }
-                    // Make the dashboard the root of the back stack (Correction 6)
                     navController.navigate(destination) {
-                        popUpTo(0) {
+                        popUpTo(Screen.StaffLogin.route) {
                             inclusive = true
                         }
                     }
@@ -232,6 +231,13 @@ fun AppNavigation(
                     onLogout = {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onBack = {
+                        if (navController.previousBackStackEntry != null) {
+                            navController.popBackStack()
+                        } else {
+                            navController.navigate(Screen.Home.route)
                         }
                     }
                 )
@@ -277,6 +283,13 @@ fun AppNavigation(
                     onLogout = {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onBack = {
+                        if (navController.previousBackStackEntry != null) {
+                            navController.popBackStack()
+                        } else {
+                            navController.navigate(Screen.Home.route)
                         }
                     }
                 )

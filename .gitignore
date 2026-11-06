@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+local.properties
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -8,10 +9,21 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
-/build
+build/
+**/build/
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+.android/
+.kotlin/
+.vscode/
+
+# Unused design / prototype assets
+mobile-assets/
 /mobile-assets
 prototype.html
+
+# Unused pixel / Minecraft theme resources
+app/src/main/res/drawable-nodpi/
+app/src/main/res/drawable/ic_pixel_*.xml
+app/src/main/res/font/

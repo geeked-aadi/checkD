@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 856 856" width="100%" height="100%">
+  <!-- Outer Extruded Black Bubble -->
+  <path fill="#000000" d="M137 73h630v434l-184 184h-140l-92 92h-92v-92H89V191z"/>
+  <!-- Inner White Face -->
+  <path fill="#ffffff" d="M195 137h508v348l-94 94h-180l-90 90v-90H195z"/>
+  <!-- Eyes -->
+  <path fill="#000000" d="M367 259h62v184h-62zm168 0h64v184h-64z"/>
+</svg>

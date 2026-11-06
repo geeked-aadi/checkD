@@ -1,5 +1,6 @@
 package com.example.eventattendance.presentation.admin
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -81,6 +82,8 @@ fun ParticipantDetailScreen(
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val currentRole by viewModel.currentRole.collectAsStateWithLifecycle()
 
+    BackHandler(onBack = onBackClick)
+
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -123,8 +126,8 @@ fun ParticipantDetailScreen(
                             CallButton(
                                 phoneNumber = phone,
                                 currentRole = currentRole,
-                                size = 36.dp,
-                                iconSize = 18.dp
+                                size = 30.dp,
+                                iconSize = 15.dp
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                         }
@@ -340,8 +343,8 @@ fun ParticipantDetailScreen(
                                         CallButton(
                                             phoneNumber = currentJourney.participant.spocPhonenumber,
                                             currentRole = currentRole,
-                                            size = 32.dp,
-                                            iconSize = 16.dp
+                                            size = 30.dp,
+                                            iconSize = 15.dp
                                         )
                                     }
                                 }

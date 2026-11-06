@@ -1,5 +1,6 @@
 package com.example.eventattendance.presentation.settings
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -73,6 +74,8 @@ fun SettingsScreen(
     val currentRole by viewModel.currentRole.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
+
+    BackHandler(onBack = onBackClick)
 
     LaunchedEffect(viewModel) {
         viewModel.cacheRefreshMessage.collect { message ->

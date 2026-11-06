@@ -1,5 +1,6 @@
 package com.example.eventattendance.presentation.admin
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,6 +57,8 @@ fun SpocDetailScreen(
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val currentRole by viewModel.currentRole.collectAsStateWithLifecycle()
 
+    BackHandler(onBack = onBackClick)
+
     val spoc = spocData?.spoc
     val spocName = spoc?.name ?: "SPOC ${viewModel.spocId}"
     val spocPhone = spoc?.phoneNumber
@@ -108,8 +111,8 @@ fun SpocDetailScreen(
                             CallButton(
                                 phoneNumber = spocPhone,
                                 currentRole = currentRole,
-                                size = 36.dp,
-                                iconSize = 18.dp
+                                size = 30.dp,
+                                iconSize = 15.dp
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                         }

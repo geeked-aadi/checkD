@@ -1,6 +1,5 @@
 package com.example.eventattendance.presentation.admin.tabs
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -48,49 +47,12 @@ import com.example.eventattendance.domain.model.UserRole
 import com.example.eventattendance.presentation.admin.SpocAnalytics
 import com.example.eventattendance.presentation.admin.SpocAnalyticsSort
 import com.example.eventattendance.presentation.admin.SpocAnalyticsUiState
-import com.example.eventattendance.presentation.admin.SpocHealthStatus
 import com.example.eventattendance.presentation.common.CallButton
 import com.example.eventattendance.presentation.theme.Gray100
 import com.example.eventattendance.presentation.theme.Gray200
 import com.example.eventattendance.presentation.theme.Gray500
 import com.example.eventattendance.presentation.theme.MonochromeBlack
 import com.example.eventattendance.presentation.theme.MonochromeWhite
-import com.example.eventattendance.presentation.theme.StatusGreen
-import com.example.eventattendance.presentation.theme.StatusGreenBg
-import com.example.eventattendance.presentation.theme.StatusRed
-import com.example.eventattendance.presentation.theme.StatusRedBg
-import com.example.eventattendance.presentation.theme.StatusYellow
-import com.example.eventattendance.presentation.theme.StatusYellowBg
-
-@Composable
-fun SpocHealthStatusChip(
-    status: SpocHealthStatus,
-    modifier: Modifier = Modifier
-) {
-    val (bgColor, textColor) = when (status) {
-        SpocHealthStatus.ON_TRACK -> StatusGreenBg to StatusGreen
-        SpocHealthStatus.NEEDS_ATTENTION -> StatusYellowBg to StatusYellow
-        SpocHealthStatus.CRITICAL -> StatusRedBg to StatusRed
-        SpocHealthStatus.NO_TEAMS -> Gray100 to Gray500
-    }
-
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(bgColor)
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = status.label,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 11.sp
-            ),
-            color = textColor
-        )
-    }
-}
 
 @Composable
 fun AdminSpocsTab(
@@ -99,7 +61,6 @@ fun AdminSpocsTab(
     currentRole: UserRole,
     onSelectEvent: (Int?) -> Unit,
     onSortChange: (SpocAnalyticsSort) -> Unit,
-    onToggleAtRiskOnly: (Boolean) -> Unit,
     onSpocClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -139,41 +100,6 @@ fun AdminSpocsTab(
                             color = MonochromeWhite.copy(alpha = 0.7f)
                         )
                     }
-
-                    if (uiState.needsAttentionCount > 0) {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(StatusYellowBg)
-                                .clickable { onToggleAtRiskOnly(!uiState.onlyAtRisk) }
-                                .padding(horizontal = 10.dp, vertical = 5.dp)
-                        ) {
-                            Text(
-                                text = "${uiState.needsAttentionCount} need attention",
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 12.sp
-                                ),
-                                color = StatusYellow
-                            )
-                        }
-                    } else if (uiState.totalSpocs > 0) {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(StatusGreenBg)
-                                .padding(horizontal = 10.dp, vertical = 5.dp)
-                        ) {
-                            Text(
-                                text = "All on track",
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 12.sp
-                                ),
-                                color = StatusGreen
-                            )
-                        }
-                    }
                 }
             }
         }
@@ -188,25 +114,6 @@ fun AdminSpocsTab(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    FilterChip(
-                        selected = uiState.onlyAtRisk,
-                        onClick = { onToggleAtRiskOnly(!uiState.onlyAtRisk) },
-                        label = { Text("Needs Attention") },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = StatusYellowBg,
-                            selectedLabelColor = StatusYellow,
-                            containerColor = MonochromeWhite,
-                            labelColor = MonochromeBlack
-                        ),
-                        border = FilterChipDefaults.filterChipBorder(
-                            borderColor = if (uiState.onlyAtRisk) StatusYellow else Gray200,
-                            selectedBorderColor = StatusYellow,
-                            enabled = true,
-                            selected = uiState.onlyAtRisk
-                        ),
-                        shape = RoundedCornerShape(10.dp)
-                    )
-
                     FilterChip(
                         selected = uiState.selectedEventId == null,
                         onClick = { onSelectEvent(null) },
@@ -356,9 +263,6 @@ fun AdminSpocsTab(
                                 Spacer(modifier = Modifier.width(6.dp))
                             }
 
-                            SpocHealthStatusChip(status = spoc.status)
-
-                            Spacer(modifier = Modifier.width(4.dp))
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                 contentDescription = null,
@@ -370,7 +274,7 @@ fun AdminSpocsTab(
                         Spacer(modifier = Modifier.height(12.dp))
 
                         // Status empty state or Progress Bar
-                        if (spoc.status == SpocHealthStatus.NO_TEAMS) {
+                        if (spoc.teamCount == 0 || spoc.studentCount == 0) {
                             Text(
                                 text = "No teams assigned to this SPOC yet",
                                 style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal),

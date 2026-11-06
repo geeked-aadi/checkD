@@ -1,5 +1,6 @@
 package com.example.eventattendance.presentation.admin
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -72,6 +73,7 @@ fun AdminDashboardScreen(
     onSpocClick: (String) -> Unit,
     onParticipantClick: (String) -> Unit,
     onLogout: () -> Unit,
+    onBack: () -> Unit = {},
     viewModel: AdminViewModel = hiltViewModel()
 ) {
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
@@ -89,6 +91,14 @@ fun AdminDashboardScreen(
     val filterTeamId by viewModel.filterTeamId.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
+
+    BackHandler {
+        if (selectedTab != 0) {
+            viewModel.selectTab(0)
+        } else {
+            onBack()
+        }
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.actionMessage.collect { message ->
@@ -302,7 +312,6 @@ fun AdminDashboardScreen(
                     currentRole = currentRole,
                     onSelectEvent = viewModel::setSelectedSpocEvent,
                     onSortChange = viewModel::setSpocAnalyticsSort,
-                    onToggleAtRiskOnly = viewModel::setOnlyAtRiskSpocs,
                     onSpocClick = onSpocClick
                 )
                 4 -> AdminSettingsTab(

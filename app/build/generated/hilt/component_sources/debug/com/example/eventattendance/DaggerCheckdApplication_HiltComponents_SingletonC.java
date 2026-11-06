@@ -753,7 +753,7 @@ public final class DaggerCheckdApplication_HiltComponents_SingletonC {
     }
 
     @Override
-    public void injectCheckdApplication(CheckdApplication arg0) {
+    public void injectCheckdApplication(CheckdApplication checkdApplication) {
     }
 
     @Override

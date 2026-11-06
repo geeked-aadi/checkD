@@ -1,5 +1,6 @@
 package com.example.eventattendance.presentation.spoc
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,6 +68,7 @@ fun SpocDashboardScreen(
     onEventClick: (Int) -> Unit,
     onLogout: () -> Unit,
     onParticipantClick: ((String) -> Unit)? = null,
+    onBack: () -> Unit = {},
     viewModel: SpocDashboardViewModel = hiltViewModel()
 ) {
     val currentRole by viewModel.currentRole.collectAsStateWithLifecycle()
@@ -78,6 +80,14 @@ fun SpocDashboardScreen(
     val lastUpdated by viewModel.lastUpdated.collectAsStateWithLifecycle()
     val spocEvents by viewModel.spocEvents.collectAsStateWithLifecycle()
     val spocMemberPIds by viewModel.spocMemberPIds.collectAsStateWithLifecycle()
+
+    BackHandler {
+        if (selectedTab != 0) {
+            viewModel.selectTab(0)
+        } else {
+            onBack()
+        }
+    }
 
     val spocId = (currentRole as? UserRole.Spoc)?.spocId ?: ""
     val spocName = spocData?.spoc?.name ?: "SPOC $spocId"

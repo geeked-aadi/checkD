@@ -102,41 +102,4 @@ class ParticipantJourneyTest {
         assertTrue(journey.timeline[2].isPresent)
         assertEquals(3, journey.timeline[2].eventId)
     }
-
-    @Test
-    fun testNeedsAttentionFiltering() {
-        val criticalSpoc = SpocAnalytics(
-            spocId = "S1",
-            name = "SPOC 1",
-            phone = null,
-            teamCount = 1,
-            studentCount = 10,
-            checked = 2,
-            total = 10,
-            pct = 0.20f,
-            pending = 8,
-            status = SpocHealthStatus.CRITICAL
-        )
-
-        val onTrackSpoc = SpocAnalytics(
-            spocId = "S2",
-            name = "SPOC 2",
-            phone = null,
-            teamCount = 1,
-            studentCount = 10,
-            checked = 9,
-            total = 10,
-            pct = 0.90f,
-            pending = 1,
-            status = SpocHealthStatus.ON_TRACK
-        )
-
-        val spocs = listOf(criticalSpoc, onTrackSpoc)
-        val needsAttention = spocs.filter {
-            it.status == SpocHealthStatus.CRITICAL || it.status == SpocHealthStatus.NEEDS_ATTENTION
-        }
-
-        assertEquals(1, needsAttention.size)
-        assertEquals("S1", needsAttention.first().spocId)
-    }
 }
