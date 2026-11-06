@@ -1,4 +1,4 @@
-# Proguard rules for Supabase, Ktor, Room, and Serialization
+# Proguard rules for Supabase, Ktor, and Serialization
 
 # Kotlinx Serialization
 -keepattributes *Annotation*,InnerClasses
@@ -17,6 +17,3 @@
 # ML Kit Barcode
 -keep class com.google.mlkit.vision.barcode.** { *; }
 
-# Room
--keep class * extends androidx.room.RoomDatabase
--dontwarn androidx.room.paging.**

@@ -1,6 +1,10 @@
 package com.example.eventattendance.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.example.eventattendance.sync.ConnectivityObserver
 import com.example.eventattendance.sync.NetworkConnectivityObserver
 import dagger.Binds
@@ -25,6 +29,16 @@ object AppModule {
     @Provides
     @IoDispatcher
     fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Provides
+    @Singleton
+    fun providePreferencesDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile("checkd_prefs") }
+        )
+    }
 }
 
 @Module

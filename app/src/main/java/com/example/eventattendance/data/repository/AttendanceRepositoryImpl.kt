@@ -1,143 +1,304 @@
 package com.example.eventattendance.data.repository
 
-import com.example.eventattendance.data.local.AppDatabase
-import com.example.eventattendance.data.local.entity.AttendanceRecordEntity
-import com.example.eventattendance.data.local.entity.PendingScanEntity
+import android.content.Context
+import com.example.eventattendance.data.remote.datasource.RpcRemoteDataSource
+import com.example.eventattendance.data.remote.dto.EventAttendanceItemDto
+import com.example.eventattendance.data.remote.dto.MarkAttendanceResponseDto
+import com.example.eventattendance.data.remote.dto.SyncAllEventsAttendanceResponseDto
+import com.example.eventattendance.di.IoDispatcher
 import com.example.eventattendance.domain.model.AttendanceRecord
+import com.example.eventattendance.domain.model.Event
+import com.example.eventattendance.domain.model.EventDetailData
 import com.example.eventattendance.domain.model.EventStatus
-import com.example.eventattendance.domain.model.ScanResult
+import com.example.eventattendance.domain.model.EventWithStats
 import com.example.eventattendance.domain.repository.AttendanceRepository
-import com.example.eventattendance.sync.NetworkConnectivityObserver
-import com.example.eventattendance.sync.SyncManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.UUID
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AttendanceRepositoryImpl @Inject constructor(
-    private val database: AppDatabase,
-    private val syncManager: SyncManager,
-    private val connectivityObserver: NetworkConnectivityObserver
+    @param:ApplicationContext private val context: Context,
+    private val rpcRemoteDataSource: RpcRemoteDataSource,
+    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : AttendanceRepository {
 
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val eventsCacheFile = File(context.filesDir, "events_cache.json")
 
-    override fun getAttendanceForEventFlow(eventId: String): Flow<List<AttendanceRecord>> {
-        return database.attendanceDao().getAttendanceWithParticipantsFlow(eventId).map { list ->
-            list.map { item ->
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        coerceInputValues = true
+        prettyPrint = false
+    }
+
+    private val _eventsWithStats = MutableStateFlow<List<EventWithStats>>(emptyList())
+    override val eventsWithStatsFlow: StateFlow<List<EventWithStats>> = _eventsWithStats.asStateFlow()
+
+    private val _eventDetailsMap = MutableStateFlow<Map<Int, EventDetailData>>(emptyMap())
+
+    init {
+        // Load initial events from local cache on startup if available
+        loadCachedEvents()
+    }
+
+    private fun loadCachedEvents() {
+        if (eventsCacheFile.exists()) {
+            try {
+                val content = eventsCacheFile.readText()
+                if (content.isNotBlank()) {
+                    val response = json.decodeFromString<SyncAllEventsAttendanceResponseDto>(content)
+                    mapAndEmitEvents(response.events)
+                }
+            } catch (_: Exception) {}
+        }
+    }
+
+    private fun mapAndEmitEvents(events: List<EventAttendanceItemDto>) {
+        val mappedEvents = events.map { item ->
+            val event = Event(
+                id = item.eventId.toString(),
+                eventId = item.eventId,
+                name = item.eventName ?: "Event ${item.eventId}",
+                startsFrom = item.startsFrom,
+                endsOn = item.endsOn,
+                status = EventStatus.OPEN
+            )
+            val scanned = item.eventAttendance ?: item.presentPIds.size
+            val total = item.totalParticipants ?: 0
+            EventWithStats(
+                event = event,
+                scannedCount = scanned,
+                totalEligibleCount = total,
+                pendingSyncCount = 0
+            )
+        }
+        _eventsWithStats.value = mappedEvents
+
+        // Also pre-populate event details
+        val detailsMap = _eventDetailsMap.value.toMutableMap()
+        for (item in events) {
+            val attendees = item.attendanceDetails.map { detail ->
                 AttendanceRecord(
-                    id = item.id,
-                    eventId = item.eventId,
-                    participantId = item.participantId,
-                    checkedInAt = item.checkedInAt,
-                    status = item.status,
-                    participantName = item.name,
-                    participantUsn = item.usn,
+                    id = "${item.eventId}_${detail.pId}",
+                    eventId = item.eventId.toString(),
+                    participantId = detail.pId,
+                    checkedInAt = detail.time ?: "",
+                    status = "present",
+                    participantName = detail.name ?: detail.pId,
+                    participantUsn = detail.pId,
+                    teamId = detail.teamId,
+                    teamName = detail.teamName,
                     isPendingSync = false
                 )
+            }.reversed()
+
+            val scanned = item.eventAttendance ?: item.presentPIds.size
+            val total = item.totalParticipants ?: 0
+            detailsMap[item.eventId] = EventDetailData(
+                eventId = item.eventId,
+                eventName = item.eventName ?: "Event ${item.eventId}",
+                startsFrom = item.startsFrom,
+                endsOn = item.endsOn,
+                scannedCount = scanned,
+                totalExpected = total,
+                progress = item.progress ?: "$scanned/$total",
+                attendees = attendees
+            )
+        }
+        _eventDetailsMap.value = detailsMap
+    }
+
+    override suspend fun syncAllEventsAttendance(forcePull: Boolean): Result<List<EventWithStats>> = withContext(ioDispatcher) {
+        runCatching {
+            val response = rpcRemoteDataSource.syncAllEventsAttendance()
+            if (response.events.isNotEmpty()) {
+                val jsonString = json.encodeToString(response)
+                eventsCacheFile.writeText(jsonString)
+                mapAndEmitEvents(response.events)
+            }
+            _eventsWithStats.value
+        }.onFailure {
+            // Offline fallback: load cached data if present
+            if (_eventsWithStats.value.isEmpty()) {
+                loadCachedEvents()
             }
         }
     }
 
-    override fun getScannedCountFlow(eventId: String): Flow<Int> {
-        return database.attendanceDao().getScannedCountFlow(eventId)
-    }
+    override suspend fun syncEventAttendance(eventId: Int): Result<EventDetailData> = withContext(ioDispatcher) {
+        runCatching {
+            val response = rpcRemoteDataSource.syncEventAttendance(eventId)
+            val attendees = response.attendanceDetails.map { detail ->
+                AttendanceRecord(
+                    id = "${eventId}_${detail.pId}",
+                    eventId = eventId.toString(),
+                    participantId = detail.pId,
+                    checkedInAt = detail.time ?: "",
+                    status = "present",
+                    participantName = detail.name ?: detail.pId,
+                    participantUsn = detail.pId,
+                    teamId = detail.teamId,
+                    teamName = detail.teamName,
+                    isPendingSync = false
+                )
+            }.reversed()
 
-    override suspend fun processScan(eventId: String, qrToken: String): ScanResult {
-        // 1. Check Event Existence and Status
-        val event = database.eventDao().getEventById(eventId)
-        if (event == null || !event.status.equals("open", ignoreCase = true)) {
-            return ScanResult.EventClosed
-        }
-
-        // 2. Validate Participant via QR token in local database
-        val participant = database.participantDao().getParticipantByQrToken(qrToken)
-            ?: return ScanResult.InvalidQr
-
-        // 3. Verify Participant Eligibility for this specific activity
-        val isEligible = database.eligibilityDao().isParticipantEligible(eventId, participant.id)
-        if (!isEligible) {
-            return ScanResult.NotEligible(
-                participantName = participant.name,
-                participantUsn = participant.usn
-            )
-        }
-
-        // 4. Duplicate Check (Check both server-confirmed and pending queues)
-        val isAlreadyCheckedIn = database.attendanceDao().isAlreadyCheckedIn(eventId, participant.id)
-        val isPending = database.pendingScanDao().isPendingForEvent(eventId, participant.id)
-
-        if (isAlreadyCheckedIn || isPending) {
-            return ScanResult.AlreadyCheckedIn(
-                participantName = participant.name,
-                participantUsn = participant.usn
-            )
-        }
-
-        // 5. Valid check-in: Store in local Room pending scan queue
-        val currentTime = System.currentTimeMillis()
-        val isoTimestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).format(Date(currentTime))
-
-        val pendingScan = PendingScanEntity(
-            eventId = eventId,
-            participantId = participant.id,
-            qrToken = qrToken,
-            scannedAt = currentTime,
-            syncStatus = "PENDING"
-        )
-        database.pendingScanDao().insertPendingScan(pendingScan)
-
-        // Optimistically insert into local attendance records so UI reflects it immediately
-        database.attendanceDao().insertAttendanceRecord(
-            AttendanceRecordEntity(
-                id = UUID.randomUUID().toString(),
+            val scanned = response.eventAttendance ?: response.presentPIds.size
+            val total = response.totalParticipants ?: 0
+            val eventData = EventDetailData(
                 eventId = eventId,
-                participantId = participant.id,
-                checkedInAt = isoTimestamp,
-                checkedInBy = null,
-                status = "present"
+                eventName = response.eventName ?: "Event $eventId",
+                scannedCount = scanned,
+                totalExpected = total,
+                progress = response.progress ?: "$scanned/$total",
+                attendees = attendees
             )
-        )
 
-        // 6. If internet is available, trigger immediate sync in the background
-        if (connectivityObserver.isCurrentlyConnected()) {
-            scope.launch {
-                syncManager.pushPendingScans()
+            _eventDetailsMap.value = _eventDetailsMap.value + (eventId to eventData)
+
+            // Reconcile stats in events list
+            _eventsWithStats.value = _eventsWithStats.value.map { item ->
+                if (item.event.eventId == eventId) {
+                    item.copy(
+                        scannedCount = scanned,
+                        totalEligibleCount = if (total > 0) total else item.totalEligibleCount
+                    )
+                } else {
+                    item
+                }
             }
-        }
 
-        return ScanResult.Success(
-            participantName = participant.name,
-            participantUsn = participant.usn,
-            isPendingSync = !connectivityObserver.isCurrentlyConnected(),
-            timestamp = isoTimestamp
-        )
+            eventData
+        }
     }
 
-    override suspend fun exportAttendanceCsv(eventId: String): Result<String> {
-        return try {
-            val event = database.eventDao().getEventById(eventId)
-            val eventName = event?.name ?: "Event"
-            val recordsFlow = database.attendanceDao().getAttendanceWithParticipantsFlow(eventId)
-            // Read one snapshot
-            var csv = "Event,Participant Name,USN,Check-in Time,Status\n"
-            // Get records
-            val records = database.attendanceDao().getAttendanceWithParticipantsFlow(eventId)
-            // Just query directly
-            // Build CSV content
-            val builder = StringBuilder(csv)
-            // We can retrieve participant details from database
-            Result.success(builder.toString())
-        } catch (e: Exception) {
-            Result.failure(e)
+    override fun getEventAttendanceFlow(eventId: Int): Flow<EventDetailData?> {
+        return _eventDetailsMap.map { it[eventId] }
+    }
+
+    override suspend fun markAttendance(
+        eventId: Int,
+        pIds: List<String>,
+        role: String
+    ): Result<MarkAttendanceResponseDto> = withContext(ioDispatcher) {
+        runCatching {
+            rpcRemoteDataSource.markAttendance(eventId, pIds, role)
+        }
+    }
+
+    override fun recordScanSuccess(
+        eventId: Int,
+        participantId: String,
+        name: String,
+        teamId: String?,
+        teamName: String?,
+        currentTime: String,
+        progress: String?,
+        newAttendance: Int?,
+        total: Int?
+    ) {
+        val currentDetail = _eventDetailsMap.value[eventId]
+        val newRecord = AttendanceRecord(
+            id = "${eventId}_${participantId}",
+            eventId = eventId.toString(),
+            participantId = participantId,
+            checkedInAt = currentTime,
+            status = "present",
+            participantName = name,
+            participantUsn = participantId,
+            teamId = teamId,
+            teamName = teamName,
+            isPendingSync = false
+        )
+        val existingAttendees = currentDetail?.attendees ?: emptyList()
+        val updatedAttendees = listOf(newRecord) + existingAttendees.filterNot { it.participantId == participantId }
+        val updatedScanned = newAttendance ?: ((currentDetail?.scannedCount ?: 0) + 1)
+        val updatedTotal = total ?: (currentDetail?.totalExpected ?: 0)
+        val updatedProgress = progress ?: "$updatedScanned/$updatedTotal"
+
+        val updatedDetail = (currentDetail ?: EventDetailData(
+            eventId = eventId,
+            eventName = "Event $eventId"
+        )).copy(
+            scannedCount = updatedScanned,
+            totalExpected = updatedTotal,
+            progress = updatedProgress,
+            attendees = updatedAttendees
+        )
+        _eventDetailsMap.value = _eventDetailsMap.value + (eventId to updatedDetail)
+
+        _eventsWithStats.value = _eventsWithStats.value.map { item ->
+            if (item.event.eventId == eventId) {
+                item.copy(
+                    scannedCount = updatedScanned,
+                    totalEligibleCount = if (updatedTotal > 0) updatedTotal else item.totalEligibleCount
+                )
+            } else {
+                item
+            }
+        }
+    }
+
+    override fun recordBulkScanSuccess(
+        eventId: Int,
+        markedAttendees: List<AttendanceRecord>,
+        progress: String?,
+        newAttendance: Int?,
+        total: Int?
+    ) {
+        val currentDetail = _eventDetailsMap.value[eventId]
+        val existingAttendees = currentDetail?.attendees ?: emptyList()
+        val markedIds = markedAttendees.map { it.participantId }.toSet()
+        val updatedAttendees = markedAttendees + existingAttendees.filterNot { it.participantId in markedIds }
+        val updatedScanned = newAttendance ?: (existingAttendees.size + markedAttendees.size)
+        val updatedTotal = total ?: (currentDetail?.totalExpected ?: 0)
+        val updatedProgress = progress ?: "$updatedScanned/$updatedTotal"
+
+        val updatedDetail = (currentDetail ?: EventDetailData(
+            eventId = eventId,
+            eventName = "Event $eventId"
+        )).copy(
+            scannedCount = updatedScanned,
+            totalExpected = updatedTotal,
+            progress = updatedProgress,
+            attendees = updatedAttendees
+        )
+        _eventDetailsMap.value = _eventDetailsMap.value + (eventId to updatedDetail)
+
+        _eventsWithStats.value = _eventsWithStats.value.map { item ->
+            if (item.event.eventId == eventId) {
+                item.copy(
+                    scannedCount = updatedScanned,
+                    totalEligibleCount = if (updatedTotal > 0) updatedTotal else item.totalEligibleCount
+                )
+            } else {
+                item
+            }
+        }
+    }
+
+    override suspend fun exportAttendanceCsv(eventId: String): Result<String> = withContext(ioDispatcher) {
+        runCatching {
+            val eId = eventId.toIntOrNull() ?: 0
+            val eventDetail = _eventDetailsMap.value[eId] ?: syncEventAttendance(eId).getOrThrow()
+            val builder = StringBuilder()
+            builder.append("Event,Participant ID,Name,Team ID,Check-in Time,Status\n")
+            for (row in eventDetail.attendees) {
+                val team = row.teamName ?: row.teamId ?: ""
+                builder.append("\"${eventDetail.eventName}\",\"${row.participantId}\",\"${row.participantName ?: ""}\",\"$team\",\"${row.checkedInAt}\",\"present\"\n")
+            }
+            builder.toString()
         }
     }
 }

@@ -4,13 +4,15 @@ sealed interface ScanResult {
     data class Success(
         val participantName: String,
         val participantUsn: String,
+        val teamName: String? = null,
         val isPendingSync: Boolean = false,
         val timestamp: String? = null
     ) : ScanResult
 
     data class AlreadyCheckedIn(
         val participantName: String,
-        val participantUsn: String
+        val participantUsn: String,
+        val teamName: String? = null
     ) : ScanResult
 
     data object InvalidQr : ScanResult
@@ -21,6 +23,8 @@ sealed interface ScanResult {
     ) : ScanResult
 
     data object EventClosed : ScanResult
+
+    data object NetworkError : ScanResult
 
     data class Error(val message: String) : ScanResult
 }

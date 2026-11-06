@@ -38,12 +38,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.eventattendance.domain.calculator.ProgressCalculator
 import com.example.eventattendance.domain.model.EventWithStats
+import com.example.eventattendance.presentation.common.EventStatusChip
 import com.example.eventattendance.presentation.theme.Gray100
 import com.example.eventattendance.presentation.theme.Gray500
 import com.example.eventattendance.presentation.theme.MonochromeBlack
 import com.example.eventattendance.presentation.theme.MonochromeCardBorder
 import com.example.eventattendance.presentation.theme.MonochromeCardSurface
+import com.example.eventattendance.util.DateUtils
 
 @Composable
 fun EventCard(
@@ -53,6 +56,7 @@ fun EventCard(
 ) {
     val event = eventWithStats.event
     val icon = getEventIcon(event.name)
+    val timeWindow = DateUtils.formatTimeWindow(event.startsFrom, event.endsOn)
 
     Card(
         shape = RoundedCornerShape(20.dp),
@@ -90,15 +94,36 @@ fun EventCard(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                Text(
-                    text = event.name,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 17.sp
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f)
-                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = event.name,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 17.sp
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        val status = ProgressCalculator.eventStatus(event.startsFrom, event.endsOn)
+                        EventStatusChip(status = status)
+                    }
+
+                    if (timeWindow.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = timeWindow,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Normal
+                            ),
+                            color = Gray500
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -108,7 +133,7 @@ fun EventCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Stats Count: Bold Scanned / Expected Count
             val countText = buildAnnotatedString {

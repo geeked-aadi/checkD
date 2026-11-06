@@ -1,8 +1,12 @@
 package com.example.eventattendance.domain.repository
 
+import com.example.eventattendance.domain.model.UserRole
+import kotlinx.coroutines.flow.StateFlow
+
 interface AuthRepository {
-    suspend fun loginAsAdmin(email: String, password: String): Result<Boolean>
+    val currentRole: StateFlow<UserRole>
+    suspend fun init()
+    suspend fun staffLogin(username: String, password: String): Result<UserRole>
     suspend fun logout(): Result<Unit>
-    fun isUserLoggedIn(): Boolean
-    fun getCurrentUserEmail(): String?
+    suspend fun ensureSession(): Result<Unit>
 }

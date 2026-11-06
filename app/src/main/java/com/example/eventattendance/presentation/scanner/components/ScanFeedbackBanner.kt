@@ -3,7 +3,6 @@ package com.example.eventattendance.presentation.scanner.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -80,6 +78,7 @@ fun ScanFeedbackBanner(
                             modifier = Modifier.size(36.dp)
                         )
                     }
+                    is ScanResult.NetworkError,
                     is ScanResult.NotEligible,
                     is ScanResult.InvalidQr,
                     is ScanResult.EventClosed,
@@ -104,7 +103,7 @@ fun ScanFeedbackBanner(
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 17.sp
-                                ),
+                               ),
                                 color = MonochromeBlack
                             )
                             Text(
@@ -115,8 +114,14 @@ fun ScanFeedbackBanner(
                                 ),
                                 color = MonochromeBlack
                             )
+                            val sub = buildString {
+                                append(scanResult.participantUsn)
+                                if (!scanResult.teamName.isNullOrBlank()) {
+                                    append(" • ${scanResult.teamName}")
+                                }
+                            }
                             Text(
-                                text = scanResult.participantUsn,
+                                text = sub,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Gray500
                             )
@@ -137,8 +142,29 @@ fun ScanFeedbackBanner(
                                 ),
                                 color = MonochromeBlack
                             )
+                            val sub = buildString {
+                                append(scanResult.participantUsn)
+                                if (!scanResult.teamName.isNullOrBlank()) {
+                                    append(" • ${scanResult.teamName}")
+                                }
+                            }
                             Text(
-                                text = scanResult.participantUsn,
+                                text = sub,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Gray500
+                            )
+                        }
+                        is ScanResult.NetworkError -> {
+                            Text(
+                                text = "No Connection",
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp
+                                ),
+                                color = StatusRed
+                            )
+                            Text(
+                                text = "No connection, try again",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Gray500
                             )

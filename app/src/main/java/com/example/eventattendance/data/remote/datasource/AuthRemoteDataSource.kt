@@ -1,53 +1,46 @@
 package com.example.eventattendance.data.remote.datasource
 
+import com.example.eventattendance.data.remote.dto.StaffLoginRequest
+import com.example.eventattendance.data.remote.dto.StaffLoginResult
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.auth.providers.builtin.Email
-import io.github.jan.supabase.postgrest.from
-import kotlinx.serialization.Serializable
+import io.github.jan.supabase.auth.user.UserSession
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.rpc
 import javax.inject.Inject
 import javax.inject.Singleton
-
-@Serializable
-data class UserRoleDto(
-    val id: String,
-    val email: String,
-    val role: String = "volunteer"
-)
 
 @Singleton
 class AuthRemoteDataSource @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) {
-    suspend fun loginWithEmail(email: String, password: String): Boolean {
-        supabaseClient.auth.signInWith(Email) {
-            this.email = email
-            this.password = password
-        }
-        return true
+    suspend fun awaitInitialization() {
+        supabaseClient.auth.awaitInitialization()
     }
 
-    suspend fun isUserAdmin(): Boolean {
-        val currentUserId = supabaseClient.auth.currentUserOrNull()?.id ?: return false
-        val userRow = supabaseClient.from("users")
-            .select {
-                filter {
-                    eq("id", currentUserId)
-                }
-            }
-            .decodeSingleOrNull<UserRoleDto>()
-        return userRow?.role.equals("admin", ignoreCase = true)
+    fun currentSessionOrNull(): UserSession? {
+        return supabaseClient.auth.currentSessionOrNull()
     }
 
-    suspend fun signOut() {
-        supabaseClient.auth.signOut()
+    suspend fun signInAnonymously() {
+        supabaseClient.auth.signInAnonymously()
+    }
+
+    suspend fun staffLogin(username: String, password: String): StaffLoginResult {
+        return supabaseClient.postgrest.rpc(
+            function = "staff_login",
+            parameters = StaffLoginRequest(
+                p_username = username,
+                p_password = password
+            )
+        ).decodeAs<StaffLoginResult>()
     }
 
     fun isUserLoggedIn(): Boolean {
-        return supabaseClient.auth.currentUserOrNull() != null
+        return supabaseClient.auth.currentSessionOrNull() != null
     }
 
-    fun getCurrentUserEmail(): String? {
-        return supabaseClient.auth.currentUserOrNull()?.email
+    fun getCurrentUserId(): String? {
+        return supabaseClient.auth.currentUserOrNull()?.id
     }
 }

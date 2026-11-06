@@ -1,0 +1,3850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkd - Hackathon QR Check-in Prototype</title>
+  <style>
+    /* ==========================================================================
+       RESET & MONOCHROME MATERIAL 3 HIGH-CONTRAST DESIGN SYSTEM
+       Strict high-contrast monochrome palette.
+       The ONLY color permitted is for status chips:
+       - Live: green
+       - Upcoming: gray
+       - Ended: dark gray
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg-page: #f0f2f5;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f9fafb;
+      --bg-muted: #f3f4f6;
+      --border-color: #e5e7eb;
+      --border-dark: #111827;
+      
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --text-muted: #9ca3af;
+      --text-on-dark: #ffffff;
+
+      /* High-contrast status chip colors (The only colors) */
+      --chip-live-bg: #e6f4ea;
+      --chip-live-text: #137333;
+      --chip-live-border: #ceead6;
+      --chip-live-dot: #1e8e3e;
+
+      --chip-upcoming-bg: #f1f3f4;
+      --chip-upcoming-text: #5f6368;
+      --chip-upcoming-border: #dadce0;
+
+      --chip-ended-bg: #374151;
+      --chip-ended-text: #ffffff;
+      --chip-ended-border: #374151;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-card: 16px;
+      --radius-full: 9999px;
+
+      --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-system);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px 16px 40px;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Jump Bar above Phone Frame */
+    .jump-bar-container {
+      width: 100%;
+      max-width: 860px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .jump-bar-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .jump-bar-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .jump-btn {
+      background: #ffffff;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+
+    .jump-btn:hover {
+      background: var(--text-primary);
+      color: #ffffff;
+      border-color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    .jump-btn.active {
+      background: var(--text-primary);
+      color: #ffffff;
+      border-color: var(--text-primary);
+    }
+
+    /* Outer Phone Frame: Exactly 390x844 viewport inside sleek hardware bezel */
+    .phone-wrapper {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: var(--bg-surface);
+      border-radius: 44px;
+      box-shadow: 
+        0 25px 65px -15px rgba(0, 0, 0, 0.35),
+        0 0 0 10px #111827,
+        0 0 0 12px #374151;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    /* Phone Status Bar & Notch */
+    .phone-status-bar {
+      height: 44px;
+      padding: 12px 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      z-index: 50;
+      background: transparent;
+      flex-shrink: 0;
+    }
+
+    .dynamic-island {
+      width: 108px;
+      height: 25px;
+      background: #000000;
+      border-radius: 20px;
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 9px;
+    }
+
+    .dynamic-island-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .dynamic-island-dot.active {
+      opacity: 1;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Screen Container & Scrollable Content */
+    .screen-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      background: var(--bg-surface);
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* Header & App Bars */
+    .app-header {
+      padding: 12px 18px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-title-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .app-subtitle {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .header-action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-primary);
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .header-action-btn:hover {
+      background: var(--bg-muted);
+    }
+
+    /* Status Banner (Online/Offline) */
+    .online-banner {
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-color);
+      padding: 7px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .online-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .online-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #111827;
+      box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.15);
+    }
+
+    .sync-hint {
+      color: var(--text-muted);
+      font-size: 10px;
+    }
+
+    /* Main Scrollable Content Area */
+    .screen-content {
+      flex: 1;
+      padding: 16px 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Status Chips: Live = green, Upcoming = gray, Ended = dark gray */
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+    }
+
+    .status-chip.live {
+      background: var(--chip-live-bg);
+      color: var(--chip-live-text);
+      border: 1px solid var(--chip-live-border);
+    }
+
+    .status-chip.live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--chip-live-dot);
+      animation: pulseLive 1.8s infinite;
+    }
+
+    @keyframes pulseLive {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .status-chip.upcoming {
+      background: var(--chip-upcoming-bg);
+      color: var(--chip-upcoming-text);
+      border: 1px solid var(--chip-upcoming-border);
+    }
+
+    .status-chip.ended {
+      background: var(--chip-ended-bg);
+      color: var(--chip-ended-text);
+      border: 1px solid var(--chip-ended-border);
+    }
+
+    /* Event Cards: 16px rounded corners */
+    .event-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-card);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .event-card:hover {
+      border-color: var(--border-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .event-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .event-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.25;
+    }
+
+    .event-time {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 3px;
+    }
+
+    .event-progress-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .event-progress-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .event-progress-pct {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    /* Thin Progress Bars: black on light gray track */
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background: var(--bg-muted);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--text-primary);
+      border-radius: var(--radius-full);
+      transition: width 0.4s ease;
+    }
+
+    /* Search & Filter Inputs */
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 16px 0 40px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      background: var(--bg-subtle);
+      font-family: inherit;
+      font-size: 13.5px;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      background: #ffffff;
+      border-color: var(--text-primary);
+      box-shadow: 0 0 0 1px var(--text-primary);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      pointer-events: none;
+      display: flex;
+    }
+
+    /* Segmented Tabs: full round */
+    .tab-pills {
+      display: flex;
+      background: var(--bg-muted);
+      padding: 4px;
+      border-radius: var(--radius-full);
+      gap: 4px;
+    }
+
+    .tab-pill {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .tab-pill.active {
+      background: #ffffff;
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    /* Participant & Member Row */
+    .list-row {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: background 0.15s ease;
+    }
+
+    .list-row:hover {
+      background: var(--bg-subtle);
+    }
+
+    .list-row-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .list-row-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .list-row-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .list-row-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .id-badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--bg-muted);
+      color: var(--text-secondary);
+      padding: 1px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    .leader-badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: #111827;
+      color: #ffffff;
+      padding: 1px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .list-row-sub {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .list-row-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .checkin-time-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-subtle);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+    }
+
+    .pending-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-muted);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Call Button (<a href="tel:...">): High-contrast monochrome */
+    .call-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .call-btn:hover {
+      background: var(--text-primary);
+      color: #ffffff;
+      border-color: var(--text-primary);
+    }
+
+    /* Sticky Bottom Actions Bar (Event Detail) */
+    .sticky-bottom-bar {
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 18px 20px;
+      background: linear-gradient(to top, rgba(255,255,255,1) 85%, rgba(255,255,255,0));
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 25;
+      flex-shrink: 0;
+    }
+
+    .btn-primary {
+      flex: 1;
+      height: 48px;
+      background: var(--text-primary);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-square-action {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: #ffffff;
+      border: 1.5px solid var(--text-primary);
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-square-action:hover {
+      background: var(--bg-muted);
+    }
+
+    /* Bottom Navigation Bar (SPOC & Admin) */
+    .phone-bottom-nav {
+      height: 64px;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 4px 8px 12px;
+      flex-shrink: 0;
+      z-index: 40;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 10.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      padding: 6px 0;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2;
+    }
+
+    .nav-item.active {
+      color: var(--text-primary);
+    }
+
+    .nav-item.active .nav-icon-pill {
+      background: var(--bg-muted);
+      border-radius: var(--radius-full);
+      padding: 2px 14px;
+    }
+
+    /* Scanner Viewfinder Area */
+    .scanner-viewfinder-wrap {
+      position: relative;
+      flex: 1;
+      background: #0f1115;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      min-height: 280px;
+    }
+
+    .viewfinder-camera-bg {
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at center, rgba(30, 41, 59, 0.4) 0%, rgba(15, 17, 21, 0.95) 85%),
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px);
+    }
+
+    .viewfinder-box {
+      position: relative;
+      width: 230px;
+      height: 230px;
+      border: 1.5px dashed rgba(255, 255, 255, 0.3);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    /* Viewfinder Corner Brackets */
+    .viewfinder-corner {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-color: #ffffff;
+      border-style: solid;
+    }
+
+    .corner-tl { top: -2px; left: -2px; border-width: 4px 0 0 4px; border-top-left-radius: 20px; }
+    .corner-tr { top: -2px; right: -2px; border-width: 4px 4px 0 0; border-top-right-radius: 20px; }
+    .corner-bl { bottom: -2px; left: -2px; border-width: 0 0 4px 4px; border-bottom-left-radius: 20px; }
+    .corner-br { bottom: -2px; right: -2px; border-width: 0 4px 4px 0; border-bottom-right-radius: 20px; }
+
+    /* Animated Laser Line */
+    .scanner-laser {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      height: 2.5px;
+      background: #ffffff;
+      box-shadow: 0 0 12px 2px #ffffff, 0 0 4px #ffffff;
+      border-radius: 2px;
+      animation: laserSweep 2.2s ease-in-out infinite alternate;
+      z-index: 15;
+    }
+
+    @keyframes laserSweep {
+      0% { top: 12px; opacity: 0.9; }
+      100% { top: 215px; opacity: 0.9; }
+    }
+
+    .scanner-aim-hint {
+      position: absolute;
+      bottom: 24px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+      font-weight: 500;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Scanner Controls */
+    .scanner-controls {
+      position: absolute;
+      top: 16px;
+      left: 18px;
+      right: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .scanner-icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+    }
+
+    .scanner-icon-btn.active {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .scanner-bottom-action {
+      background: #ffffff;
+      padding: 16px 18px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 30;
+      flex-shrink: 0;
+    }
+
+    /* Slide-up Result Banner */
+    .scan-result-banner {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #ffffff;
+      border-top: 2px solid var(--border-dark);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      padding: 20px 20px 28px;
+      box-shadow: 0 -8px 25px rgba(0,0,0,0.2);
+      transform: translateY(110%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .scan-result-banner.show {
+      transform: translateY(0);
+    }
+
+    .scan-result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .result-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .result-badge.success {
+      background: var(--chip-live-bg);
+      color: var(--chip-live-text);
+      border: 1px solid var(--chip-live-border);
+    }
+
+    .result-badge.warning {
+      background: var(--bg-muted);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .result-badge.error {
+      background: var(--chip-ended-bg);
+      color: var(--chip-ended-text);
+      border: 1px solid var(--chip-ended-border);
+    }
+
+    .result-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .result-meta {
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* Bulk Scan Bottom Sheet */
+    .bulk-sheet {
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      padding: 14px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 290px;
+      z-index: 30;
+      flex-shrink: 0;
+    }
+
+    .bulk-sheet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .bulk-sheet-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bulk-count-pill {
+      background: var(--text-primary);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+    }
+
+    .clear-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      font-family: inherit;
+    }
+
+    .bulk-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+      max-height: 140px;
+      padding-right: 2px;
+    }
+
+    .bulk-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      font-size: 12px;
+    }
+
+    .bulk-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .bulk-remove-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 2px;
+      display: flex;
+    }
+
+    .bulk-remove-btn:hover {
+      color: var(--text-primary);
+    }
+
+    /* Cards in Teams & Progress (Horizontal chips & expand collapse) */
+    .card-block {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-card);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .team-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .team-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .team-title {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .team-leader-info {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .per-event-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 2px;
+    }
+
+    .event-mini-chip {
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--bg-muted);
+      color: var(--text-secondary);
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-color);
+    }
+
+    .event-mini-chip.live-event {
+      border-color: var(--chip-live-border);
+      background: var(--chip-live-bg);
+      color: var(--chip-live-text);
+    }
+
+    /* Expandable Member List */
+    .team-members-accordion {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    .team-members-accordion.open {
+      display: flex;
+    }
+
+    /* Per-Event Attendance Strip (Checks or dashes) */
+    .event-strip {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .strip-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .strip-dot.checked {
+      background: #111827;
+      color: #ffffff;
+    }
+
+    .strip-dot.pending {
+      background: var(--bg-muted);
+      color: var(--text-muted);
+    }
+
+    /* Expandable row detail container */
+    .row-detail-box {
+      display: none;
+      padding: 8px 10px;
+      background: var(--bg-subtle);
+      border-top: 1px dashed var(--border-color);
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    .row-detail-box.open {
+      display: block;
+    }
+
+    /* Horizontally Scrollable Filter Chips */
+    .horizontal-chips-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .horizontal-chips-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-chip-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+      font-family: inherit;
+    }
+
+    .filter-chip-btn.active {
+      background: var(--text-primary);
+      color: #ffffff;
+      border-color: var(--text-primary);
+    }
+
+    /* Toggle Switch (Material 3) */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 0;
+    }
+
+    .toggle-label-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .toggle-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .toggle-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: var(--border-color);
+      transition: .2s;
+      border-radius: var(--radius-full);
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider {
+      background-color: var(--text-primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Metrics Grid (Admin Overview) */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .metric-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-card);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .metric-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+
+    .metric-lbl {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Leaderboard Cards (Admin) */
+    .leaderboard-row {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .leaderboard-row:hover {
+      border-color: var(--text-primary);
+      transform: translateX(2px);
+    }
+
+    .leaderboard-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .spoc-rank {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-muted);
+      width: 16px;
+      text-align: center;
+    }
+
+    .spoc-info-col {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .spoc-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .spoc-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Floating Action Button (FAB) */
+    .fab-btn {
+      position: absolute;
+      right: 20px;
+      bottom: 24px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      color: #ffffff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      cursor: pointer;
+      z-index: 35;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .fab-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Modals & Dialogs */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      background: #ffffff;
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      padding: 22px 20px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: modalSlideUp 0.25s ease-out;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
+    }
+
+    @keyframes modalSlideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 13.5px;
+      color: var(--text-primary);
+      background: var(--bg-subtle);
+      outline: none;
+    }
+
+    .form-input:focus {
+      background: #ffffff;
+      border-color: var(--text-primary);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      height: 44px;
+      background: var(--bg-muted);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Staff Login Screen */
+    .login-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-top: 10px;
+    }
+
+    .login-password-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+    }
+
+    .error-banner {
+      background: var(--bg-muted);
+      border: 1px solid var(--border-dark);
+      color: var(--text-primary);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .error-banner.show {
+      display: flex;
+    }
+
+    .quick-creds-hint {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .quick-cred-pill {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--bg-muted);
+      border: 1px solid var(--border-color);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .quick-cred-pill:hover {
+      background: var(--text-primary);
+      color: #ffffff;
+      border-color: var(--text-primary);
+    }
+
+    /* Toast Notification (Simulated system toast) */
+    .toast-msg {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #111827;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: var(--radius-full);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 120;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Pull to refresh simulated hint */
+    .pull-hint {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .hr-subtle {
+      border: none;
+      border-top: 1px solid var(--border-color);
+      margin: 4px 0;
+    }
+
+    /* Clean Icon SVGs */
+    svg.icon {
+      display: inline-block;
+      vertical-align: middle;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Jump Bar directly above mobile frame -->
+  <div class="jump-bar-container">
+    <div class="jump-bar-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Direct Screen Jump (Prototype Controller)
+    </div>
+    <div class="jump-bar-buttons">
+      <button class="jump-btn active" onclick="jumpToScreen('volunteer-home')">Volunteer Home</button>
+      <button class="jump-btn" onclick="jumpToEventDetail('EVT-3')">Event Detail</button>
+      <button class="jump-btn" onclick="jumpToScreen('scanner')">Scanner</button>
+      <button class="jump-btn" onclick="jumpToScreen('bulk-scan')">Bulk Scan</button>
+      <button class="jump-btn" onclick="jumpToScreen('volunteer-settings')">Volunteer Settings</button>
+      <button class="jump-btn" onclick="jumpToScreen('staff-login')">Staff Login</button>
+      <button class="jump-btn" onclick="jumpToSPOC()">SPOC Dashboard</button>
+      <button class="jump-btn" onclick="jumpToAdmin()">Admin Dashboard</button>
+    </div>
+  </div>
+
+  <!-- Mobile Phone Frame 390x844 -->
+  <div class="phone-wrapper">
+
+    <!-- Dynamic Island & Status Bar -->
+    <div class="phone-status-bar">
+      <span>9:41</span>
+      <div class="dynamic-island">
+        <div class="dynamic-island-dot" id="dynamicDot"></div>
+      </div>
+      <div class="status-icons">
+        <!-- Signal -->
+        <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="icon"><path d="M2 20h20L12 4z" fill="currentColor"/></svg>
+        <!-- Wifi -->
+        <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+        <!-- Battery -->
+        <svg width="16" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><rect x="2" y="7" width="16" height="10" rx="2" ry="2"/><path d="M22 11v2"/></svg>
+      </div>
+    </div>
+
+    <!-- Toast Feedback -->
+    <div class="toast-msg" id="toastMsg">Synced 36 participants</div>
+
+    <!-- Screen Container -->
+    <div class="screen-container">
+
+      <!-- ===================================================================
+           1. VOLUNTEER HOME SCREEN
+           =================================================================== -->
+      <div class="screen active" id="screen-volunteer-home">
+        <div class="app-header">
+          <div class="header-left">
+            <div class="header-title-box">
+              <div class="app-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="icon"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                Checkd
+              </div>
+              <div class="app-subtitle">Hackathon QR Check-in · Volunteer</div>
+            </div>
+          </div>
+          <button class="header-action-btn" onclick="openVolunteerSettings()" title="Settings">
+            <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+
+        <!-- Offline/Online banner -->
+        <div class="online-banner">
+          <div class="online-indicator">
+            <span class="online-dot"></span>
+            <span>Online · Realtime Sync</span>
+          </div>
+          <span class="sync-hint">Tap card to scan</span>
+        </div>
+
+        <!-- Content: Events List -->
+        <div class="screen-content">
+          <div class="pull-hint" onclick="simulateRefresh()">
+            <svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Updated 10:42 AM · Tap to refresh
+          </div>
+
+          <div id="volunteerEventsList" style="display:flex; flex-direction:column; gap:12px;">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================
+           2. EVENT DETAIL SCREEN (VOLUNTEER & SPOC SCOPED)
+           =================================================================== -->
+      <div class="screen" id="screen-event-detail">
+        <div class="app-header">
+          <div class="header-left">
+            <button class="header-action-btn" onclick="handleDetailBack()">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="header-title-box">
+              <div class="app-title" id="detailEventTitle" style="font-size:17px;">Keynote</div>
+              <div class="app-subtitle" id="detailEventSubtitle">Time window & progress</div>
+            </div>
+          </div>
+          <div id="detailStatusChipContainer"></div>
+        </div>
+
+        <div class="screen-content" style="padding-bottom: 90px;">
+          <!-- Progress Card in Detail -->
+          <div class="card-block">
+            <div class="event-progress-wrap">
+              <div class="event-progress-info">
+                <span id="detailProgressRatio">18 / 36 Checked In</span>
+                <span class="event-progress-pct" id="detailProgressPct">50%</span>
+              </div>
+              <div class="progress-track" style="height:6px;">
+                <div class="progress-fill" id="detailProgressFill" style="width: 50%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search field -->
+          <div class="search-box">
+            <div class="search-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </div>
+            <input type="text" class="search-input" id="detailSearchInput" placeholder="Search participant or ID..." oninput="handleDetailSearch()">
+          </div>
+
+          <!-- Tabs: Checked In vs Pending -->
+          <div class="tab-pills">
+            <button class="tab-pill active" id="tabBtnCheckedIn" onclick="switchDetailTab('checkedIn')">Checked in (18)</button>
+            <button class="tab-pill" id="tabBtnPending" onclick="switchDetailTab('pending')">Pending (18)</button>
+          </div>
+
+          <!-- Participant List -->
+          <div id="detailParticipantList" style="display:flex; flex-direction:column; gap:8px;">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Sticky Bottom Bar -->
+        <div class="sticky-bottom-bar">
+          <button class="btn-primary" onclick="openScannerForCurrentEvent()">
+            <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="icon"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Scan QR
+          </button>
+          <button class="btn-square-action" onclick="openBulkScanForCurrentEvent()" title="Bulk Scan">
+            <svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="icon"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ===================================================================
+           3. SCANNER SCREEN (SINGLE)
+           =================================================================== -->
+      <div class="screen" id="screen-scanner">
+        <!-- Top controls inside dark camera -->
+        <div class="scanner-controls">
+          <button class="scanner-icon-btn" onclick="goBack()" title="Back">
+            <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <div style="color:#ffffff; font-size:14px; font-weight:700;" id="scannerEventBadge">Scan QR</div>
+          <div style="display:flex; gap:8px;">
+            <button class="scanner-icon-btn" id="torchBtn" onclick="toggleTorch()" title="Flashlight">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </button>
+            <button class="scanner-icon-btn" onclick="toggleCameraSwitch()" title="Flip Camera">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M20 16v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><path d="M4 8V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="20" x2="12" y2="20"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Viewfinder Camera Area -->
+        <div class="scanner-viewfinder-wrap">
+          <div class="viewfinder-camera-bg"></div>
+          <div class="viewfinder-box">
+            <div class="viewfinder-corner corner-tl"></div>
+            <div class="viewfinder-corner corner-tr"></div>
+            <div class="viewfinder-corner corner-bl"></div>
+            <div class="viewfinder-corner corner-br"></div>
+            <div class="scanner-laser"></div>
+          </div>
+          <div class="scanner-aim-hint">Align QR code inside frame</div>
+        </div>
+
+        <!-- Bottom Action Area -->
+        <div class="scanner-bottom-action">
+          <button class="btn-primary" onclick="triggerSimulatedScan()">
+            <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+            Simulate Scan (Cycle Scenarios)
+          </button>
+          <div style="text-align:center; font-size:11px; color:var(--text-secondary);">
+            Cycles: Success ➔ Already Checked ➔ Invalid QR
+          </div>
+        </div>
+
+        <!-- Slide-up Result Banner -->
+        <div class="scan-result-banner" id="scanResultBanner">
+          <div class="scan-result-header">
+            <span class="result-badge success" id="resultBadge">Success</span>
+            <button class="header-action-btn" style="width:28px; height:28px;" onclick="hideResultBanner()">
+              <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="result-name" id="resultName">Alex Rivera</div>
+          <div class="result-meta" id="resultMeta">
+            <span>Team ByteCrafters · ID: P0101</span>
+            <span style="font-weight:600; color:var(--text-primary); margin-top:3px;" id="resultTime">Checked in at 11:28 AM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================
+           4. BULK SCAN SCREEN
+           =================================================================== -->
+      <div class="screen" id="screen-bulk-scan">
+        <div class="scanner-controls">
+          <button class="scanner-icon-btn" onclick="goBack()" title="Back">
+            <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <div style="color:#ffffff; font-size:14px; font-weight:700;">Bulk Scan · Keynote</div>
+          <div style="display:flex; gap:8px;">
+            <button class="scanner-icon-btn" onclick="toggleTorch()" title="Flashlight">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Camera Area -->
+        <div class="scanner-viewfinder-wrap" style="min-height: 220px;">
+          <div class="viewfinder-camera-bg"></div>
+          <div class="viewfinder-box" style="width:190px; height:190px;">
+            <div class="viewfinder-corner corner-tl"></div>
+            <div class="viewfinder-corner corner-tr"></div>
+            <div class="viewfinder-corner corner-bl"></div>
+            <div class="viewfinder-corner corner-br"></div>
+            <div class="scanner-laser" style="animation-duration: 1.8s;"></div>
+          </div>
+          <div class="scanner-aim-hint" style="bottom: 12px;">Point camera to continuously scan</div>
+        </div>
+
+        <!-- Pending List Sheet at Bottom -->
+        <div class="bulk-sheet">
+          <div class="bulk-sheet-header">
+            <div class="bulk-sheet-title">
+              <span>Scanned Queue</span>
+              <span class="bulk-count-pill" id="bulkCountPill">0</span>
+            </div>
+            <button class="clear-link" onclick="clearBulkQueue()">Clear</button>
+          </div>
+
+          <!-- Bulk Items List -->
+          <div class="bulk-list" id="bulkItemsContainer">
+            <div style="text-align:center; padding:18px 0; color:var(--text-muted); font-size:12px;">
+              No participants in queue yet.<br>Tap "+ Simulate Scan" to add members.
+            </div>
+          </div>
+
+          <div style="display:flex; gap:8px;">
+            <button class="btn-secondary" style="flex:1;" onclick="addSimulatedBulkPerson()">
+              + Simulate Scan
+            </button>
+            <button class="btn-primary" style="flex:1.5;" id="bulkSubmitBtn" onclick="submitBulkQueue()" disabled>
+              Submit (0)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================
+           5. VOLUNTEER SETTINGS SCREEN
+           =================================================================== -->
+      <div class="screen" id="screen-volunteer-settings">
+        <div class="app-header">
+          <div class="header-left">
+            <button class="header-action-btn" onclick="goBack()">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="header-title-box">
+              <div class="app-title" style="font-size:18px;">Settings</div>
+              <div class="app-subtitle">Preferences & Staff Access</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="screen-content">
+          <!-- Preferences card -->
+          <div class="card-block">
+            <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">
+              Scanner Feedback
+            </div>
+            
+            <div class="toggle-row">
+              <div class="toggle-label-wrap">
+                <div class="toggle-title">Audio Beeps</div>
+                <div class="toggle-desc">Sound chime on successful QR scan</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleAudio" checked onchange="toggleAudioPref(this.checked)">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <hr class="hr-subtle">
+
+            <div class="toggle-row">
+              <div class="toggle-label-wrap">
+                <div class="toggle-title">Haptic Vibration</div>
+                <div class="toggle-desc">Vibrate device on scanner action</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleHaptics" checked onchange="toggleHapticsPref(this.checked)">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Sync card -->
+          <div class="card-block">
+            <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">
+              Data & Storage
+            </div>
+            <button class="btn-secondary" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="simulateRefresh()">
+              <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh Participants
+            </button>
+            <div style="font-size:11.5px; color:var(--text-muted); text-align:center;">
+              App Version: Checkd v2.4.1 (Build 412)
+            </div>
+          </div>
+
+          <!-- Staff Login Card -->
+          <div class="card-block" style="cursor:pointer; border-color:var(--text-primary);" onclick="navigateToScreen('staff-login')">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:40px; height:40px; border-radius:50%; background:var(--text-primary); color:#ffffff; display:flex; align-items:center; justify-content:center;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:15px; font-weight:700; color:var(--text-primary);">Staff Login (SPOC / Admin)</div>
+                  <div style="font-size:12px; color:var(--text-secondary);">Access coordinator & director dashboards</div>
+                </div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M9 18l6-6-6-6"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================
+           6. STAFF LOGIN SCREEN
+           =================================================================== -->
+      <div class="screen" id="screen-staff-login">
+        <div class="app-header">
+          <div class="header-left">
+            <button class="header-action-btn" onclick="goBack()">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="header-title-box">
+              <div class="app-title" style="font-size:18px;">Staff Login</div>
+              <div class="app-subtitle">Single Point of Contact / Administrator</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="screen-content">
+          <div class="login-container">
+            <!-- Error banner -->
+            <div class="error-banner" id="loginErrorBanner">
+              <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>Invalid credentials. Enter SPOC001 or admin.</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">SPOC ID / Username</label>
+              <input type="text" class="form-input" id="loginUsername" placeholder="e.g. SPOC001 or admin">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="login-password-wrap">
+                <input type="password" class="form-input" id="loginPassword" placeholder="Enter password" style="padding-right: 42px;">
+                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()" title="Show/Hide">
+                  <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon" id="eyeIcon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <button class="btn-primary" style="margin-top:6px;" onclick="handleStaffLogin()">
+              Login
+            </button>
+
+            <!-- Quick fill shortcuts for prototype review -->
+            <div style="margin-top:14px;">
+              <div style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; margin-bottom:6px;">
+                One-Click Demo Fill
+              </div>
+              <div class="quick-creds-hint">
+                <span class="quick-cred-pill" onclick="quickFillCreds('SPOC001', 'pass123')">SPOC001 (Sarah)</span>
+                <span class="quick-cred-pill" onclick="quickFillCreds('SPOC003', 'pass123')">SPOC003 (Low Prog)</span>
+                <span class="quick-cred-pill" onclick="quickFillCreds('admin', 'admin123')">admin (Administrator)</span>
+                <span class="quick-cred-pill" onclick="quickFillCreds('bad_user', 'badpass')">Simulate Error</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================
+           7. SPOC DASHBOARD SCREEN (Events, Team Progress, Profile)
+           =================================================================== -->
+      <div class="screen" id="screen-spoc-dashboard">
+        <!-- SPOC Header -->
+        <div class="app-header">
+          <div class="header-left">
+            <div class="header-title-box">
+              <div class="app-title" id="spocHeaderTitle">Sarah Jenkins</div>
+              <div class="app-subtitle" id="spocHeaderSubtitle">SPOC001 · 3 Assigned Teams</div>
+            </div>
+          </div>
+          <a href="tel:+15550101" class="call-btn" id="spocPhoneCallLink" title="Call SPOC">
+            <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </a>
+        </div>
+
+        <!-- SPOC Tabs Content Area -->
+        <div class="screen-content" id="spocContentArea" style="padding-bottom: 20px;">
+          <!-- Rendered by JS according to active SPOC tab -->
+        </div>
+
+        <!-- Bottom Navigation (Events, Team Progress, Profile) -->
+        <div class="phone-bottom-nav">
+          <button class="nav-item active" id="spocNavEvents" onclick="switchSpocTab('events')">
+            <span class="nav-icon-pill">
+              <svg viewBox="0 0 24 24" stroke="currentColor" class="icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </span>
+            <span>Events</span>
+          </button>
+          <button class="nav-item" id="spocNavTeams" onclick="switchSpocTab('teams')">
+            <span class="nav-icon-pill">
+              <svg viewBox="0 0 24 24" stroke="currentColor" class="icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </span>
+            <span>Team Progress</span>
+          </button>
+          <button class="nav-item" id="spocNavProfile" onclick="switchSpocTab('profile')">
+            <span class="nav-icon-pill">
+              <svg viewBox="0 0 24 24" stroke="currentColor" class="icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            <span>Profile</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ===================================================================
+           8. ADMIN DASHBOARD SCREEN (Overview, Events, Directory, Settings)
+           =================================================================== -->
+      <div class="screen" id="screen-admin-dashboard">
+        <div class="app-header">
+          <div class="header-left">
+            <div class="header-title-box">
+              <div class="app-title">Admin Console</div>
+              <div class="app-subtitle" id="adminHeaderSubtitle">Hackathon Super-Admin View</div>
+            </div>
+          </div>
+          <div style="font-size:11px; font-weight:700; background:#111827; color:#fff; padding:3px 8px; border-radius:4px;">
+            ADMIN
+          </div>
+        </div>
+
+        <!-- Admin Tabs Content Area -->
+        <div class="screen-content" id="adminContentArea" style="padding-bottom: 20px;">
+          <!-- Rendered by JS according to active Admin tab -->
+        </div>
+
+        <!-- Bottom Navigation (Overview, Events, Directory, Settings) -->
+        <div class="phone-bottom-nav">
+          <button class="nav-item active" id="adminNavOverview" onclick="switchAdminTab('overview')">
+            <span class="nav-icon-pill">
+              <svg viewBox="0 0 24 24" stroke="currentColor" class="icon"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            </span>
+            <span>Overview</span>
+          </button>
+          <button class="nav-item" id="adminNavEvents" onclick="switchAdminTab('events')">
+            <span class="nav-icon-pill">
+              <svg viewBox="0 0 24 24" stroke="currentColor" class="icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </span>
+            <span>Events</span>
+          </button>
+          <button class="nav-item" id="adminNavDirectory" onclick="switchAdminTab('directory')">
+            <span class="nav-icon-pill">
+              <svg viewBox="0 0 24 24" stroke="currentColor" class="icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </span>
+            <span>Directory</span>
+          </button>
+          <button class="nav-item" id="adminNavSettings" onclick="switchAdminTab('settings')">
+            <span class="nav-icon-pill">
+              <svg viewBox="0 0 24 24" stroke="currentColor" class="icon"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </span>
+            <span>Settings</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ===================================================================
+           9. ADMIN SPOC DETAIL SCREEN (Drilldown into single SPOC)
+           =================================================================== -->
+      <div class="screen" id="screen-admin-spoc-detail">
+        <div class="app-header">
+          <div class="header-left">
+            <button class="header-action-btn" onclick="navigateToScreen('admin-dashboard')">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="header-title-box">
+              <div class="app-title" id="adminSpocDetailName">Priya Rao</div>
+              <div class="app-subtitle" id="adminSpocDetailSubtitle">SPOC003 · Team Breakdown</div>
+            </div>
+          </div>
+          <a href="tel:+15550303" class="call-btn" id="adminSpocDetailCallLink" title="Call SPOC">
+            <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </a>
+        </div>
+
+        <div class="screen-content" id="adminSpocDetailContent" style="padding-bottom: 30px;">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+    </div> <!-- End Screen Container -->
+
+    <!-- ===================================================================
+         MODALS & DIALOGS
+         =================================================================== -->
+    <!-- Add Event Modal (Admin): Name, Start Date & Time, End Date & Time -->
+    <div class="modal-overlay" id="modalAddEvent">
+      <div class="modal-card">
+        <div class="modal-title">Create New Event</div>
+        <div class="form-group">
+          <label class="form-label">Event Name</label>
+          <input type="text" class="form-input" id="newEventName" placeholder="e.g. Midnight Snack">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Start Date & Time</label>
+          <input type="text" class="form-input" id="newEventStart" placeholder="e.g. 11:30 PM">
+        </div>
+        <div class="form-group">
+          <label class="form-label">End Date & Time</label>
+          <input type="text" class="form-input" id="newEventEnd" placeholder="e.g. 12:30 AM">
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" onclick="closeModal('modalAddEvent')">Cancel</button>
+          <button class="btn-primary" onclick="saveNewEvent()">Create Event</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Time Window Modal (Admin) -->
+    <div class="modal-overlay" id="modalEditWindow">
+      <div class="modal-card">
+        <div class="modal-title">Edit Time Window</div>
+        <div style="font-size:12px; color:var(--text-secondary);" id="editEventTargetName">Keynote</div>
+        <div class="form-group">
+          <label class="form-label">Start Date & Time</label>
+          <input type="text" class="form-input" id="editWindowStart" placeholder="e.g. 11:00 AM">
+        </div>
+        <div class="form-group">
+          <label class="form-label">End Date & Time</label>
+          <input type="text" class="form-input" id="editWindowEnd" placeholder="e.g. 12:30 PM">
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" onclick="closeModal('modalEditWindow')">Cancel</button>
+          <button class="btn-primary" onclick="saveEditedTimeWindow()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Summary Modal Dialog -->
+    <div class="modal-overlay" id="modalBulkSummary">
+      <div class="modal-card">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:36px; height:36px; border-radius:50%; background:var(--chip-live-bg); color:var(--chip-live-text); display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="icon"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <div class="modal-title">Bulk Check-in Summary</div>
+        </div>
+        <div style="font-size:13.5px; color:var(--text-primary); line-height:1.5;" id="bulkSummaryBodyText">
+          Marked 4, Duplicates 1 (Maya Chen)
+        </div>
+        <div class="modal-actions">
+          <button class="btn-primary" style="width:100%;" onclick="closeBulkSummaryModal()">Done</button>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- End Phone Wrapper -->
+
+  <!-- =========================================================================
+       JAVASCRIPT: DATA STORE, SCREEN ROUTER, STATE & LOGIC
+       ========================================================================= -->
+  <script>
+    // ==========================================
+    // 1. DATA MODEL & FAKE SEED
+    // ==========================================
+    const APP_DATA = {
+      settings: {
+        audioBeeps: true,
+        haptics: true
+      },
+      currentRole: 'volunteer', // 'volunteer' | 'spoc' | 'admin'
+      currentSpocId: 'SPOC001',
+      activeEventId: 'EVT-3', // Keynote (Live)
+      activeDetailTab: 'checkedIn', // 'checkedIn' | 'pending'
+      spocTab: 'events', // 'events' | 'teams' | 'profile'
+      adminTab: 'overview', // 'overview' | 'events' | 'directory' | 'settings'
+      
+      // 6 Events with realistic statuses, time windows, and completion stats
+      events: [
+        { id: "EVT-1", name: "Check-in", status: "Ended", start: "08:00 AM", end: "09:30 AM", timeWindow: "08:00 - 09:30 AM" },
+        { id: "EVT-2", name: "Breakfast", status: "Ended", start: "09:30 AM", end: "10:30 AM", timeWindow: "09:30 - 10:30 AM" },
+        { id: "EVT-3", name: "Keynote", status: "Live", start: "11:00 AM", end: "12:30 PM", timeWindow: "11:00 AM - 12:30 PM" },
+        { id: "EVT-4", name: "Lunch", status: "Upcoming", start: "01:00 PM", end: "02:30 PM", timeWindow: "01:00 - 02:30 PM" },
+        { id: "EVT-5", name: "Hacking Round 1", status: "Upcoming", start: "03:00 PM", end: "06:00 PM", timeWindow: "03:00 - 06:00 PM" },
+        { id: "EVT-6", name: "Dinner", status: "Upcoming", start: "08:00 PM", end: "09:30 PM", timeWindow: "08:00 - 09:30 PM" }
+      ],
+
+      // 4 SPOCs (SPOC001 to SPOC004), SPOC003 has low progress, SPOC004 has zero teams
+      spocs: [
+        {
+          id: "SPOC001",
+          name: "Sarah Jenkins",
+          phone: "+1 555-0101",
+          email: "sarah.j@hackathon.org",
+          teamIds: ["T-101", "T-102", "T-103"]
+        },
+        {
+          id: "SPOC002",
+          name: "Michael Chang",
+          phone: "+1 555-0202",
+          email: "m.chang@hackathon.org",
+          teamIds: ["T-201", "T-202", "T-203"]
+        },
+        {
+          id: "SPOC003",
+          name: "Priya Rao",
+          phone: "+1 555-0303",
+          email: "priya.rao@hackathon.org",
+          teamIds: ["T-301", "T-302"] // Low progress
+        },
+        {
+          id: "SPOC004",
+          name: "Elena Rostova",
+          phone: "+1 555-0404",
+          email: "elena.r@hackathon.org",
+          teamIds: [] // Zero teams
+        }
+      ],
+
+      // Teams: 2 to 3 per SPOC with 4 to 5 members each
+      teams: [
+        { id: "T-101", name: "ByteCrafters", spocId: "SPOC001", leaderId: "P0101" },
+        { id: "T-102", name: "CodePulse", spocId: "SPOC001", leaderId: "P0106" },
+        { id: "T-103", name: "NeuralNet", spocId: "SPOC001", leaderId: "P0111" },
+        { id: "T-201", name: "QuantumBit", spocId: "SPOC002", leaderId: "P0201" },
+        { id: "T-202", name: "DevDynasty", spocId: "SPOC002", leaderId: "P0206" },
+        { id: "T-203", name: "AlgoRiders", spocId: "SPOC002", leaderId: "P0210" },
+        { id: "T-301", name: "CyberKnights", spocId: "SPOC003", leaderId: "P0301" },
+        { id: "T-302", name: "GlitchHacks", spocId: "SPOC003", leaderId: "P0306" }
+      ],
+
+      // 36 Participants with full consistent per-event attendance
+      participants: [
+        // SPOC001 - Team T-101 (ByteCrafters - 5 members)
+        { id: "P0101", name: "Alex Rivera", teamId: "T-101", spocId: "SPOC001", phone: "+1 555-0111", isLeader: true,
+          attendance: { "EVT-1": { checked: true, time: "08:12 AM" }, "EVT-2": { checked: true, time: "09:40 AM" }, "EVT-3": { checked: true, time: "11:05 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0102", name: "Maya Chen", teamId: "T-101", spocId: "SPOC001", phone: "+1 555-0112", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:15 AM" }, "EVT-2": { checked: true, time: "09:42 AM" }, "EVT-3": { checked: true, time: "11:15 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0103", name: "David Kim", teamId: "T-101", spocId: "SPOC001", phone: "+1 555-0113", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:18 AM" }, "EVT-2": { checked: true, time: "09:45 AM" }, "EVT-3": { checked: true, time: "11:20 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0104", name: "Samira Khan", teamId: "T-101", spocId: "SPOC001", phone: "+1 555-0114", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:22 AM" }, "EVT-2": { checked: true, time: "09:48 AM" }, "EVT-3": { checked: true, time: "11:22 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0105", name: "Lucas Scott", teamId: "T-101", spocId: "SPOC001", phone: "+1 555-0115", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:25 AM" }, "EVT-2": { checked: true, time: "09:50 AM" }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+
+        // SPOC001 - Team T-102 (CodePulse - 5 members)
+        { id: "P0106", name: "Priya Sharma", teamId: "T-102", spocId: "SPOC001", phone: "+1 555-0116", isLeader: true,
+          attendance: { "EVT-1": { checked: true, time: "08:30 AM" }, "EVT-2": { checked: true, time: "09:35 AM" }, "EVT-3": { checked: true, time: "11:08 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0107", name: "Jordan Lee", teamId: "T-102", spocId: "SPOC001", phone: "+1 555-0117", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:32 AM" }, "EVT-2": { checked: true, time: "09:38 AM" }, "EVT-3": { checked: true, time: "11:12 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0108", name: "Carlos Gomez", teamId: "T-102", spocId: "SPOC001", phone: "+1 555-0118", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:35 AM" }, "EVT-2": { checked: true, time: "09:40 AM" }, "EVT-3": { checked: true, time: "11:19 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0109", name: "Zoe Taylor", teamId: "T-102", spocId: "SPOC001", phone: "+1 555-0119", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:38 AM" }, "EVT-2": { checked: true, time: "09:44 AM" }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0110", name: "Ethan Wright", teamId: "T-102", spocId: "SPOC001", phone: "+1 555-0120", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:40 AM" }, "EVT-2": { checked: true, time: "09:46 AM" }, "EVT-3": { checked: true, time: "11:25 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+
+        // SPOC001 - Team T-103 (NeuralNet - 4 members)
+        { id: "P0111", name: "Liam O'Connor", teamId: "T-103", spocId: "SPOC001", phone: "+1 555-0121", isLeader: true,
+          attendance: { "EVT-1": { checked: true, time: "08:42 AM" }, "EVT-2": { checked: true, time: "09:50 AM" }, "EVT-3": { checked: true, time: "11:10 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0112", name: "Anya Patel", teamId: "T-103", spocId: "SPOC001", phone: "+1 555-0122", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:45 AM" }, "EVT-2": { checked: true, time: "09:52 AM" }, "EVT-3": { checked: true, time: "11:14 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0113", name: "Marcus Johnson", teamId: "T-103", spocId: "SPOC001", phone: "+1 555-0123", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:48 AM" }, "EVT-2": { checked: true, time: "09:55 AM" }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0114", name: "Chloe Bennett", teamId: "T-103", spocId: "SPOC001", phone: "+1 555-0124", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:50 AM" }, "EVT-2": { checked: false }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+
+        // SPOC002 - Team T-201 (QuantumBit - 5 members)
+        { id: "P0201", name: "Daniel Vance", teamId: "T-201", spocId: "SPOC002", phone: "+1 555-0211", isLeader: true,
+          attendance: { "EVT-1": { checked: true, time: "08:15 AM" }, "EVT-2": { checked: true, time: "09:30 AM" }, "EVT-3": { checked: true, time: "11:02 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0202", name: "Rachel Green", teamId: "T-201", spocId: "SPOC002", phone: "+1 555-0212", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:20 AM" }, "EVT-2": { checked: true, time: "09:34 AM" }, "EVT-3": { checked: true, time: "11:06 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0203", name: "Kevin Zhang", teamId: "T-201", spocId: "SPOC002", phone: "+1 555-0213", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:24 AM" }, "EVT-2": { checked: true, time: "09:38 AM" }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0204", name: "Fatima Al-Mansoor", teamId: "T-201", spocId: "SPOC002", phone: "+1 555-0214", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:28 AM" }, "EVT-2": { checked: true, time: "09:41 AM" }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0205", name: "Leo Martinez", teamId: "T-201", spocId: "SPOC002", phone: "+1 555-0215", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:31 AM" }, "EVT-2": { checked: true, time: "09:44 AM" }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+
+        // SPOC002 - Team T-202 (DevDynasty - 4 members)
+        { id: "P0206", name: "Hannah Abbott", teamId: "T-202", spocId: "SPOC002", phone: "+1 555-0216", isLeader: true,
+          attendance: { "EVT-1": { checked: true, time: "08:35 AM" }, "EVT-2": { checked: true, time: "09:47 AM" }, "EVT-3": { checked: true, time: "11:15 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0207", name: "Chris Nolan", teamId: "T-202", spocId: "SPOC002", phone: "+1 555-0217", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:38 AM" }, "EVT-2": { checked: true, time: "09:50 AM" }, "EVT-3": { checked: true, time: "11:18 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0208", name: "Tara West", teamId: "T-202", spocId: "SPOC002", phone: "+1 555-0218", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:40 AM" }, "EVT-2": { checked: false }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0209", name: "Aaron Brooks", teamId: "T-202", spocId: "SPOC002", phone: "+1 555-0219", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:44 AM" }, "EVT-2": { checked: true, time: "09:54 AM" }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+
+        // SPOC002 - Team T-203 (AlgoRiders - 4 members)
+        { id: "P0210", name: "Oscar Isaac", teamId: "T-203", spocId: "SPOC002", phone: "+1 555-0220", isLeader: true,
+          attendance: { "EVT-1": { checked: true, time: "08:48 AM" }, "EVT-2": { checked: true, time: "09:56 AM" }, "EVT-3": { checked: true, time: "11:21 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0211", name: "Nina Dobrev", teamId: "T-203", spocId: "SPOC002", phone: "+1 555-0221", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:51 AM" }, "EVT-2": { checked: true, time: "09:59 AM" }, "EVT-3": { checked: true, time: "11:23 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0212", name: "Tyler Posey", teamId: "T-203", spocId: "SPOC002", phone: "+1 555-0222", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:53 AM" }, "EVT-2": { checked: true, time: "10:02 AM" }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0213", name: "Grace Hopper", teamId: "T-203", spocId: "SPOC002", phone: "+1 555-0223", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:55 AM" }, "EVT-2": { checked: true, time: "10:05 AM" }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+
+        // SPOC003 - Team T-301 (CyberKnights - 5 members) -> LOW PROGRESS
+        { id: "P0301", name: "Dev Patel", teamId: "T-301", spocId: "SPOC003", phone: "+1 555-0311", isLeader: true,
+          attendance: { "EVT-1": { checked: true, time: "08:20 AM" }, "EVT-2": { checked: true, time: "09:40 AM" }, "EVT-3": { checked: true, time: "11:04 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0302", name: "Aisha Noor", teamId: "T-301", spocId: "SPOC003", phone: "+1 555-0312", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:24 AM" }, "EVT-2": { checked: true, time: "09:45 AM" }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0303", name: "Ben Miller", teamId: "T-301", spocId: "SPOC003", phone: "+1 555-0313", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:28 AM" }, "EVT-2": { checked: false }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0304", name: "Clara Oswald", teamId: "T-301", spocId: "SPOC003", phone: "+1 555-0314", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:32 AM" }, "EVT-2": { checked: false }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0305", name: "Felix Kjellberg", teamId: "T-301", spocId: "SPOC003", phone: "+1 555-0315", isLeader: false,
+          attendance: { "EVT-1": { checked: false }, "EVT-2": { checked: false }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+
+        // SPOC003 - Team T-302 (GlitchHacks - 4 members) -> LOW PROGRESS
+        { id: "P0306", name: "Oliver Queen", teamId: "T-302", spocId: "SPOC003", phone: "+1 555-0316", isLeader: true,
+          attendance: { "EVT-1": { checked: true, time: "08:35 AM" }, "EVT-2": { checked: true, time: "09:50 AM" }, "EVT-3": { checked: true, time: "11:10 AM" }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0307", name: "Barry Allen", teamId: "T-302", spocId: "SPOC003", phone: "+1 555-0317", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:40 AM" }, "EVT-2": { checked: true, time: "09:55 AM" }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0308", name: "Iris West", teamId: "T-302", spocId: "SPOC003", phone: "+1 555-0318", isLeader: false,
+          attendance: { "EVT-1": { checked: true, time: "08:45 AM" }, "EVT-2": { checked: false }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } },
+        { id: "P0309", name: "Cisco Ramon", teamId: "T-302", spocId: "SPOC003", phone: "+1 555-0319", isLeader: false,
+          attendance: { "EVT-1": { checked: false }, "EVT-2": { checked: false }, "EVT-3": { checked: false }, "EVT-4": { checked: false }, "EVT-5": { checked: false }, "EVT-6": { checked: false } } }
+      ],
+
+      // Bulk Scan active queue
+      bulkQueue: []
+    };
+
+    // Navigation Stack
+    const NAV_STACK = ['volunteer-home'];
+    let scanCycleIndex = 0; // 0: Success, 1: Already Checked, 2: Invalid QR
+    let isDetailScopedSpoc = false;
+    let spocTeamFilterEventId = "ALL";
+    let spocShowPendingOnly = false;
+    let spocTeamSortOrder = "highest"; // 'highest' | 'lowest' | 'name'
+    let adminLeaderboardSortOrder = "lowest"; // default lowest first as requested
+
+    // ==========================================
+    // 2. AUDIO & HAPTIC FEEDBACK (Web Audio API)
+    // ==========================================
+    function playAudio(type = 'success') {
+      if (!APP_DATA.settings.audioBeeps) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'success') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(1400, ctx.currentTime + 0.12);
+          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.16);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.16);
+        } else if (type === 'warning') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, ctx.currentTime);
+          osc.frequency.setValueAtTime(330, ctx.currentTime + 0.1);
+          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.25);
+        } else {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, ctx.currentTime);
+          osc.frequency.setValueAtTime(180, ctx.currentTime + 0.1);
+          gain.gain.setValueAtTime(0.25, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.28);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.28);
+        }
+      } catch (e) {
+        // Fallback for browsers with restricted AudioContext
+      }
+    }
+
+    function triggerHaptic(duration = 40) {
+      if (!APP_DATA.settings.haptics) return;
+      if (navigator.vibrate) {
+        navigator.vibrate(duration);
+      }
+      // Visual pulse on dynamic island
+      const dot = document.getElementById('dynamicDot');
+      if (dot) {
+        dot.classList.add('active');
+        setTimeout(() => dot.classList.remove('active'), 400);
+      }
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById('toastMsg');
+      if (toast) {
+        toast.textContent = text;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2200);
+      }
+    }
+
+    // ==========================================
+    // 3. NAVIGATION & ROUTER
+    // ==========================================
+    function navigateToScreen(screenId, pushHistory = true) {
+      if (pushHistory && NAV_STACK[NAV_STACK.length - 1] !== screenId) {
+        NAV_STACK.push(screenId);
+      }
+
+      document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
+      const target = document.getElementById('screen-' + screenId);
+      if (target) {
+        target.classList.add('active');
+        target.scrollTop = 0;
+      }
+
+      // Update jump bar active state
+      updateJumpBar(screenId);
+
+      // Trigger screen-specific render
+      renderScreen(screenId);
+    }
+
+    function goBack() {
+      if (NAV_STACK.length > 1) {
+        NAV_STACK.pop();
+        const prev = NAV_STACK[NAV_STACK.length - 1];
+        navigateToScreen(prev, false);
+      } else {
+        navigateToScreen('volunteer-home', false);
+      }
+    }
+
+    function jumpToScreen(screenId) {
+      isDetailScopedSpoc = false;
+      navigateToScreen(screenId, true);
+    }
+
+    function jumpToEventDetail(evtId = 'EVT-3') {
+      APP_DATA.activeEventId = evtId;
+      isDetailScopedSpoc = false;
+      navigateToScreen('event-detail', true);
+    }
+
+    function jumpToSPOC(spocId = 'SPOC001') {
+      APP_DATA.currentRole = 'spoc';
+      APP_DATA.currentSpocId = spocId;
+      navigateToScreen('spoc-dashboard', true);
+    }
+
+    function jumpToAdmin() {
+      APP_DATA.currentRole = 'admin';
+      navigateToScreen('admin-dashboard', true);
+    }
+
+    function updateJumpBar(activeId) {
+      document.querySelectorAll('.jump-btn').forEach(btn => btn.classList.remove('active'));
+      const map = {
+        'volunteer-home': 'Volunteer Home',
+        'event-detail': 'Event Detail',
+        'scanner': 'Scanner',
+        'bulk-scan': 'Bulk Scan',
+        'volunteer-settings': 'Volunteer Settings',
+        'staff-login': 'Staff Login',
+        'spoc-dashboard': 'SPOC Dashboard',
+        'admin-dashboard': 'Admin Dashboard'
+      };
+      const text = map[activeId];
+      if (text) {
+        document.querySelectorAll('.jump-btn').forEach(btn => {
+          if (btn.textContent.trim() === text) btn.classList.add('active');
+        });
+      }
+    }
+
+    // ==========================================
+    // 4. COMPUTED METRICS HELPERS
+    // ==========================================
+    function getEventProgress(eventId, spocId = null) {
+      let pool = APP_DATA.participants;
+      if (spocId) {
+        pool = pool.filter(p => p.spocId === spocId);
+      }
+      const total = pool.length;
+      if (total === 0) return { checked: 0, total: 0, pct: 0 };
+      const checked = pool.filter(p => p.attendance[eventId]?.checked).length;
+      const pct = Math.round((checked / total) * 100);
+      return { checked, total, pct };
+    }
+
+    function getSpocOverallProgress(spocId) {
+      const pool = APP_DATA.participants.filter(p => p.spocId === spocId);
+      if (pool.length === 0) return { checked: 0, total: 0, pct: 0, activePct: 0, memberCount: 0 };
+      
+      // Calculate based on Keynote (active live event) as main indicator
+      const activeEvt = APP_DATA.events.find(e => e.status === 'Live') || APP_DATA.events[0];
+      const activeChecked = pool.filter(p => p.attendance[activeEvt.id]?.checked).length;
+      const activePct = Math.round((activeChecked / pool.length) * 100);
+
+      // Or across all 6 events
+      let totalSlots = pool.length * APP_DATA.events.length;
+      let totalChecked = 0;
+      pool.forEach(p => {
+        APP_DATA.events.forEach(e => {
+          if (p.attendance[e.id]?.checked) totalChecked++;
+        });
+      });
+      const pct = Math.round((totalChecked / totalSlots) * 100);
+      return { checked: totalChecked, total: totalSlots, pct, activePct, activeChecked, memberCount: pool.length };
+    }
+
+    function getTeamProgress(teamId, eventId = "ALL") {
+      const pool = APP_DATA.participants.filter(p => p.teamId === teamId);
+      if (pool.length === 0) return { checked: 0, total: 0, pct: 0 };
+      
+      if (eventId === "ALL") {
+        const activeEvt = APP_DATA.events.find(e => e.status === 'Live') || APP_DATA.events[0];
+        const checked = pool.filter(p => p.attendance[activeEvt.id]?.checked).length;
+        const pct = Math.round((checked / pool.length) * 100);
+        return { checked, total: pool.length, pct, eventName: activeEvt.name };
+      } else {
+        const checked = pool.filter(p => p.attendance[eventId]?.checked).length;
+        const pct = Math.round((checked / pool.length) * 100);
+        return { checked, total: pool.length, pct };
+      }
+    }
+
+    // ==========================================
+    // 5. SCREEN RENDERERS
+    // ==========================================
+    function renderScreen(screenId) {
+      switch (screenId) {
+        case 'volunteer-home':
+          renderVolunteerHome();
+          break;
+        case 'event-detail':
+          renderEventDetail();
+          break;
+        case 'scanner':
+          renderScanner();
+          break;
+        case 'bulk-scan':
+          renderBulkScan();
+          break;
+        case 'volunteer-settings':
+          document.getElementById('toggleAudio').checked = APP_DATA.settings.audioBeeps;
+          document.getElementById('toggleHaptics').checked = APP_DATA.settings.haptics;
+          break;
+        case 'staff-login':
+          document.getElementById('loginUsername').value = '';
+          document.getElementById('loginPassword').value = '';
+          document.getElementById('loginErrorBanner').classList.remove('show');
+          break;
+        case 'spoc-dashboard':
+          renderSpocDashboard();
+          break;
+        case 'admin-dashboard':
+          renderAdminDashboard();
+          break;
+        case 'admin-spoc-detail':
+          renderAdminSpocDetail();
+          break;
+      }
+    }
+
+    // --- Render Volunteer Home ---
+    function renderVolunteerHome() {
+      const container = document.getElementById('volunteerEventsList');
+      if (!container) return;
+
+      container.innerHTML = APP_DATA.events.map(evt => {
+        const stats = getEventProgress(evt.id);
+        const chipClass = evt.status.toLowerCase();
+        return `
+          <div class="event-card" onclick="openEventDetail('${evt.id}', false)">
+            <div class="event-card-header">
+              <div>
+                <div class="event-title">${evt.name}</div>
+                <div class="event-time">
+                  <svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  ${evt.timeWindow}
+                </div>
+              </div>
+              <span class="status-chip ${chipClass}">${evt.status}</span>
+            </div>
+
+            <div class="event-progress-wrap">
+              <div class="event-progress-info">
+                <span>${stats.checked} / ${stats.total} Checked in</span>
+                <span class="event-progress-pct">${stats.pct}%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: ${stats.pct}%;"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- Render Event Detail ---
+    function openEventDetail(evtId, scopedSpoc = false) {
+      APP_DATA.activeEventId = evtId;
+      isDetailScopedSpoc = scopedSpoc;
+      navigateToScreen('event-detail', true);
+    }
+
+    function handleDetailBack() {
+      if (isDetailScopedSpoc) {
+        navigateToScreen('spoc-dashboard');
+      } else {
+        goBack();
+      }
+    }
+
+    function renderEventDetail() {
+      const evt = APP_DATA.events.find(e => e.id === APP_DATA.activeEventId) || APP_DATA.events[2];
+      const titleEl = document.getElementById('detailEventTitle');
+      const subtitleEl = document.getElementById('detailEventSubtitle');
+      const chipContainer = document.getElementById('detailStatusChipContainer');
+      const ratioEl = document.getElementById('detailProgressRatio');
+      const pctEl = document.getElementById('detailProgressPct');
+      const fillEl = document.getElementById('detailProgressFill');
+
+      titleEl.textContent = evt.name;
+      const spocObj = isDetailScopedSpoc ? APP_DATA.spocs.find(s => s.id === APP_DATA.currentSpocId) : null;
+      subtitleEl.textContent = spocObj 
+        ? `${spocObj.name}'s Teams · ${evt.timeWindow}` 
+        : `All Participants · ${evt.timeWindow}`;
+
+      chipContainer.innerHTML = `<span class="status-chip ${evt.status.toLowerCase()}">${evt.status}</span>`;
+
+      // Get progress
+      const stats = getEventProgress(evt.id, isDetailScopedSpoc ? APP_DATA.currentSpocId : null);
+      ratioEl.textContent = `${stats.checked} / ${stats.total} Checked in`;
+      pctEl.textContent = `${stats.pct}%`;
+      fillEl.style.width = `${stats.pct}%`;
+
+      // Populate list based on active tab and search query
+      renderDetailParticipantList();
+    }
+
+    function switchDetailTab(tabName) {
+      APP_DATA.activeDetailTab = tabName;
+      document.getElementById('tabBtnCheckedIn').classList.toggle('active', tabName === 'checkedIn');
+      document.getElementById('tabBtnPending').classList.toggle('active', tabName === 'pending');
+      renderDetailParticipantList();
+    }
+
+    function handleDetailSearch() {
+      renderDetailParticipantList();
+    }
+
+    function renderDetailParticipantList() {
+      const listContainer = document.getElementById('detailParticipantList');
+      const searchVal = (document.getElementById('detailSearchInput').value || '').toLowerCase().trim();
+      const evtId = APP_DATA.activeEventId;
+
+      let pool = APP_DATA.participants;
+      if (isDetailScopedSpoc) {
+        pool = pool.filter(p => p.spocId === APP_DATA.currentSpocId);
+      }
+
+      // Filter by search
+      if (searchVal) {
+        pool = pool.filter(p => {
+          const team = APP_DATA.teams.find(t => t.id === p.teamId)?.name || '';
+          return p.name.toLowerCase().includes(searchVal) ||
+                 p.id.toLowerCase().includes(searchVal) ||
+                 team.toLowerCase().includes(searchVal);
+        });
+      }
+
+      const checkedInList = pool.filter(p => p.attendance[evtId]?.checked);
+      const pendingList = pool.filter(p => !p.attendance[evtId]?.checked);
+
+      // Update Tab Labels with live counts
+      document.getElementById('tabBtnCheckedIn').textContent = `Checked in (${checkedInList.length})`;
+      document.getElementById('tabBtnPending').textContent = `Pending (${pendingList.length})`;
+
+      const displayList = (APP_DATA.activeDetailTab === 'checkedIn') ? checkedInList : pendingList;
+
+      if (displayList.length === 0) {
+        listContainer.innerHTML = `
+          <div style="text-align:center; padding:32px 16px; color:var(--text-muted); font-size:13px;">
+            No ${APP_DATA.activeDetailTab === 'checkedIn' ? 'checked-in' : 'pending'} participants found.
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = displayList.map(p => {
+        const team = APP_DATA.teams.find(t => t.id === p.teamId);
+        const teamName = team ? team.name : 'Unknown Team';
+        const isChecked = p.attendance[evtId]?.checked;
+        const timeStr = p.attendance[evtId]?.time || "Checked in";
+
+        // Volunteer rule: "Volunteers see no phone numbers or call buttons."
+        // SPOC rule: "Tapping a card opens Event Detail scoped to them, with call buttons in the Pending tab."
+        const showCallButton = isDetailScopedSpoc && !isChecked;
+
+        return `
+          <div class="list-row">
+            <div class="list-row-header">
+              <div class="list-row-main">
+                <div class="list-row-name-wrap">
+                  <span class="list-row-name">${p.name}</span>
+                  <span class="id-badge">${p.id}</span>
+                  ${p.isLeader ? '<span class="leader-badge">Leader</span>' : ''}
+                </div>
+                <div class="list-row-sub">
+                  <span>${teamName}</span>
+                </div>
+              </div>
+
+              <div class="list-row-meta">
+                ${isChecked 
+                  ? `<span class="checkin-time-tag">${timeStr}</span>` 
+                  : `<span class="pending-tag">Pending</span>`
+                }
+                ${showCallButton ? `
+                  <a href="tel:${p.phone}" class="call-btn" title="Call ${p.name}">
+                    <svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  </a>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- Render Scanner Screen ---
+    function openScannerForCurrentEvent() {
+      navigateToScreen('scanner', true);
+    }
+
+    function renderScanner() {
+      const evt = APP_DATA.events.find(e => e.id === APP_DATA.activeEventId) || APP_DATA.events[2];
+      document.getElementById('scannerEventBadge').textContent = `Scan QR · ${evt.name}`;
+      hideResultBanner();
+    }
+
+    function toggleTorch() {
+      const btn = document.getElementById('torchBtn');
+      btn.classList.toggle('active');
+      triggerHaptic(25);
+      showToast(btn.classList.contains('active') ? "Torch ON" : "Torch OFF");
+    }
+
+    function toggleCameraSwitch() {
+      triggerHaptic(30);
+      showToast("Camera Switched");
+    }
+
+    function triggerSimulatedScan() {
+      const banner = document.getElementById('scanResultBanner');
+      const badge = document.getElementById('resultBadge');
+      const nameEl = document.getElementById('resultName');
+      const metaEl = document.getElementById('resultMeta');
+      const evtId = APP_DATA.activeEventId;
+
+      // Cycle variants: 0 = Success, 1 = Already Checked In, 2 = Invalid / Not in teams
+      const variant = scanCycleIndex % 3;
+      scanCycleIndex++;
+
+      triggerHaptic(50);
+
+      if (variant === 0) {
+        // SUCCESS: Mark an actual pending participant as checked in!
+        const pendingOne = APP_DATA.participants.find(p => !p.attendance[evtId]?.checked) || APP_DATA.participants[0];
+        pendingOne.attendance[evtId] = { checked: true, time: "11:28 AM" };
+        const team = APP_DATA.teams.find(t => t.id === pendingOne.teamId);
+
+        badge.className = "result-badge success";
+        badge.innerHTML = "✓ Success";
+        nameEl.textContent = pendingOne.name;
+        metaEl.innerHTML = `
+          <span>Team ${team ? team.name : 'Hackers'} · ID: ${pendingOne.id}</span>
+          <span style="font-weight:700; color:var(--text-primary); margin-top:3px;">Checked in at 11:28 AM</span>
+        `;
+        playAudio('success');
+
+      } else if (variant === 1) {
+        // ALREADY CHECKED IN
+        const checkedOne = APP_DATA.participants.find(p => p.attendance[evtId]?.checked) || APP_DATA.participants[0];
+        const team = APP_DATA.teams.find(t => t.id === checkedOne.teamId);
+
+        badge.className = "result-badge warning";
+        badge.innerHTML = "⚠️ Already Checked In";
+        nameEl.textContent = checkedOne.name;
+        metaEl.innerHTML = `
+          <span>Team ${team ? team.name : 'Hackers'} · ID: ${checkedOne.id}</span>
+          <span style="font-weight:700; color:var(--text-primary); margin-top:3px;">Previously marked at ${checkedOne.attendance[evtId]?.time || '08:15 AM'}</span>
+        `;
+        playAudio('warning');
+
+      } else {
+        // NOT IN YOUR TEAMS OR INVALID QR
+        badge.className = "result-badge error";
+        badge.innerHTML = "✕ Invalid QR Code";
+        nameEl.textContent = "Unrecognized Participant";
+        metaEl.innerHTML = `
+          <span>Badge QR #INVALID-9920</span>
+          <span style="font-weight:700; color:var(--text-primary); margin-top:3px;">Not in your teams or Invalid QR</span>
+        `;
+        playAudio('error');
+      }
+
+      banner.classList.add('show');
+    }
+
+    function hideResultBanner() {
+      const banner = document.getElementById('scanResultBanner');
+      if (banner) banner.classList.remove('show');
+    }
+
+    // --- Render Bulk Scan Screen ---
+    function openBulkScanForCurrentEvent() {
+      navigateToScreen('bulk-scan', true);
+    }
+
+    function renderBulkScan() {
+      updateBulkQueueUI();
+    }
+
+    function addSimulatedBulkPerson() {
+      const evtId = APP_DATA.activeEventId;
+      // Find a participant not yet in queue
+      const inQueueIds = APP_DATA.bulkQueue.map(item => item.id);
+      const candidate = APP_DATA.participants.find(p => !inQueueIds.includes(p.id));
+
+      if (!candidate) {
+        showToast("All participants already queued!");
+        return;
+      }
+
+      APP_DATA.bulkQueue.push(candidate);
+      playAudio('success');
+      triggerHaptic(35);
+      updateBulkQueueUI();
+    }
+
+    function removeBulkItem(pId) {
+      APP_DATA.bulkQueue = APP_DATA.bulkQueue.filter(p => p.id !== pId);
+      updateBulkQueueUI();
+    }
+
+    function clearBulkQueue() {
+      APP_DATA.bulkQueue = [];
+      updateBulkQueueUI();
+      showToast("Queue cleared");
+    }
+
+    function updateBulkQueueUI() {
+      const container = document.getElementById('bulkItemsContainer');
+      const countPill = document.getElementById('bulkCountPill');
+      const submitBtn = document.getElementById('bulkSubmitBtn');
+      const count = APP_DATA.bulkQueue.length;
+
+      countPill.textContent = count;
+      submitBtn.textContent = `Submit (${count})`;
+      submitBtn.disabled = (count === 0);
+
+      if (count === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:18px 0; color:var(--text-muted); font-size:12px;">
+            No participants in queue yet.<br>Tap "+ Simulate Scan" to add members.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = APP_DATA.bulkQueue.map(p => {
+        const team = APP_DATA.teams.find(t => t.id === p.teamId);
+        return `
+          <div class="bulk-item-row">
+            <div class="bulk-item-left">
+              <span style="font-weight:700; color:var(--text-primary);">${p.name}</span>
+              <span class="id-badge">${p.id}</span>
+              <span style="color:var(--text-secondary); font-size:11px;">(${team ? team.name : ''})</span>
+            </div>
+            <button class="bulk-remove-btn" onclick="removeBulkItem('${p.id}')" title="Remove">
+              <svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function submitBulkQueue() {
+      if (APP_DATA.bulkQueue.length === 0) return;
+
+      const evtId = APP_DATA.activeEventId;
+      let markedCount = 0;
+      let duplicateNames = [];
+
+      APP_DATA.bulkQueue.forEach(p => {
+        if (p.attendance[evtId]?.checked) {
+          duplicateNames.push(p.name);
+        } else {
+          p.attendance[evtId] = { checked: true, time: "11:35 AM" };
+          markedCount++;
+        }
+      });
+
+      playAudio('success');
+      triggerHaptic(60);
+
+      // Summary dialog format as specified: "Marked 4, Duplicates 1 (names)"
+      let msg = `Marked <strong>${markedCount}</strong>`;
+      if (duplicateNames.length > 0) {
+        msg += `, Duplicates <strong>${duplicateNames.length}</strong> (${duplicateNames.join(', ')})`;
+      } else {
+        msg += `, Duplicates <strong>0</strong>`;
+      }
+
+      document.getElementById('bulkSummaryBodyText').innerHTML = msg;
+      document.getElementById('modalBulkSummary').classList.add('active');
+
+      // Clear queue
+      APP_DATA.bulkQueue = [];
+      updateBulkQueueUI();
+    }
+
+    function closeBulkSummaryModal() {
+      document.getElementById('modalBulkSummary').classList.remove('active');
+      goBack();
+    }
+
+    // --- Preferences Toggles ---
+    function openVolunteerSettings() {
+      navigateToScreen('volunteer-settings', true);
+    }
+
+    function toggleAudioPref(val) {
+      APP_DATA.settings.audioBeeps = val;
+      if (val) playAudio('success');
+    }
+
+    function toggleHapticsPref(val) {
+      APP_DATA.settings.haptics = val;
+      if (val) triggerHaptic(50);
+    }
+
+    function simulateRefresh() {
+      showToast("Syncing with server...");
+      triggerHaptic(20);
+      setTimeout(() => {
+        showToast("Synced 36 participants · Up to date");
+        renderScreen(NAV_STACK[NAV_STACK.length - 1]);
+      }, 400);
+    }
+
+    // --- Staff Login Logic ---
+    function togglePasswordVisibility() {
+      const pwd = document.getElementById('loginPassword');
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+      } else {
+        pwd.type = 'password';
+      }
+    }
+
+    function quickFillCreds(user, pass) {
+      document.getElementById('loginUsername').value = user;
+      document.getElementById('loginPassword').value = pass;
+      document.getElementById('loginErrorBanner').classList.remove('show');
+    }
+
+    function handleStaffLogin() {
+      const user = (document.getElementById('loginUsername').value || '').trim();
+      const errBanner = document.getElementById('loginErrorBanner');
+
+      if (user.toUpperCase() === 'SPOC001' || user.toUpperCase() === 'SPOC002' || user.toUpperCase() === 'SPOC003' || user.toUpperCase() === 'SPOC004') {
+        errBanner.classList.remove('show');
+        APP_DATA.currentRole = 'spoc';
+        APP_DATA.currentSpocId = user.toUpperCase();
+        APP_DATA.spocTab = 'events';
+        playAudio('success');
+        triggerHaptic(40);
+        navigateToScreen('spoc-dashboard', true);
+      } else if (user.toLowerCase() === 'admin') {
+        errBanner.classList.remove('show');
+        APP_DATA.currentRole = 'admin';
+        APP_DATA.adminTab = 'overview';
+        playAudio('success');
+        triggerHaptic(40);
+        navigateToScreen('admin-dashboard', true);
+      } else {
+        // Error state
+        errBanner.classList.add('show');
+        playAudio('error');
+        triggerHaptic(70);
+      }
+    }
+
+    // ==========================================
+    // 6. SPOC DASHBOARD LOGIC
+    // ==========================================
+    function switchSpocTab(tabName) {
+      APP_DATA.spocTab = tabName;
+      document.querySelectorAll('#screen-spoc-dashboard .nav-item').forEach(b => b.classList.remove('active'));
+      if (tabName === 'events') document.getElementById('spocNavEvents').classList.add('active');
+      if (tabName === 'teams') document.getElementById('spocNavTeams').classList.add('active');
+      if (tabName === 'profile') document.getElementById('spocNavProfile').classList.add('active');
+      renderSpocDashboard();
+    }
+
+    function renderSpocDashboard() {
+      const spoc = APP_DATA.spocs.find(s => s.id === APP_DATA.currentSpocId) || APP_DATA.spocs[0];
+      const headerTitle = document.getElementById('spocHeaderTitle');
+      const headerSubtitle = document.getElementById('spocHeaderSubtitle');
+      const callLink = document.getElementById('spocPhoneCallLink');
+      const content = document.getElementById('spocContentArea');
+
+      headerTitle.textContent = spoc.name;
+      headerSubtitle.textContent = `${spoc.id} · ${spoc.teamIds.length} Assigned Teams`;
+      callLink.href = `tel:${spoc.phone}`;
+
+      if (APP_DATA.spocTab === 'events') {
+        // Events Tab: Same cards as volunteer Home but scoped strictly to this SPOC's members
+        content.innerHTML = `
+          <div class="online-banner" style="margin:-16px -18px 12px; border-radius:0;">
+            <div class="online-indicator">
+              <span class="online-dot"></span>
+              <span>Online · Filtered to Your Students</span>
+            </div>
+            <span class="sync-hint">${spoc.name}</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            ${APP_DATA.events.map(evt => {
+              const stats = getEventProgress(evt.id, spoc.id);
+              return `
+                <div class="event-card" onclick="openEventDetail('${evt.id}', true)">
+                  <div class="event-card-header">
+                    <div>
+                      <div class="event-title">${evt.name}</div>
+                      <div class="event-time">
+                        <svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 16 14"/></svg>
+                        ${evt.timeWindow}
+                      </div>
+                    </div>
+                    <span class="status-chip ${evt.status.toLowerCase()}">${evt.status}</span>
+                  </div>
+                  <div class="event-progress-wrap">
+                    <div class="event-progress-info">
+                      <span>${stats.checked} / ${stats.total} Checked in</span>
+                      <span class="event-progress-pct">${stats.pct}%</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill" style="width:${stats.pct}%;"></div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      } else if (APP_DATA.spocTab === 'teams') {
+        // Team Progress Tab
+        const overall = getSpocOverallProgress(spoc.id);
+        const myTeams = APP_DATA.teams.filter(t => t.spocId === spoc.id);
+
+        content.innerHTML = `
+          <!-- Summary Card: overall %, participants, teams -->
+          <div class="card-block">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Overall Completion</div>
+                <div style="font-size:26px; font-weight:800; color:var(--text-primary); margin-top:2px;">${overall.activePct}%</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Assigned</div>
+                <div style="font-size:13px; font-weight:700; color:var(--text-primary); margin-top:4px;">
+                  ${overall.memberCount} Students · ${myTeams.length} Teams
+                </div>
+              </div>
+            </div>
+            <div class="progress-track" style="height:6px;">
+              <div class="progress-fill" style="width:${overall.activePct}%;"></div>
+            </div>
+          </div>
+
+          <!-- Horizontally Scrollable Event Filter Chips ("All events" plus each event) -->
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="font-size:11.5px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">
+              Filter By Event:
+            </div>
+            <div class="horizontal-chips-bar">
+              <button class="filter-chip-btn ${spocTeamFilterEventId === 'ALL' ? 'active' : ''}" onclick="setSpocEventFilter('ALL')">All events</button>
+              ${APP_DATA.events.map(e => `
+                <button class="filter-chip-btn ${spocTeamFilterEventId === e.id ? 'active' : ''}" onclick="setSpocEventFilter('${e.id}')">${e.name}</button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Sort toggle and "Show pending only" toggle -->
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:2px;">
+            <button class="jump-btn" style="padding:4px 10px; font-size:11px;" onclick="toggleSpocTeamSort()">
+              <svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M3 6h18M6 12h12M9 18h6"/></svg>
+              Sort: ${spocTeamSortOrder === 'highest' ? 'Highest %' : spocTeamSortOrder === 'lowest' ? 'Lowest %' : 'Name'}
+            </button>
+
+            ${spocTeamFilterEventId !== 'ALL' ? `
+              <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; cursor:pointer;">
+                <input type="checkbox" ${spocShowPendingOnly ? 'checked' : ''} onchange="toggleSpocPendingOnly(this.checked)">
+                Show pending only
+              </label>
+            ` : ''}
+          </div>
+
+          <!-- Team Cards -->
+          <div id="spocTeamsListContainer" style="display:flex; flex-direction:column; gap:12px; margin-top:4px;">
+            ${renderSpocTeamCards(myTeams, spoc)}
+          </div>
+        `;
+      } else if (APP_DATA.spocTab === 'profile') {
+        // Profile Tab: SPOC name, id, phone, counts, and Sign Out button
+        const overall = getSpocOverallProgress(spoc.id);
+        content.innerHTML = `
+          <div class="card-block" style="align-items:center; text-align:center; padding:26px 16px;">
+            <div style="width:68px; height:68px; border-radius:50%; background:var(--text-primary); color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; margin-bottom:6px;">
+              ${spoc.name.split(' ').map(n=>n[0]).join('')}
+            </div>
+            <div style="font-size:19px; font-weight:800; color:var(--text-primary);">${spoc.name}</div>
+            <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">ID: ${spoc.id}</div>
+            <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">${spoc.phone}</div>
+
+            <div style="display:flex; gap:12px; width:100%; margin-top:20px;">
+              <div class="metric-card" style="flex:1;">
+                <div class="metric-val">${spoc.teamIds.length}</div>
+                <div class="metric-lbl">Assigned Teams</div>
+              </div>
+              <div class="metric-card" style="flex:1;">
+                <div class="metric-val">${overall.memberCount}</div>
+                <div class="metric-lbl">Assigned Students</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-primary" style="background:#ffffff; color:var(--text-primary); border:1.5px solid var(--text-primary); margin-top:10px;" onclick="signOutToVolunteer()">
+            <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign Out
+          </button>
+        `;
+      }
+    }
+
+    function setSpocEventFilter(eventId) {
+      spocTeamFilterEventId = eventId;
+      renderSpocDashboard();
+    }
+
+    function toggleSpocPendingOnly(val) {
+      spocShowPendingOnly = val;
+      renderSpocDashboard();
+    }
+
+    function toggleSpocTeamSort() {
+      if (spocTeamSortOrder === 'highest') spocTeamSortOrder = 'lowest';
+      else if (spocTeamSortOrder === 'lowest') spocTeamSortOrder = 'name';
+      else spocTeamSortOrder = 'highest';
+      renderSpocDashboard();
+    }
+
+    function renderSpocTeamCards(teams, spoc) {
+      if (teams.length === 0) {
+        return `
+          <div style="text-align:center; padding:32px 16px; color:var(--text-muted); font-size:13px;">
+            No teams assigned to this SPOC.
+          </div>
+        `;
+      }
+
+      // Sort teams
+      let sorted = [...teams].sort((a, b) => {
+        const statsA = getTeamProgress(a.id, spocTeamFilterEventId);
+        const statsB = getTeamProgress(b.id, spocTeamFilterEventId);
+        if (spocTeamSortOrder === 'highest') return statsB.pct - statsA.pct;
+        if (spocTeamSortOrder === 'lowest') return statsA.pct - statsB.pct;
+        return a.name.localeCompare(b.name);
+      });
+
+      return sorted.map(team => {
+        const stats = getTeamProgress(team.id, spocTeamFilterEventId);
+        const leader = APP_DATA.participants.find(p => p.id === team.leaderId);
+        let members = APP_DATA.participants.filter(p => p.teamId === team.id);
+
+        if (spocShowPendingOnly && spocTeamFilterEventId !== 'ALL') {
+          members = members.filter(m => !m.attendance[spocTeamFilterEventId]?.checked);
+        }
+
+        return `
+          <div class="card-block" id="teamCard-${team.id}">
+            <div class="team-card-header" onclick="toggleTeamAccordion('${team.id}')">
+              <div class="team-title-wrap">
+                <div class="team-title">
+                  <span>${team.name}</span>
+                  <span class="id-badge">${team.id}</span>
+                </div>
+                <div class="team-leader-info">
+                  <span>Leader: <strong>${leader ? leader.name : 'None'}</strong></span>
+                </div>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:8px;">
+                ${leader ? `
+                  <a href="tel:${leader.phone}" class="call-btn" title="Call Leader ${leader.name}" onclick="event.stopPropagation()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  </a>
+                ` : ''}
+                <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon" id="chevron-${team.id}"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+            </div>
+
+            <!-- Progress Bar and percent -->
+            <div class="event-progress-wrap">
+              <div class="event-progress-info">
+                <span>${stats.checked} / ${stats.total} Checked in</span>
+                <span class="event-progress-pct">${stats.pct}%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width:${stats.pct}%;"></div>
+              </div>
+            </div>
+
+            <!-- Small per-event chips like "Keynote 8/10" -->
+            <div class="per-event-chips">
+              ${APP_DATA.events.map(e => {
+                const estats = getTeamProgress(team.id, e.id);
+                return `<span class="event-mini-chip ${e.status === 'Live' ? 'live-event' : ''}">${e.name}: ${estats.checked}/${estats.total}</span>`;
+              }).join('')}
+            </div>
+
+            <!-- Expandable Member rows -->
+            <div class="team-members-accordion" id="accordion-${team.id}">
+              <div style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; margin-bottom:2px;">
+                Member Rows · Call Button & Per-Event Strip
+              </div>
+              ${members.map(m => {
+                return `
+                  <div class="list-row" style="padding:8px 10px;">
+                    <div class="list-row-header">
+                      <div class="list-row-main">
+                        <div class="list-row-name-wrap">
+                          <span class="list-row-name" style="font-size:13px;">${m.name}</span>
+                          <span class="id-badge">${m.id}</span>
+                          ${m.isLeader ? '<span class="leader-badge">Leader</span>' : ''}
+                        </div>
+                        <!-- Per-event check or dash strip -->
+                        <div class="event-strip" style="margin-top:4px;">
+                          ${APP_DATA.events.map(e => {
+                            const isCheck = m.attendance[e.id]?.checked;
+                            return `
+                              <span class="strip-dot ${isCheck ? 'checked' : 'pending'}" title="${e.name}: ${isCheck ? 'Checked' : 'Pending'}">
+                                ${isCheck ? '✓' : '–'}
+                              </span>
+                            `;
+                          }).join('')}
+                        </div>
+                      </div>
+
+                      <a href="tel:${m.phone}" class="call-btn" title="Call ${m.name}">
+                        <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                      </a>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleTeamAccordion(teamId) {
+      const acc = document.getElementById(`accordion-${teamId}`);
+      const chv = document.getElementById(`chevron-${teamId}`);
+      if (acc) {
+        acc.classList.toggle('open');
+        if (chv) {
+          chv.style.transform = acc.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+      }
+    }
+
+    // ==========================================
+    // 7. ADMIN DASHBOARD LOGIC
+    // ==========================================
+    let adminDirectoryFilterSpoc = "ALL";
+    let adminDirectoryFilterTeam = "ALL";
+
+    function switchAdminTab(tabName) {
+      APP_DATA.adminTab = tabName;
+      document.querySelectorAll('#screen-admin-dashboard .nav-item').forEach(b => b.classList.remove('active'));
+      if (tabName === 'overview') document.getElementById('adminNavOverview').classList.add('active');
+      if (tabName === 'events') document.getElementById('adminNavEvents').classList.add('active');
+      if (tabName === 'directory') document.getElementById('adminNavDirectory').classList.add('active');
+      if (tabName === 'settings') document.getElementById('adminNavSettings').classList.add('active');
+      renderAdminDashboard();
+    }
+
+    function renderAdminDashboard() {
+      const content = document.getElementById('adminContentArea');
+      const subtitle = document.getElementById('adminHeaderSubtitle');
+
+      if (APP_DATA.adminTab === 'overview') {
+        subtitle.textContent = "Hackathon Super-Admin View";
+        
+        // 4 Summary Metrics: participants, events, check-ins, overall %
+        const totalParticipants = APP_DATA.participants.length;
+        const totalEvents = APP_DATA.events.length;
+        let totalCheckins = 0;
+        let possibleSlots = totalParticipants * totalEvents;
+
+        APP_DATA.participants.forEach(p => {
+          APP_DATA.events.forEach(e => {
+            if (p.attendance[e.id]?.checked) totalCheckins++;
+          });
+        });
+        const overallAttendancePct = Math.round((totalCheckins / possibleSlots) * 100);
+
+        // Sort SPOC leaderboard by lowest progress by default
+        let sortedSpocs = [...APP_DATA.spocs].sort((a, b) => {
+          const pA = getSpocOverallProgress(a.id);
+          const pB = getSpocOverallProgress(b.id);
+          if (adminLeaderboardSortOrder === 'lowest') return pA.activePct - pB.activePct;
+          return pB.activePct - pA.activePct;
+        });
+
+        content.innerHTML = `
+          <!-- 4 Summary Cards -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-val">${totalParticipants}</div>
+              <div class="metric-lbl">Participants</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">${totalEvents}</div>
+              <div class="metric-lbl">Events</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">${totalCheckins}</div>
+              <div class="metric-lbl">Check-ins</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">${overallAttendancePct}%</div>
+              <div class="metric-lbl">Overall %</div>
+            </div>
+          </div>
+
+          <!-- Event Progress List with Status Chips -->
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
+            <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">
+              Event Progress
+            </div>
+            ${APP_DATA.events.map(e => {
+              const stats = getEventProgress(e.id);
+              return `
+                <div class="list-row" style="cursor:pointer;" onclick="openEventDetail('${e.id}', false)">
+                  <div class="list-row-main">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <span style="font-size:14px; font-weight:700;">${e.name}</span>
+                      <span class="status-chip ${e.status.toLowerCase()}">${e.status}</span>
+                    </div>
+                    <div class="progress-track" style="margin-top:6px;">
+                      <div class="progress-fill" style="width:${stats.pct}%;"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-top:3px;">
+                      <span>${e.timeWindow}</span>
+                      <span>${stats.checked}/${stats.total} (${stats.pct}%)</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- SPOC Leaderboard: sorted by lowest progress with sort options, progress bars and call buttons -->
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">
+                SPOC Leaderboard
+              </div>
+              <button class="jump-btn" style="padding:3px 9px; font-size:11px;" onclick="toggleAdminLeaderboardSort()">
+                Sort: ${adminLeaderboardSortOrder === 'lowest' ? 'Lowest First' : 'Highest First'}
+              </button>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              ${sortedSpocs.map((s, idx) => {
+                const prog = getSpocOverallProgress(s.id);
+                return `
+                  <div class="leaderboard-row" onclick="openAdminSpocDetail('${s.id}')">
+                    <div class="leaderboard-left">
+                      <span class="spoc-rank">#${idx + 1}</span>
+                      <div class="spoc-info-col">
+                        <div class="spoc-name-wrap">
+                          <span class="spoc-name">${s.name}</span>
+                          <span class="id-badge">${s.id}</span>
+                        </div>
+                        <div style="font-size:11px; color:var(--text-secondary);">
+                          ${s.teamIds.length} Teams · ${prog.memberCount} Students
+                        </div>
+                        <div class="progress-track" style="margin-top:4px; height:4px;">
+                          <div class="progress-fill" style="width:${prog.activePct}%;"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span style="font-size:13px; font-weight:800; color:var(--text-primary);">${prog.activePct}%</span>
+                      <a href="tel:${s.phone}" class="call-btn" title="Call ${s.name}" onclick="event.stopPropagation()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                      </a>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      } else if (APP_DATA.adminTab === 'events') {
+        subtitle.textContent = "Manage Event Schedule";
+        content.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">
+              All Events (${APP_DATA.events.length})
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:12px; position:relative; min-height:480px; padding-bottom:70px;">
+            ${APP_DATA.events.map(e => {
+              const stats = getEventProgress(e.id);
+              return `
+                <div class="card-block">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                      <div style="font-size:16px; font-weight:700;">${e.name}</div>
+                      <div class="event-time" style="margin-top:2px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        ${e.timeWindow}
+                      </div>
+                    </div>
+                    <span class="status-chip ${e.status.toLowerCase()}">${e.status}</span>
+                  </div>
+
+                  <div class="event-progress-wrap">
+                    <div class="event-progress-info">
+                      <span>${stats.checked} / ${stats.total} Check-ins</span>
+                      <span class="event-progress-pct">${stats.pct}%</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill" style="width:${stats.pct}%;"></div>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; justify-content:flex-end;">
+                    <button class="jump-btn" style="padding:4px 12px; font-size:11px;" onclick="openEditTimeWindowModal('${e.id}')">
+                      Edit time window
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+
+            <!-- Floating Action Button (+) -->
+            <button class="fab-btn" onclick="openAddEventModal()" title="Add Event">
+              <svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="icon"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        `;
+      } else if (APP_DATA.adminTab === 'directory') {
+        subtitle.textContent = "Directory & Attendance Strips";
+        content.innerHTML = `
+          <!-- Search field -->
+          <div class="search-box">
+            <div class="search-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </div>
+            <input type="text" class="search-input" id="adminDirSearchInput" placeholder="Search participant, team, or ID..." oninput="renderAdminDirectoryList()">
+          </div>
+
+          <!-- SPOC Filter Chips -->
+          <div>
+            <div style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; margin-bottom:4px;">
+              Filter SPOC:
+            </div>
+            <div class="horizontal-chips-bar">
+              <button class="filter-chip-btn ${adminDirectoryFilterSpoc === 'ALL' ? 'active' : ''}" onclick="setAdminDirSpocFilter('ALL')">All SPOCs</button>
+              ${APP_DATA.spocs.map(s => `
+                <button class="filter-chip-btn ${adminDirectoryFilterSpoc === s.id ? 'active' : ''}" onclick="setAdminDirSpocFilter('${s.id}')">${s.name.split(' ')[0]} (${s.id})</button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Team Filter Chips -->
+          <div>
+            <div style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; margin-bottom:4px;">
+              Filter Team:
+            </div>
+            <div class="horizontal-chips-bar">
+              <button class="filter-chip-btn ${adminDirectoryFilterTeam === 'ALL' ? 'active' : ''}" onclick="setAdminDirTeamFilter('ALL')">All Teams</button>
+              ${APP_DATA.teams.map(t => `
+                <button class="filter-chip-btn ${adminDirectoryFilterTeam === t.id ? 'active' : ''}" onclick="setAdminDirTeamFilter('${t.id}')">${t.name}</button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Grouped Teams Directory Container -->
+          <div id="adminDirectoryGroupContainer" style="display:flex; flex-direction:column; gap:12px; margin-top:6px;">
+            <!-- Populated by renderAdminDirectoryList() -->
+          </div>
+        `;
+
+        renderAdminDirectoryList();
+      } else if (APP_DATA.adminTab === 'settings') {
+        subtitle.textContent = "Admin System Settings";
+        content.innerHTML = `
+          <div class="card-block">
+            <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">
+              System Feedback
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-label-wrap">
+                <div class="toggle-title">Audio Beeps</div>
+                <div class="toggle-desc">Sound chimes on scan events</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" ${APP_DATA.settings.audioBeeps ? 'checked' : ''} onchange="toggleAudioPref(this.checked)">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <hr class="hr-subtle">
+            <div class="toggle-row">
+              <div class="toggle-label-wrap">
+                <div class="toggle-title">Haptic Vibration</div>
+                <div class="toggle-desc">Tactile response on actions</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" ${APP_DATA.settings.haptics ? 'checked' : ''} onchange="toggleHapticsPref(this.checked)">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card-block">
+            <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">
+              Data Synchronization
+            </div>
+            <button class="btn-secondary" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="simulateRefresh()">
+              <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh Participants
+            </button>
+          </div>
+
+          <button class="btn-primary" style="background:#ffffff; color:var(--text-primary); border:1.5px solid var(--text-primary); margin-top:14px;" onclick="signOutToVolunteer()">
+            <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign Out
+          </button>
+        `;
+      }
+    }
+
+    function toggleAdminLeaderboardSort() {
+      adminLeaderboardSortOrder = (adminLeaderboardSortOrder === 'lowest') ? 'highest' : 'lowest';
+      renderAdminDashboard();
+    }
+
+    function setAdminDirSpocFilter(spocId) {
+      adminDirectoryFilterSpoc = spocId;
+      renderAdminDashboard();
+    }
+
+    function setAdminDirTeamFilter(teamId) {
+      adminDirectoryFilterTeam = teamId;
+      renderAdminDashboard();
+    }
+
+    function renderAdminDirectoryList() {
+      const container = document.getElementById('adminDirectoryGroupContainer');
+      if (!container) return;
+      const searchVal = (document.getElementById('adminDirSearchInput')?.value || '').toLowerCase().trim();
+
+      let targetTeams = APP_DATA.teams;
+      if (adminDirectoryFilterSpoc !== 'ALL') {
+        targetTeams = targetTeams.filter(t => t.spocId === adminDirectoryFilterSpoc);
+      }
+      if (adminDirectoryFilterTeam !== 'ALL') {
+        targetTeams = targetTeams.filter(t => t.id === adminDirectoryFilterTeam);
+      }
+
+      let renderedAny = false;
+
+      const html = targetTeams.map(team => {
+        const spoc = APP_DATA.spocs.find(s => s.id === team.spocId);
+        const leader = APP_DATA.participants.find(p => p.id === team.leaderId);
+        let members = APP_DATA.participants.filter(p => p.teamId === team.id);
+
+        if (searchVal) {
+          members = members.filter(m => 
+            m.name.toLowerCase().includes(searchVal) ||
+            m.id.toLowerCase().includes(searchVal) ||
+            team.name.toLowerCase().includes(searchVal)
+          );
+          if (members.length === 0) return '';
+        }
+
+        renderedAny = true;
+
+        return `
+          <div class="card-block">
+            <!-- Team Header with SPOC Name on the Header -->
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
+              <div>
+                <div style="font-size:15px; font-weight:800; display:flex; align-items:center; gap:6px;">
+                  <span>${team.name}</span>
+                  <span class="id-badge">${team.id}</span>
+                </div>
+                <div style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;">
+                  SPOC: <strong>${spoc ? spoc.name : 'Unassigned'}</strong> (${team.spocId})
+                </div>
+              </div>
+
+              ${leader ? `
+                <a href="tel:${leader.phone}" class="call-btn" title="Call Team Leader (${leader.name})">
+                  <svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </a>
+              ` : ''}
+            </div>
+
+            <!-- Members List with Leader Marked, Call Buttons, and Expandable Rows with Per-Event Strip -->
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              ${members.map(m => `
+                <div class="list-row" style="padding:8px 10px; cursor:pointer;" onclick="toggleDirectoryMemberDetail('${m.id}')">
+                  <div class="list-row-header">
+                    <div class="list-row-main">
+                      <div class="list-row-name-wrap">
+                        <span class="list-row-name" style="font-size:13px;">${m.name}</span>
+                        <span class="id-badge">${m.id}</span>
+                        ${m.isLeader ? '<span class="leader-badge">Leader</span>' : ''}
+                      </div>
+                      <!-- Per-event check strip -->
+                      <div class="event-strip" style="margin-top:4px;">
+                        ${APP_DATA.events.map(e => {
+                          const isChecked = m.attendance[e.id]?.checked;
+                          return `<span class="strip-dot ${isChecked ? 'checked' : 'pending'}" title="${e.name}: ${isChecked ? 'Checked' : 'Pending'}">${isChecked ? '✓' : '–'}</span>`;
+                        }).join('')}
+                      </div>
+                    </div>
+
+                    <a href="tel:${m.phone}" class="call-btn" title="Call ${m.name}" onclick="event.stopPropagation()">
+                      <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    </a>
+                  </div>
+
+                  <!-- Expandable detail drawer -->
+                  <div class="row-detail-box" id="dirDetail-${m.id}">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                      <span>Phone: <strong>${m.phone}</strong></span>
+                      <span>Team: <strong>${team.name}</strong></span>
+                    </div>
+                    <div style="font-size:11px; color:var(--text-secondary);">
+                      ${APP_DATA.events.map(e => {
+                        const rec = m.attendance[e.id];
+                        return `<div>• ${e.name}: ${rec?.checked ? 'Checked in (' + (rec.time || 'Yes') + ')' : 'Pending'}</div>`;
+                      }).join('')}
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = renderedAny ? html : `
+        <div style="text-align:center; padding:32px 16px; color:var(--text-muted); font-size:13px;">
+          No matching participants found.
+        </div>
+      `;
+    }
+
+    function toggleDirectoryMemberDetail(pId) {
+      const box = document.getElementById(`dirDetail-${pId}`);
+      if (box) {
+        box.classList.toggle('open');
+      }
+    }
+
+    // --- Admin SPOC Detail Drilldown ---
+    let activeAdminSpocId = "SPOC003";
+
+    function openAdminSpocDetail(spocId) {
+      activeAdminSpocId = spocId;
+      navigateToScreen('admin-spoc-detail', true);
+    }
+
+    function renderAdminSpocDetail() {
+      const spoc = APP_DATA.spocs.find(s => s.id === activeAdminSpocId) || APP_DATA.spocs[0];
+      const nameEl = document.getElementById('adminSpocDetailName');
+      const subEl = document.getElementById('adminSpocDetailSubtitle');
+      const callLink = document.getElementById('adminSpocDetailCallLink');
+      const content = document.getElementById('adminSpocDetailContent');
+
+      nameEl.textContent = spoc.name;
+      subEl.textContent = `${spoc.id} · ${spoc.teamIds.length} Teams Assigned`;
+      callLink.href = `tel:${spoc.phone}`;
+
+      const overall = getSpocOverallProgress(spoc.id);
+      const teams = APP_DATA.teams.filter(t => t.spocId === spoc.id);
+
+      content.innerHTML = `
+        <!-- Summary card -->
+        <div class="card-block">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Overall Completion</div>
+              <div style="font-size:26px; font-weight:800; color:var(--text-primary); margin-top:2px;">${overall.activePct}%</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Contact</div>
+              <div style="font-size:13px; font-weight:700; color:var(--text-primary); margin-top:4px;">
+                ${spoc.phone}
+              </div>
+            </div>
+          </div>
+          <div class="progress-track" style="height:6px;">
+            <div class="progress-fill" style="width:${overall.activePct}%;"></div>
+          </div>
+        </div>
+
+        <!-- Team Progress Cards -->
+        <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; margin-top:6px;">
+          Assigned Teams (${teams.length})
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          ${renderSpocTeamCards(teams, spoc)}
+        </div>
+      `;
+    }
+
+    // --- Admin Event Modals ---
+    let activeEditingEventId = null;
+
+    function openAddEventModal() {
+      document.getElementById('newEventName').value = '';
+      document.getElementById('newEventStart').value = '';
+      document.getElementById('newEventEnd').value = '';
+      document.getElementById('modalAddEvent').classList.add('active');
+    }
+
+    function saveNewEvent() {
+      const name = (document.getElementById('newEventName').value || '').trim();
+      const start = (document.getElementById('newEventStart').value || '').trim() || '11:30 PM';
+      const end = (document.getElementById('newEventEnd').value || '').trim() || '12:30 AM';
+
+      if (!name) {
+        showToast("Please enter an event name");
+        return;
+      }
+
+      const newId = `EVT-${APP_DATA.events.length + 1}`;
+      const newEvt = {
+        id: newId,
+        name: name,
+        status: "Upcoming",
+        start: start,
+        end: end,
+        timeWindow: `${start} - ${end}`
+      };
+
+      APP_DATA.events.push(newEvt);
+      // Initialize participant attendance slots
+      APP_DATA.participants.forEach(p => {
+        p.attendance[newId] = { checked: false };
+      });
+
+      closeModal('modalAddEvent');
+      showToast(`Event "${name}" created!`);
+      playAudio('success');
+      renderAdminDashboard();
+    }
+
+    function openEditTimeWindowModal(evtId) {
+      activeEditingEventId = evtId;
+      const evt = APP_DATA.events.find(e => e.id === evtId);
+      if (!evt) return;
+
+      document.getElementById('editEventTargetName').textContent = `${evt.name} (${evt.timeWindow})`;
+      document.getElementById('editWindowStart').value = evt.start;
+      document.getElementById('editWindowEnd').value = evt.end;
+      document.getElementById('modalEditWindow').classList.add('active');
+    }
+
+    function saveEditedTimeWindow() {
+      const evt = APP_DATA.events.find(e => e.id === activeEditingEventId);
+      if (!evt) return;
+
+      const start = (document.getElementById('editWindowStart').value || '').trim() || evt.start;
+      const end = (document.getElementById('editWindowEnd').value || '').trim() || evt.end;
+
+      evt.start = start;
+      evt.end = end;
+      evt.timeWindow = `${start} - ${end}`;
+
+      closeModal('modalEditWindow');
+      showToast(`Updated time window for ${evt.name}`);
+      playAudio('success');
+      renderAdminDashboard();
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function signOutToVolunteer() {
+      APP_DATA.currentRole = 'volunteer';
+      NAV_STACK.length = 0;
+      navigateToScreen('volunteer-home');
+      showToast("Signed out to Volunteer Home");
+    }
+
+    // ==========================================
+    // 8. INITIAL BOOTSTRAP
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      navigateToScreen('volunteer-home');
+    });
+  </script>
+</body>
+</html>

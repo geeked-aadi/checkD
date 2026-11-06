@@ -1,0 +1,681 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:2:1-43:12
+INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:2:1-43:12
+INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:2:1-43:12
+INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:2:1-43:12
+MERGED from [androidx.camera:camera-video:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/7e11ea1f1bdf5b717def99fa6f7affd4/transformed/camera-video-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.camera:camera-view:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/c2a5596408ef3f1197712e79b89e7dcc/transformed/camera-view-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.camera:camera-lifecycle:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9c82c37eaf2603db0043b6e9eac244d2/transformed/camera-lifecycle-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:17:1-36:12
+MERGED from [androidx.camera:camera-core:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e3c4d19de8fb2f0159cf7a3165886eb3/transformed/camera-core-1.4.1/AndroidManifest.xml:17:1-36:12
+MERGED from [com.google.mlkit:barcode-scanning:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/bd3e964007e3e047f75e094999900700/transformed/barcode-scanning-17.3.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:2:1-18:12
+MERGED from [com.google.mlkit:barcode-scanning-common:17.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d36dc61547faf2a7fae40d59762e6495/transformed/barcode-scanning-common-17.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:2:1-18:12
+MERGED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:2:1-26:12
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.mlkit:vision-interfaces:16.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/598d3508e0ab236667013f2df7295373/transformed/vision-interfaces-16.3.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e621bc81d04051094e53192098b95f80/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.hilt:hilt-navigation-compose:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/5805b5c0347eb1afa4503dd1bcbb1640/transformed/hilt-navigation-compose-1.2.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.hilt:hilt-navigation:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a4a0ae3ba3ceedb7c495a4ed7b7dc489/transformed/hilt-navigation-1.2.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-common:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/dfde864450822b444368f5e31d28c37a/transformed/navigation-common-2.8.5/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-runtime:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/76c74ed6f66ba9af15d6b2e73e0d61ca/transformed/navigation-runtime-2.8.5/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a40434d3aa69d53ef07e26a831f89d99/transformed/navigation-common-ktx-2.8.5/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/02ef182d72e3d280403945e78077a1bd/transformed/navigation-runtime-ktx-2.8.5/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-compose:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/aa1e0e3093ef8175332919069905004f/transformed/navigation-compose-2.8.5/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.accompanist:accompanist-permissions:0.36.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b0510be463aee83e9a9de2504d1dcf68/transformed/accompanist-permissions-0.36.0/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.compose.material3:material3-android:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/dba8576934c37017405a0db2b571e474/transformed/material3-release/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.dagger:hilt-android:2.60.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e23e70dd75f16c9f53613bb189949e99/transformed/hilt-android-2.60.1/AndroidManifest.xml:16:1-19:12
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/bd3ec7f3f356f165def90072fcada498/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/92022459c5e3f31fb5ccb840f567fa05/transformed/appcompat-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.fragment:fragment:1.5.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2b99701b92f2e24d368216cfd8bf1875/transformed/fragment-1.5.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.loader:loader:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/373ca2ccd5e786cbcad00ba0253f083c/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.material:material-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4455a66a7f5d55b6899f3b408c3b4d68/transformed/material-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-core-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3e2db3100ea88859ded3ec2ef7e00aa7/transformed/animation-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-ripple-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/345862ad73e14ca2fc9221b64a274cc4/transformed/material-ripple-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/5490d31b8d8526128e5007d9fb75bda7/transformed/animation-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/fe1c70d294a0a948fcb739bf9795188a/transformed/foundation-layout-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/444a38eb17d3a6894ec4f87458ff2aec/transformed/foundation-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4db25992656dc1c85428f3f750326199/transformed/ui-tooling-data-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e638b2cd4de1d05b62203457b8bb9465/transformed/ui-unit-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/eef05806de6403dddd28fe71b89fd77d/transformed/ui-geometry-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-util-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d07df33a363b32fcdbbf6b662e50986c/transformed/ui-util-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/aaa34cc9bacc768665f63ed85846e3d4/transformed/ui-tooling-preview-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/70f015d41d80f7e1e75b855116a9fcb7/transformed/ui-graphics-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-text-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/165708c84dcf3e0908cdbcdf89275c4b/transformed/ui-text-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/ef466ba089d3c9b4cdbe6b62120451fe/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:17:1-35:12
+MERGED from [io.github.jan-tennert.supabase:realtime-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/53d77db293b54e03390e8f35d0b952ab/transformed/realtime-kt-debug/AndroidManifest.xml:2:1-7:12
+MERGED from [io.github.jan-tennert.supabase:postgrest-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/119650d83bdf6115dcd13f25b8219a2b/transformed/postgrest-kt-debug/AndroidManifest.xml:2:1-7:12
+MERGED from [io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:2:1-20:12
+MERGED from [io.github.jan-tennert.supabase:supabase-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b520ca53d460616b4ec8e061c7777142/transformed/supabase-kt-debug/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/488b7cded983704c0edf3849fe135f25/transformed/lifecycle-viewmodel-2.8.7/AndroidManifest.xml:2:1-5:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e19bbb125395d106cb40cdefef1ccc3c/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1422f58858595d9daa9e658274e98467/transformed/lifecycle-livedata-core-ktx-2.8.7/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/35b6f125b9efe20227bb91ef4fd6ba65/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39dc70dbfea42c680b80b54fcc63df0f/transformed/savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e4ebbe07e160babd9e9aaad710d51b72/transformed/lifecycle-runtime-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b5b6700398ebd461614c1751985bc054/transformed/lifecycle-livedata-core-2.8.7/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/bb00c3001d98a106d7b1552763870779/transformed/lifecycle-viewmodel-ktx-2.8.7/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e25fd327722ee2b721bfb512e24de98b/transformed/lifecycle-viewmodel-savedstate-2.8.7/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e00110f65cd050a417b6eb9990cf51ee/transformed/lifecycle-livedata-2.8.7/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/fd5d8f4560472e54a5d60a9f1495b53c/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/ef94f17c9009e64deef2ec1b6db7f045/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a0047e5e14fb1471fc5e95572423b765/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4c2be724bbb7b61ab6632dcb1e7a5e7a/transformed/material-icons-extended-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1c5af4aadff81b154328672920e330ce/transformed/material-icons-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/37d3bcd0ac66920f821151eb1fdc26c1/transformed/ui-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.activity:activity-compose:1.9.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/af6c4b2cb5d5d844f30e118ae60f6325/transformed/activity-compose-1.9.3/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity-ktx:1.9.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9cb6a23c73afb8ed754d5d0e18bd34f2/transformed/activity-ktx-1.9.3/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.9.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4750e41e5f743b5ef9457c9392c7047a/transformed/activity-1.9.3/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/6a4caf96c7cf0cc9240201b1d922f4e9/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.autofill:autofill:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/c5d920a3977916a50ac2e0562f16f23f/transformed/autofill-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.graphics:graphics-path:1.0.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2c406e52847ad3206796388da9f19a62/transformed/graphics-path-1.0.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/461b3589af2752a6bfdfcaeb59eba7d3/transformed/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/0039cc7a45e372ec18bf371c1a0d3e75/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.browser:browser:1.8.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/48a15ed1fc34b337308ef108b8035b97/transformed/browser-1.8.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e221f72bfe80916615b732e524743fa8/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/fb8896c78af6792f93ae101f92891b0b/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2c5e9b5f6f081cb486ec4a452ba5ecab/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.core:core-ktx:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9554ba60d42ca17e4736b0751c404486/transformed/core-ktx-1.15.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b7e96361570d0bd00bb441654394323f/transformed/runtime-saveable-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3de31ba02a05c5ab7e045e7c6689e2e8/transformed/runtime-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/8583d3a77330adadda11295700d21d02/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:17:1-55:12
+MERGED from [com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.startup:startup-runtime:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/be9b9d782db87a8aadbc18065274b27a/transformed/startup-runtime-1.2.0/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.tracing:tracing:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/0cf476e75b170c8d5d2e6f909fd8caf8/transformed/tracing-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.tracing:tracing-ktx:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/94e2c8027aea4dddc527c8a8fed318c3/transformed/tracing-ktx-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.datastore:datastore-core-android:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d8f867a2c49a880f9f49141ce9adf87a/transformed/datastore-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.datastore:datastore-android:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3b41b747480646c07d4bdfc57dbeef9e/transformed/datastore-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/79c09cfc1bb1d4f5f83fe43321023903/transformed/datastore-preferences-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9802a61d94548f09485458e063dd692a/transformed/exifinterface-1.3.2/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9e8eea8eb827b13fdab2a10f6da7eba4/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a40dc10c37593c4b534a11e258696e37/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:15:1-38:12
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:15:1-41:12
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9404ec82f0089e7626ec0f428862346f/transformed/transport-api-2.2.1/AndroidManifest.xml:15:1-22:12
+MERGED from [com.google.firebase:firebase-components:16.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d25c5c8d8239abaecd059c21b4f3b207/transformed/firebase-components-16.1.0/AndroidManifest.xml:15:1-23:12
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9a6d11ae49690e92acb3ad7b0cb05c16/transformed/firebase-encoders-json-17.1.0/AndroidManifest.xml:15:1-23:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1702028316168660501a8a3a56764166/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/68cb36a8aef8cf6651ef1a3fd4076bde/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.russhwolf:multiplatform-settings-coroutines-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1967e73e79240e2a71c5e45a7849e9d6/transformed/multiplatform-settings-coroutines-debug/AndroidManifest.xml:2:1-7:12
+MERGED from [com.russhwolf:multiplatform-settings-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/6869c60e269ad853df40ee8d6195f275/transformed/multiplatform-settings-debug/AndroidManifest.xml:2:1-7:12
+MERGED from [co.touchlab:kermit-android-debug:2.0.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4d6a24e9dde8cb2fa31ead67f30bde8b/transformed/kermit-debug/AndroidManifest.xml:2:1-7:12
+MERGED from [co.touchlab:kermit-core-android-debug:2.0.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/32a5d12f9922f74a722f8977b37e2928/transformed/kermit-core-debug/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.dagger:dagger-lint-aar:2.60.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a9026dcb0fa6b81a1c4710e8a62ca075/transformed/dagger-lint-aar-2.60.1/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/60ca5d598d4ee09f0566dd7e0409cd8c/transformed/image-1.0.0-beta1/AndroidManifest.xml:2:1-9:12
+	package
+		INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:4:5-67
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:26:5-67
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:26:5-67
+	android:name
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:4:22-64
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:5:5-79
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:25:5-79
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:25:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:22:5-79
+	android:name
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:5:22-76
+uses-permission#android.permission.CAMERA
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:6:5-65
+	android:name
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:6:22-62
+uses-permission#android.permission.VIBRATE
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:7:5-66
+	android:name
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:7:22-63
+uses-feature#android.hardware.camera
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:9:5-11:36
+	android:required
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:11:9-33
+	android:name
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:10:9-47
+uses-feature#android.hardware.camera.autofocus
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:12:5-14:36
+	android:required
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:14:9-33
+	android:name
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:13:9-57
+application
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:16:5-41:19
+INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:16:5-41:19
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-core:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e3c4d19de8fb2f0159cf7a3165886eb3/transformed/camera-core-1.4.1/AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-core:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e3c4d19de8fb2f0159cf7a3165886eb3/transformed/camera-core-1.4.1/AndroidManifest.xml:23:5-34:19
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:8:5-24:19
+MERGED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:8:5-24:19
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:4:5-6:19
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:4:5-6:19
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e621bc81d04051094e53192098b95f80/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:4:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e621bc81d04051094e53192098b95f80/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:4:5-20
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:5:5-7:19
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:5:5-7:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
+MERGED from [io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:8:5-18:19
+MERGED from [io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:8:5-18:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:23:5-33:19
+MERGED from [com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.startup:startup-runtime:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/be9b9d782db87a8aadbc18065274b27a/transformed/startup-runtime-1.2.0/AndroidManifest.xml:23:5-29:19
+MERGED from [androidx.startup:startup-runtime:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/be9b9d782db87a8aadbc18065274b27a/transformed/startup-runtime-1.2.0/AndroidManifest.xml:23:5-29:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a40dc10c37593c4b534a11e258696e37/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a40dc10c37593c4b534a11e258696e37/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:28:5-36:19
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:28:5-36:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:25:5-39:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:25:5-39:19
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/60ca5d598d4ee09f0566dd7e0409cd8c/transformed/image-1.0.0-beta1/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/60ca5d598d4ee09f0566dd7e0409cd8c/transformed/image-1.0.0-beta1/AndroidManifest.xml:7:5-20
+	android:extractNativeLibs
+		INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:28:18-86
+	android:supportsRtl
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:24:9-35
+	android:label
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:22:9-41
+	android:fullBackupContent
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:20:9-54
+	android:roundIcon
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:23:9-53
+	android:icon
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:21:9-48
+	android:allowBackup
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:18:9-35
+	android:theme
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:25:9-44
+	android:dataExtractionRules
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:19:9-65
+	android:name
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:17:9-42
+activity#com.example.eventattendance.MainActivity
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:27:9-36:20
+	android:windowSoftInputMode
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:30:13-55
+	android:exported
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:29:13-36
+	android:theme
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:31:13-48
+	android:name
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:28:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:32:13-35:29
+action#android.intent.action.MAIN
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:33:17-69
+	android:name
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:33:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:34:17-77
+	android:name
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:34:27-74
+meta-data#com.google.mlkit.vision.DEPENDENCIES
+ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:38:9-40:39
+	android:value
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:40:13-36
+	android:name
+		ADDED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:39:13-64
+uses-sdk
+INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml
+INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml
+MERGED from [androidx.camera:camera-video:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/7e11ea1f1bdf5b717def99fa6f7affd4/transformed/camera-video-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-video:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/7e11ea1f1bdf5b717def99fa6f7affd4/transformed/camera-video-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-view:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/c2a5596408ef3f1197712e79b89e7dcc/transformed/camera-view-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-view:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/c2a5596408ef3f1197712e79b89e7dcc/transformed/camera-view-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-lifecycle:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9c82c37eaf2603db0043b6e9eac244d2/transformed/camera-lifecycle-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-lifecycle:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9c82c37eaf2603db0043b6e9eac244d2/transformed/camera-lifecycle-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-core:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e3c4d19de8fb2f0159cf7a3165886eb3/transformed/camera-core-1.4.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-core:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e3c4d19de8fb2f0159cf7a3165886eb3/transformed/camera-core-1.4.1/AndroidManifest.xml:21:5-44
+MERGED from [com.google.mlkit:barcode-scanning:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/bd3e964007e3e047f75e094999900700/transformed/barcode-scanning-17.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:barcode-scanning:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/bd3e964007e3e047f75e094999900700/transformed/barcode-scanning-17.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:6:5-44
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:barcode-scanning-common:17.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d36dc61547faf2a7fae40d59762e6495/transformed/barcode-scanning-common-17.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:barcode-scanning-common:17.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d36dc61547faf2a7fae40d59762e6495/transformed/barcode-scanning-common-17.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.mlkit:vision-interfaces:16.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/598d3508e0ab236667013f2df7295373/transformed/vision-interfaces-16.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:vision-interfaces:16.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/598d3508e0ab236667013f2df7295373/transformed/vision-interfaces-16.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e621bc81d04051094e53192098b95f80/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e621bc81d04051094e53192098b95f80/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:3:5-44
+MERGED from [androidx.hilt:hilt-navigation-compose:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/5805b5c0347eb1afa4503dd1bcbb1640/transformed/hilt-navigation-compose-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.hilt:hilt-navigation-compose:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/5805b5c0347eb1afa4503dd1bcbb1640/transformed/hilt-navigation-compose-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.hilt:hilt-navigation:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a4a0ae3ba3ceedb7c495a4ed7b7dc489/transformed/hilt-navigation-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.hilt:hilt-navigation:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a4a0ae3ba3ceedb7c495a4ed7b7dc489/transformed/hilt-navigation-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-common:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/dfde864450822b444368f5e31d28c37a/transformed/navigation-common-2.8.5/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/dfde864450822b444368f5e31d28c37a/transformed/navigation-common-2.8.5/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/76c74ed6f66ba9af15d6b2e73e0d61ca/transformed/navigation-runtime-2.8.5/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/76c74ed6f66ba9af15d6b2e73e0d61ca/transformed/navigation-runtime-2.8.5/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a40434d3aa69d53ef07e26a831f89d99/transformed/navigation-common-ktx-2.8.5/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a40434d3aa69d53ef07e26a831f89d99/transformed/navigation-common-ktx-2.8.5/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/02ef182d72e3d280403945e78077a1bd/transformed/navigation-runtime-ktx-2.8.5/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/02ef182d72e3d280403945e78077a1bd/transformed/navigation-runtime-ktx-2.8.5/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/aa1e0e3093ef8175332919069905004f/transformed/navigation-compose-2.8.5/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.8.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/aa1e0e3093ef8175332919069905004f/transformed/navigation-compose-2.8.5/AndroidManifest.xml:5:5-44
+MERGED from [com.google.accompanist:accompanist-permissions:0.36.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b0510be463aee83e9a9de2504d1dcf68/transformed/accompanist-permissions-0.36.0/AndroidManifest.xml:21:5-44
+MERGED from [com.google.accompanist:accompanist-permissions:0.36.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b0510be463aee83e9a9de2504d1dcf68/transformed/accompanist-permissions-0.36.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.compose.material3:material3-android:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/dba8576934c37017405a0db2b571e474/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material3:material3-android:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/dba8576934c37017405a0db2b571e474/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [com.google.dagger:hilt-android:2.60.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e23e70dd75f16c9f53613bb189949e99/transformed/hilt-android-2.60.1/AndroidManifest.xml:18:3-42
+MERGED from [com.google.dagger:hilt-android:2.60.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e23e70dd75f16c9f53613bb189949e99/transformed/hilt-android-2.60.1/AndroidManifest.xml:18:3-42
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/bd3ec7f3f356f165def90072fcada498/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/bd3ec7f3f356f165def90072fcada498/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/92022459c5e3f31fb5ccb840f567fa05/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/92022459c5e3f31fb5ccb840f567fa05/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.5.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2b99701b92f2e24d368216cfd8bf1875/transformed/fragment-1.5.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.5.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2b99701b92f2e24d368216cfd8bf1875/transformed/fragment-1.5.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.loader:loader:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/373ca2ccd5e786cbcad00ba0253f083c/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/373ca2ccd5e786cbcad00ba0253f083c/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material:material-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4455a66a7f5d55b6899f3b408c3b4d68/transformed/material-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4455a66a7f5d55b6899f3b408c3b4d68/transformed/material-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3e2db3100ea88859ded3ec2ef7e00aa7/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3e2db3100ea88859ded3ec2ef7e00aa7/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/345862ad73e14ca2fc9221b64a274cc4/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/345862ad73e14ca2fc9221b64a274cc4/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/5490d31b8d8526128e5007d9fb75bda7/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/5490d31b8d8526128e5007d9fb75bda7/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/fe1c70d294a0a948fcb739bf9795188a/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/fe1c70d294a0a948fcb739bf9795188a/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/444a38eb17d3a6894ec4f87458ff2aec/transformed/foundation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/444a38eb17d3a6894ec4f87458ff2aec/transformed/foundation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4db25992656dc1c85428f3f750326199/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4db25992656dc1c85428f3f750326199/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e638b2cd4de1d05b62203457b8bb9465/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e638b2cd4de1d05b62203457b8bb9465/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/eef05806de6403dddd28fe71b89fd77d/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/eef05806de6403dddd28fe71b89fd77d/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d07df33a363b32fcdbbf6b662e50986c/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d07df33a363b32fcdbbf6b662e50986c/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/aaa34cc9bacc768665f63ed85846e3d4/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/aaa34cc9bacc768665f63ed85846e3d4/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/70f015d41d80f7e1e75b855116a9fcb7/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/70f015d41d80f7e1e75b855116a9fcb7/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/165708c84dcf3e0908cdbcdf89275c4b/transformed/ui-text-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/165708c84dcf3e0908cdbcdf89275c4b/transformed/ui-text-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/ef466ba089d3c9b4cdbe6b62120451fe/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/ef466ba089d3c9b4cdbe6b62120451fe/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [io.github.jan-tennert.supabase:realtime-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/53d77db293b54e03390e8f35d0b952ab/transformed/realtime-kt-debug/AndroidManifest.xml:5:5-44
+MERGED from [io.github.jan-tennert.supabase:realtime-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/53d77db293b54e03390e8f35d0b952ab/transformed/realtime-kt-debug/AndroidManifest.xml:5:5-44
+MERGED from [io.github.jan-tennert.supabase:postgrest-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/119650d83bdf6115dcd13f25b8219a2b/transformed/postgrest-kt-debug/AndroidManifest.xml:5:5-44
+MERGED from [io.github.jan-tennert.supabase:postgrest-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/119650d83bdf6115dcd13f25b8219a2b/transformed/postgrest-kt-debug/AndroidManifest.xml:5:5-44
+MERGED from [io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:6:5-44
+MERGED from [io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:6:5-44
+MERGED from [io.github.jan-tennert.supabase:supabase-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b520ca53d460616b4ec8e061c7777142/transformed/supabase-kt-debug/AndroidManifest.xml:5:5-44
+MERGED from [io.github.jan-tennert.supabase:supabase-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b520ca53d460616b4ec8e061c7777142/transformed/supabase-kt-debug/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/488b7cded983704c0edf3849fe135f25/transformed/lifecycle-viewmodel-2.8.7/AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/488b7cded983704c0edf3849fe135f25/transformed/lifecycle-viewmodel-2.8.7/AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e19bbb125395d106cb40cdefef1ccc3c/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e19bbb125395d106cb40cdefef1ccc3c/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1422f58858595d9daa9e658274e98467/transformed/lifecycle-livedata-core-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1422f58858595d9daa9e658274e98467/transformed/lifecycle-livedata-core-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/35b6f125b9efe20227bb91ef4fd6ba65/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/35b6f125b9efe20227bb91ef4fd6ba65/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39dc70dbfea42c680b80b54fcc63df0f/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39dc70dbfea42c680b80b54fcc63df0f/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e4ebbe07e160babd9e9aaad710d51b72/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e4ebbe07e160babd9e9aaad710d51b72/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b5b6700398ebd461614c1751985bc054/transformed/lifecycle-livedata-core-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b5b6700398ebd461614c1751985bc054/transformed/lifecycle-livedata-core-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/bb00c3001d98a106d7b1552763870779/transformed/lifecycle-viewmodel-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/bb00c3001d98a106d7b1552763870779/transformed/lifecycle-viewmodel-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e25fd327722ee2b721bfb512e24de98b/transformed/lifecycle-viewmodel-savedstate-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e25fd327722ee2b721bfb512e24de98b/transformed/lifecycle-viewmodel-savedstate-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e00110f65cd050a417b6eb9990cf51ee/transformed/lifecycle-livedata-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e00110f65cd050a417b6eb9990cf51ee/transformed/lifecycle-livedata-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/fd5d8f4560472e54a5d60a9f1495b53c/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/fd5d8f4560472e54a5d60a9f1495b53c/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/ef94f17c9009e64deef2ec1b6db7f045/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/ef94f17c9009e64deef2ec1b6db7f045/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a0047e5e14fb1471fc5e95572423b765/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a0047e5e14fb1471fc5e95572423b765/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4c2be724bbb7b61ab6632dcb1e7a5e7a/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4c2be724bbb7b61ab6632dcb1e7a5e7a/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1c5af4aadff81b154328672920e330ce/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1c5af4aadff81b154328672920e330ce/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/37d3bcd0ac66920f821151eb1fdc26c1/transformed/ui-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/37d3bcd0ac66920f821151eb1fdc26c1/transformed/ui-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity-compose:1.9.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/af6c4b2cb5d5d844f30e118ae60f6325/transformed/activity-compose-1.9.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-compose:1.9.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/af6c4b2cb5d5d844f30e118ae60f6325/transformed/activity-compose-1.9.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.9.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9cb6a23c73afb8ed754d5d0e18bd34f2/transformed/activity-ktx-1.9.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.9.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9cb6a23c73afb8ed754d5d0e18bd34f2/transformed/activity-ktx-1.9.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.9.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4750e41e5f743b5ef9457c9392c7047a/transformed/activity-1.9.3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.9.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4750e41e5f743b5ef9457c9392c7047a/transformed/activity-1.9.3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/6a4caf96c7cf0cc9240201b1d922f4e9/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/6a4caf96c7cf0cc9240201b1d922f4e9/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.autofill:autofill:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/c5d920a3977916a50ac2e0562f16f23f/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/c5d920a3977916a50ac2e0562f16f23f/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.graphics:graphics-path:1.0.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2c406e52847ad3206796388da9f19a62/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.graphics:graphics-path:1.0.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2c406e52847ad3206796388da9f19a62/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/461b3589af2752a6bfdfcaeb59eba7d3/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/461b3589af2752a6bfdfcaeb59eba7d3/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/0039cc7a45e372ec18bf371c1a0d3e75/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/0039cc7a45e372ec18bf371c1a0d3e75/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.browser:browser:1.8.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/48a15ed1fc34b337308ef108b8035b97/transformed/browser-1.8.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.browser:browser:1.8.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/48a15ed1fc34b337308ef108b8035b97/transformed/browser-1.8.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e221f72bfe80916615b732e524743fa8/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e221f72bfe80916615b732e524743fa8/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/fb8896c78af6792f93ae101f92891b0b/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/fb8896c78af6792f93ae101f92891b0b/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2c5e9b5f6f081cb486ec4a452ba5ecab/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2c5e9b5f6f081cb486ec4a452ba5ecab/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.core:core-ktx:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9554ba60d42ca17e4736b0751c404486/transformed/core-ktx-1.15.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9554ba60d42ca17e4736b0751c404486/transformed/core-ktx-1.15.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b7e96361570d0bd00bb441654394323f/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b7e96361570d0bd00bb441654394323f/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3de31ba02a05c5ab7e045e7c6689e2e8/transformed/runtime-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3de31ba02a05c5ab7e045e7c6689e2e8/transformed/runtime-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/8583d3a77330adadda11295700d21d02/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/8583d3a77330adadda11295700d21d02/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:21:5-44
+MERGED from [com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/be9b9d782db87a8aadbc18065274b27a/transformed/startup-runtime-1.2.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/be9b9d782db87a8aadbc18065274b27a/transformed/startup-runtime-1.2.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/0cf476e75b170c8d5d2e6f909fd8caf8/transformed/tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/0cf476e75b170c8d5d2e6f909fd8caf8/transformed/tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing-ktx:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/94e2c8027aea4dddc527c8a8fed318c3/transformed/tracing-ktx-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing-ktx:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/94e2c8027aea4dddc527c8a8fed318c3/transformed/tracing-ktx-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-core-android:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d8f867a2c49a880f9f49141ce9adf87a/transformed/datastore-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-core-android:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d8f867a2c49a880f9f49141ce9adf87a/transformed/datastore-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-android:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3b41b747480646c07d4bdfc57dbeef9e/transformed/datastore-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-android:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3b41b747480646c07d4bdfc57dbeef9e/transformed/datastore-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/79c09cfc1bb1d4f5f83fe43321023903/transformed/datastore-preferences-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/79c09cfc1bb1d4f5f83fe43321023903/transformed/datastore-preferences-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9802a61d94548f09485458e063dd692a/transformed/exifinterface-1.3.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9802a61d94548f09485458e063dd692a/transformed/exifinterface-1.3.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9e8eea8eb827b13fdab2a10f6da7eba4/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9e8eea8eb827b13fdab2a10f6da7eba4/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a40dc10c37593c4b534a11e258696e37/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a40dc10c37593c4b534a11e258696e37/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9404ec82f0089e7626ec0f428862346f/transformed/transport-api-2.2.1/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9404ec82f0089e7626ec0f428862346f/transformed/transport-api-2.2.1/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.firebase:firebase-components:16.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d25c5c8d8239abaecd059c21b4f3b207/transformed/firebase-components-16.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-components:16.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d25c5c8d8239abaecd059c21b4f3b207/transformed/firebase-components-16.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9a6d11ae49690e92acb3ad7b0cb05c16/transformed/firebase-encoders-json-17.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9a6d11ae49690e92acb3ad7b0cb05c16/transformed/firebase-encoders-json-17.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1702028316168660501a8a3a56764166/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1702028316168660501a8a3a56764166/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/68cb36a8aef8cf6651ef1a3fd4076bde/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/68cb36a8aef8cf6651ef1a3fd4076bde/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.russhwolf:multiplatform-settings-coroutines-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1967e73e79240e2a71c5e45a7849e9d6/transformed/multiplatform-settings-coroutines-debug/AndroidManifest.xml:5:5-44
+MERGED from [com.russhwolf:multiplatform-settings-coroutines-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/1967e73e79240e2a71c5e45a7849e9d6/transformed/multiplatform-settings-coroutines-debug/AndroidManifest.xml:5:5-44
+MERGED from [com.russhwolf:multiplatform-settings-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/6869c60e269ad853df40ee8d6195f275/transformed/multiplatform-settings-debug/AndroidManifest.xml:5:5-44
+MERGED from [com.russhwolf:multiplatform-settings-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/6869c60e269ad853df40ee8d6195f275/transformed/multiplatform-settings-debug/AndroidManifest.xml:5:5-44
+MERGED from [co.touchlab:kermit-android-debug:2.0.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4d6a24e9dde8cb2fa31ead67f30bde8b/transformed/kermit-debug/AndroidManifest.xml:5:5-44
+MERGED from [co.touchlab:kermit-android-debug:2.0.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/4d6a24e9dde8cb2fa31ead67f30bde8b/transformed/kermit-debug/AndroidManifest.xml:5:5-44
+MERGED from [co.touchlab:kermit-core-android-debug:2.0.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/32a5d12f9922f74a722f8977b37e2928/transformed/kermit-core-debug/AndroidManifest.xml:5:5-44
+MERGED from [co.touchlab:kermit-core-android-debug:2.0.5] /home/mattmurdock/.gradle/caches/9.1.0/transforms/32a5d12f9922f74a722f8977b37e2928/transformed/kermit-core-debug/AndroidManifest.xml:5:5-44
+MERGED from [com.google.dagger:dagger-lint-aar:2.60.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a9026dcb0fa6b81a1c4710e8a62ca075/transformed/dagger-lint-aar-2.60.1/AndroidManifest.xml:18:3-42
+MERGED from [com.google.dagger:dagger-lint-aar:2.60.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a9026dcb0fa6b81a1c4710e8a62ca075/transformed/dagger-lint-aar-2.60.1/AndroidManifest.xml:18:3-42
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/60ca5d598d4ee09f0566dd7e0409cd8c/transformed/image-1.0.0-beta1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/60ca5d598d4ee09f0566dd7e0409cd8c/transformed/image-1.0.0-beta1/AndroidManifest.xml:5:5-44
+	android:targetSdkVersion
+		INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml
+service#androidx.camera.core.impl.MetadataHolderService
+ADDED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:24:9-33:19
+MERGED from [androidx.camera:camera-core:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e3c4d19de8fb2f0159cf7a3165886eb3/transformed/camera-core-1.4.1/AndroidManifest.xml:29:9-33:78
+MERGED from [androidx.camera:camera-core:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/e3c4d19de8fb2f0159cf7a3165886eb3/transformed/camera-core-1.4.1/AndroidManifest.xml:29:9-33:78
+	tools:node
+		ADDED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:29:13-31
+	android:enabled
+		ADDED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:26:13-36
+	android:exported
+		ADDED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:27:13-37
+	tools:ignore
+		ADDED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:28:13-75
+	android:name
+		ADDED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:25:13-75
+meta-data#androidx.camera.core.impl.MetadataHolderService.DEFAULT_CONFIG_PROVIDER
+ADDED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:30:13-32:89
+	android:value
+		ADDED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:32:17-86
+	android:name
+		ADDED from [androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:31:17-103
+service#com.google.mlkit.common.internal.MlKitComponentDiscoveryService
+ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:15:9-23:19
+MERGED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:15:9-23:19
+	android:exported
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:11:13-37
+	tools:targetApi
+		ADDED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:19:13-32
+	android:directBootAware
+		ADDED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:17:13-43
+	android:name
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:10:13-91
+meta-data#com.google.firebase.components:com.google.mlkit.vision.barcode.internal.BarcodeRegistrar
+ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:12:13-14:85
+	android:value
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:14:17-82
+	android:name
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:13:17-120
+meta-data#com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar
+ADDED from [com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:12:13-14:85
+	android:value
+		ADDED from [com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:14:17-82
+	android:name
+		ADDED from [com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:13:17-124
+provider#com.google.mlkit.common.internal.MlKitInitProvider
+ADDED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:9:9-13:38
+	android:authorities
+		ADDED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:11:13-69
+	android:exported
+		ADDED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:12:13-37
+	android:initOrder
+		ADDED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:13:13-35
+	android:name
+		ADDED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:10:13-78
+meta-data#com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar
+ADDED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:20:13-22:85
+	android:value
+		ADDED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:22:17-82
+	android:name
+		ADDED from [com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:21:17-120
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:9-173
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:146-170
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:86-145
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:19-85
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:9-122
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:66-119
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:20-65
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+MERGED from [io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:9:9-17:20
+MERGED from [io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:9:9-17:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:24:9-32:20
+MERGED from [com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/be9b9d782db87a8aadbc18065274b27a/transformed/startup-runtime-1.2.0/AndroidManifest.xml:24:9-28:34
+MERGED from [androidx.startup:startup-runtime:1.2.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/be9b9d782db87a8aadbc18065274b27a/transformed/startup-runtime-1.2.0/AndroidManifest.xml:24:9-28:34
+	tools:node
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+meta-data#io.github.jan.supabase.auth.SupabaseInitializer
+ADDED from [io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:14:13-16:52
+	android:value
+		ADDED from [io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:16:17-49
+	android:name
+		ADDED from [io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:15:17-79
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:30:17-78
+activity#androidx.compose.ui.tooling.PreviewActivity
+ADDED from [androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:23:9-81
+permission#com.example.eventattendance.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:26:22-94
+uses-permission#com.example.eventattendance.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.15.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/9929990cc902dfd0155c083e39f38e95/transformed/core-1.15.0/AndroidManifest.xml:26:22-94
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+meta-data#com.russhwolf.settings.SettingsInitializer
+ADDED from [com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:30:17-74
+service#com.google.android.datatransport.runtime.backends.TransportBackendDiscovery
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:29:9-35:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:36:9-38:40
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:36:9-38:40
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:31:13-37
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:30:13-103
+meta-data#backend:com.google.android.datatransport.cct.CctBackendFactory
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:32:13-34:39
+	android:value
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:34:17-36
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:33:17-94
+service#com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService
+ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:26:9-30:19
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:28:13-37
+	android:permission
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:29:13-69
+	android:name
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:27:13-117
+receiver#com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver
+ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:32:9-34:40
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:34:13-37
+	android:name
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:33:13-132

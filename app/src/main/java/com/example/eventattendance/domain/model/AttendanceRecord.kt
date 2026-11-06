@@ -9,5 +9,7 @@ data class AttendanceRecord(
     val status: String = "present",
     val participantName: String? = null,
     val participantUsn: String? = null,
+    val teamId: String? = null,
+    val teamName: String? = null,
     val isPendingSync: Boolean = false
 )

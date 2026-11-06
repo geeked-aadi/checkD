@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+/mobile-assets
+prototype.html

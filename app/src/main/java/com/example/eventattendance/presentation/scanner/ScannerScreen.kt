@@ -10,17 +10,40 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,7 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,9 +65,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.eventattendance.presentation.scanner.components.CameraControls
 import com.example.eventattendance.presentation.scanner.components.ScanFeedbackBanner
 import com.example.eventattendance.presentation.scanner.components.ScannerOverlay
+import com.example.eventattendance.presentation.theme.Gray100
+import com.example.eventattendance.presentation.theme.Gray500
 import com.example.eventattendance.presentation.theme.MonochromeBlack
+import com.example.eventattendance.presentation.theme.MonochromeCardSurface
 import com.example.eventattendance.presentation.theme.MonochromeWhite
 import com.example.eventattendance.presentation.theme.ScannerBackground
+import com.example.eventattendance.presentation.theme.StatusYellow
 import java.util.concurrent.Executors
 
 @Composable
@@ -58,6 +85,12 @@ fun ScannerScreen(
     val scanResult by viewModel.scanResult.collectAsStateWithLifecycle()
     val isTorchOn by viewModel.isTorchOn.collectAsStateWithLifecycle()
     val isBackCamera by viewModel.isBackCamera.collectAsStateWithLifecycle()
+    val isBulkMode = viewModel.isBulkMode
+
+    val pendingList by viewModel.pendingList.collectAsStateWithLifecycle()
+    val isSubmitting by viewModel.isSubmitting.collectAsStateWithLifecycle()
+    val bulkSummary by viewModel.bulkSummary.collectAsStateWithLifecycle()
+    val bulkHint by viewModel.bulkHint.collectAsStateWithLifecycle()
 
     var cameraControl: Camera? by remember { mutableStateOf(null) }
 
@@ -82,7 +115,6 @@ fun ScannerScreen(
         }
     }
 
-    // Toggle torch on cameraControl
     LaunchedEffect(isTorchOn, cameraControl) {
         cameraControl?.cameraControl?.enableTorch(isTorchOn)
     }
@@ -135,23 +167,18 @@ fun ScannerScreen(
                                 preview,
                                 imageAnalysis
                             )
-                        } catch (e: Exception) {
-                            // Camera binding failure
-                        }
+                        } catch (_: Exception) {}
                     }, ContextCompat.getMainExecutor(ctx))
 
                     previewView
                 },
-                update = {
-                    // Update camera selector on camera switch
-                },
                 modifier = Modifier.fillMaxSize()
             )
 
-            // Scanning Viewfinder Overlay with Animated Laser Line
+            // Viewfinder Overlay
             ScannerOverlay()
 
-            // Top Bar Controls (Back, Flash, Flip)
+            // Top Camera Controls (Back, Flash, Flip)
             CameraControls(
                 isTorchOn = isTorchOn,
                 onTorchToggle = viewModel::toggleTorch,
@@ -160,13 +187,226 @@ fun ScannerScreen(
                 modifier = Modifier.align(Alignment.TopCenter)
             )
 
-            // Slide-up Feedback Banner at Bottom matching reference mockup
+            // Hint Banner for Bulk (e.g. "Already added")
+            AnimatedVisibility(
+                visible = bulkHint != null,
+                enter = slideInVertically(initialOffsetY = { -it }),
+                exit = slideOutVertically(targetOffsetY = { -it }),
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 90.dp, start = 20.dp, end = 20.dp)
+            ) {
+                bulkHint?.let { hint ->
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = MonochromeCardSurface),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                    ) {
+                        Text(
+                            text = hint,
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                            color = StatusYellow,
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+                        )
+                    }
+                }
+            }
+
+            // Bottom Feedback Banner for single scan or errors
             ScanFeedbackBanner(
                 scanResult = scanResult,
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
+
+            // Bulk Mode Bottom Queue Panel
+            if (isBulkMode) {
+                Card(
+                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                    colors = CardDefaults.cardColors(containerColor = MonochromeCardSurface),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp)
+                    ) {
+                        // Header: Title + Clear + Submit
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Bulk Scan Queue",
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 17.sp
+                                    ),
+                                    color = MonochromeBlack
+                                )
+                                Text(
+                                    text = "${pendingList.size} pending attendee${if (pendingList.size == 1) "" else "s"}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Gray500
+                                )
+                            }
+
+                            if (pendingList.isNotEmpty()) {
+                                TextButton(
+                                    onClick = viewModel::clearPendingList,
+                                    enabled = !isSubmitting
+                                ) {
+                                    Text(
+                                        text = "Clear",
+                                        color = Gray500,
+                                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+
+                            Button(
+                                onClick = viewModel::submitBulkAttendance,
+                                enabled = pendingList.isNotEmpty() && !isSubmitting,
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MonochromeBlack,
+                                    contentColor = MonochromeWhite
+                                )
+                            ) {
+                                if (isSubmitting) {
+                                    CircularProgressIndicator(
+                                        color = MonochromeWhite,
+                                        modifier = Modifier.size(18.dp),
+                                        strokeWidth = 2.dp
+                                    )
+                                } else {
+                                    Text(
+                                        text = "Submit (${pendingList.size})",
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
+                        }
+
+                        // List of Scanned Attendees in Queue
+                        if (pendingList.isNotEmpty()) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            HorizontalDivider(color = Gray100, thickness = 1.dp)
+
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(max = 180.dp),
+                                contentPadding = PaddingValues(vertical = 4.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                items(
+                                    items = pendingList,
+                                    key = { it.pId }
+                                ) { attendee ->
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp)
+                                    ) {
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(
+                                                text = attendee.name,
+                                                style = MaterialTheme.typography.bodyMedium.copy(
+                                                    fontWeight = FontWeight.SemiBold
+                                                ),
+                                                color = MonochromeBlack
+                                            )
+                                            val sub = buildString {
+                                                append(attendee.pId)
+                                                val team = attendee.teamName ?: attendee.teamId
+                                                if (!team.isNullOrBlank()) {
+                                                    append(" • $team")
+                                                }
+                                            }
+                                            Text(
+                                                text = sub,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = Gray500
+                                            )
+                                        }
+
+                                        IconButton(
+                                            onClick = { viewModel.removePendingAttendee(attendee.pId) },
+                                            modifier = Modifier.size(32.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Close,
+                                                contentDescription = "Remove",
+                                                tint = Gray500,
+                                                modifier = Modifier.size(18.dp)
+                                            )
+                                        }
+                                    }
+                                    HorizontalDivider(color = Gray100, thickness = 0.5.dp)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Bulk Summary Dialog
+            bulkSummary?.let { summary ->
+                AlertDialog(
+                    onDismissRequest = viewModel::dismissBulkSummary,
+                    title = {
+                        Text(
+                            text = "Attendance Summary",
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                        )
+                    },
+                    text = {
+                        Column {
+                            Text(
+                                text = "Successfully checked in: ${summary.markedCount}",
+                                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                                color = MonochromeBlack
+                            )
+                            if (summary.duplicateNames.isNotEmpty()) {
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Text(
+                                    text = "Already Checked In (${summary.duplicateNames.size}):",
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                                    color = StatusYellow
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = summary.duplicateNames.joinToString(", "),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Gray500
+                                )
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = viewModel::dismissBulkSummary,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MonochromeBlack,
+                                contentColor = MonochromeWhite
+                            )
+                        ) {
+                            Text("OK")
+                        }
+                    },
+                    shape = RoundedCornerShape(20.dp),
+                    containerColor = MonochromeCardSurface
+                )
+            }
         } else {
-            // Permission request fallback view
+            // Camera Permission fallback
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -177,9 +417,7 @@ fun ScannerScreen(
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = "Camera Permission Required",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                     color = MonochromeWhite,
                     textAlign = TextAlign.Center
                 )

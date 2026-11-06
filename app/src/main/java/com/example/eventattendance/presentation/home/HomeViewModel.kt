@@ -3,7 +3,7 @@ package com.example.eventattendance.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.eventattendance.domain.model.EventWithStats
-import com.example.eventattendance.domain.usecase.GetEventsWithStatsUseCase
+import com.example.eventattendance.domain.repository.AttendanceRepository
 import com.example.eventattendance.domain.usecase.SyncDataUseCase
 import com.example.eventattendance.sync.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,16 +18,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    getEventsWithStatsUseCase: GetEventsWithStatsUseCase,
+    private val attendanceRepository: AttendanceRepository,
     private val syncDataUseCase: SyncDataUseCase
 ) : ViewModel() {
 
-    val eventsWithStats: StateFlow<List<EventWithStats>> = getEventsWithStatsUseCase()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
+    val eventsWithStats: StateFlow<List<EventWithStats>> = attendanceRepository.eventsWithStatsFlow
 
     val isOffline: StateFlow<Boolean> = syncDataUseCase.observeConnectivity()
         .map { it != ConnectivityObserver.Status.Available }
@@ -48,14 +43,14 @@ class HomeViewModel @Inject constructor(
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     init {
-        // Trigger initial background sync on app launch
+        // Trigger initial sync on app launch
         refreshEvents(force = false)
     }
 
     fun refreshEvents(force: Boolean = true) {
         viewModelScope.launch {
             _isRefreshing.value = true
-            syncDataUseCase.triggerSync(forcePull = force)
+            attendanceRepository.syncAllEventsAttendance(forcePull = force)
             _isRefreshing.value = false
         }
     }

@@ -1,30 +1,10 @@
-import java.util.Properties
-import java.io.FileInputStream
-
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
 }
-
-// Load Supabase properties from local.properties or system env
-val localProperties = Properties().apply {
-    val localFile = rootProject.file("local.properties")
-    if (localFile.exists()) {
-        load(FileInputStream(localFile))
-    }
-}
-
-val supabaseUrl: String = localProperties.getProperty("SUPABASE_URL")
-    ?: System.getenv("SUPABASE_URL")
-    ?: "https://your-project.supabase.co"
-
-val supabaseAnonKey: String = localProperties.getProperty("SUPABASE_ANON_KEY")
-    ?: System.getenv("SUPABASE_ANON_KEY")
-    ?: "placeholder-anon-key"
 
 android {
     namespace = "com.example.eventattendance"
@@ -40,8 +20,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Inject configuration into BuildConfig
-        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
-        buildConfigField("String", "SUPABASE_ANON_KEY", "\"$supabaseAnonKey\"")
+        buildConfigField("String", "SUPABASE_URL", "\"https://atuqlygxcotltlqcjjfx.supabase.co\"")
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"sb_publishable_iFIOV8FYZS9X3uzakYtJjQ_tI2zMRR8\"")
     }
 
     buildTypes {
@@ -62,13 +42,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs += listOf(
-            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api"
-        )
-    }
 
     buildFeatures {
         compose = true
@@ -81,6 +54,16 @@ android {
             excludes += "META-INF/INDEX.LIST"
             excludes += "META-INF/io.netty.versions.properties"
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        freeCompilerArgs.addAll(
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api"
+        )
     }
 }
 
@@ -109,14 +92,9 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    // Room Database
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
 
-    // WorkManager
-    implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.androidx.hilt.work)
+
+
 
     // Supabase Multiplatform SDK
     implementation(platform(libs.supabase.bom))
@@ -149,4 +127,8 @@ dependencies {
 
     // Accompanist Permissions
     implementation(libs.accompanist.permissions)
+
+    // Unit Testing
+    testImplementation(kotlin("test"))
+    testImplementation("junit:junit:4.13.2")
 }

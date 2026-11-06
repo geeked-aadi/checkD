@@ -2,13 +2,11 @@ package com.example.eventattendance.domain.model
 
 data class Event(
     val id: String,
+    val eventId: Int = id.toIntOrNull() ?: 0,
     val name: String,
-    val description: String? = null,
-    val eventDate: String? = null,
-    val startTime: String? = null,
-    val endTime: String? = null,
-    val status: EventStatus = EventStatus.OPEN,
-    val createdAt: String? = null
+    val startsFrom: String? = null,
+    val endsOn: String? = null,
+    val status: EventStatus = EventStatus.OPEN
 )
 
 enum class EventStatus(val value: String) {

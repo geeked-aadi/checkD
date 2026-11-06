@@ -3,10 +3,10 @@
 Checkd is a clean, minimal, mobile-first Android application engineered for event volunteers and organizers to scan participant QR codes rapidly and reliably across hackathon activities (Registration, Food Distribution, Workshops, Technical Sessions).
 
 The UI is designed to be pixel-accurate to the monochrome high-contrast design specification:
-- **Home**: Single screen with rounded activity cards, bold progress counters, and real-time stats.
+- **Home**: Single screen with rounded activity cards, bold progress counters, and real-time stats referring directly to the Supabase `events` table.
 - **Event Detail**: Scanned participant feed with search and a prominent full-width **Scan QR Code** button.
-- **Camera Scanner**: Dedicated full-screen CameraX scanner with corner bracket overlays, animated scan line, continuous scanning with ML Kit, and slide-up feedback states.
-- **Offline-First Synchronization**: Pulls cloud updates on launch (detecting changes via `sync_metadata`), caches data in Room, performs instant offline validation and check-ins, and synchronizes batched check-ins via PostgreSQL RPC when network connectivity returns.
+- **Camera Scanner**: Dedicated full-screen CameraX scanner with corner bracket overlays, animated scan line, continuous scanning with Google ML Kit, and slide-up feedback states.
+- **Direct Supabase Cloud Integration**: Direct PostgREST queries against Supabase PostgreSQL (Room DB removed), validating participant IDs (`p_id`) and recording live attendance timestamps.
 - **Discreet Admin Access**: Protected admin portal hidden behind the Settings menu, authenticated via Supabase Auth.
 
 ---
@@ -17,11 +17,44 @@ The UI is designed to be pixel-accurate to the monochrome high-contrast design s
 - **UI Framework:** Jetpack Compose with Material 3 (Monochrome design system)
 - **Backend / Database:** Supabase PostgreSQL with `supabase-kt` 3.x
 - **Camera & Scanning:** CameraX 1.4 + Google ML Kit Barcode Scanning
-- **Local Persistence:** Room Database (Offline sync queue & cached entities)
 - **Asynchronous Flow:** Kotlin Coroutines & StateFlow
 - **Dependency Injection:** Dagger Hilt
 - **Navigation:** Navigation Compose
-- **Background Sync:** WorkManager + Android ConnectivityManager callbacks
+- **Connectivity:** Android ConnectivityManager callbacks
+
+---
+
+## Database Schema
+
+Checkd integrates directly with Supabase PostgreSQL using the following relational schema:
+
+### 1. `public.teams`
+- `team_id` (VARCHAR, PK)
+- `team_name` (VARCHAR)
+- `team_leader` (VARCHAR, FK -> `participants.p_id`)
+- `spoc_id` (VARCHAR, FK -> `spoc.spoc_id`)
+
+### 2. `public.participants`
+- `p_id` (VARCHAR, PK) — Unique participant identifier encoded in QR codes
+- `name` (VARCHAR) — Participant's full name
+- `team_id` (VARCHAR, FK -> `teams.team_id`)
+- `phonenumber` (NUMERIC)
+
+### 3. `public.spoc`
+- `spoc_id` (VARCHAR, PK)
+- `name` (VARCHAR)
+- `phonenumber` (NUMERIC)
+
+### 4. `public.events`
+- `event_id` (INTEGER, PK)
+- `event_name` (VARCHAR)
+- `starts_from` (TIMESTAMP WITHOUT TIME ZONE)
+- `ends_on` (TIMESTAMP WITHOUT TIME ZONE)
+
+### 5. `public.attendance`
+- `p_id` (VARCHAR, FK -> `participants.p_id`)
+- `event_id` (INTEGER, FK -> `events.event_id`)
+- `time` (TIMESTAMP WITHOUT TIME ZONE)
 
 ---
 
@@ -31,23 +64,6 @@ The UI is designed to be pixel-accurate to the monochrome high-contrast design s
 com.example.eventattendance
 │
 ├── data/
-│   ├── local/
-│   │   ├── AppDatabase.kt
-│   │   ├── dao/
-│   │   │   ├── EventDao.kt
-│   │   │   ├── ParticipantDao.kt
-│   │   │   ├── EligibilityDao.kt
-│   │   │   ├── AttendanceDao.kt
-│   │   │   ├── PendingScanDao.kt
-│   │   │   └── SyncMetaDao.kt
-│   │   └── entity/
-│   │       ├── EventEntity.kt
-│   │       ├── ParticipantEntity.kt
-│   │       ├── EventEligibilityEntity.kt
-│   │       ├── AttendanceRecordEntity.kt
-│   │       ├── PendingScanEntity.kt
-│   │       └── SyncMetaEntity.kt
-│   │
 │   ├── remote/
 │   │   ├── datasource/
 │   │   │   ├── EventRemoteDataSource.kt
@@ -58,10 +74,11 @@ com.example.eventattendance
 │   │   └── dto/
 │   │       ├── EventDto.kt
 │   │       ├── ParticipantDto.kt
-│   │       ├── AttendanceRecordDto.kt
-│   │       ├── EligibilityDto.kt
-│   │       ├── SyncMetadataDto.kt
-│   │       └── RpcAttendanceResponse.kt
+│   │       ├── TeamDto.kt
+│   │       ├── SpocDto.kt
+│   │       ├── AttendanceDto.kt
+│   │       ├── FlexibleStringSerializer.kt
+│   │       └── SyncMetadataDto.kt
 │   │
 │   └── repository/
 │       ├── EventRepositoryImpl.kt
@@ -141,8 +158,7 @@ com.example.eventattendance
 ├── sync/
 │   ├── ConnectivityObserver.kt
 │   ├── NetworkConnectivityObserver.kt
-│   ├── SyncManager.kt
-│   └── PendingScanSyncWorker.kt
+│   └── SyncManager.kt
 │
 ├── util/
 │   ├── HapticFeedbackUtil.kt
@@ -151,7 +167,6 @@ com.example.eventattendance
 │
 ├── di/
 │   ├── AppModule.kt
-│   ├── DatabaseModule.kt
 │   ├── NetworkModule.kt
 │   └── RepositoryModule.kt
 │
@@ -173,83 +188,23 @@ SUPABASE_ANON_KEY=your-supabase-publishable-anon-key
 
 ### 2. Deploy Database Schema
 Execute the SQL script located at `supabase/schema.sql` in the **Supabase SQL Editor**:
-- Creates `participants`, `events`, `event_eligibility`, `attendance_records`, `users`, `attendance_audit_logs`, and `sync_metadata`.
-- Installs triggers to automatically update `sync_metadata.last_modified_at` when events or participants are created or changed.
+- Creates `spoc`, `teams`, `participants`, `events`, and `attendance`.
 - Configures Row Level Security (RLS) policies.
-- Installs atomic PostgreSQL RPC functions:
-  - `mark_attendance(p_event_id, p_qr_token)`: Handles single scan check-ins.
-  - `mark_bulk_attendance(p_event_id, p_student_ids)`: Handles batch synchronization of offline queues with `ON CONFLICT DO NOTHING`.
 
 ### 3. Deploy Demo / Test Data
-Execute `supabase/seed.sql` in the Supabase SQL Editor:
-- Creates an admin user (`admin@hackathon.org`).
-- Populates the activities matching the UI reference:
-  - **Event 1:** 0 / 200
-  - **Breakfast:** 150 / 200 (75%)
-  - **Lunch:** 120 / 200 (60%)
-  - **Dinner:** 80 / 200 (40%)
-- Inserts 200 participants with unique opaque QR tokens (`QR_TOK_1RV22CS001`, `QR_TOK_1RV22CS017`, etc.).
-- Pre-seeds recent check-in records for Lunch (e.g. Aditya Sharma, Saanvi Rao, Mohan Kulkarni, Ishita Verma, Rohan Mehta).
-
----
-
-## Offline Synchronization Architecture
-
-```text
-[App Launch / Refresh]
-       │
-       ▼
-Check Cloud 'sync_metadata' timestamp
-       │
- ┌─────┴────────────────────────────────────────────────┐
- │ Has cloud changed vs local?                          │
- ├──────────────────────────────┬───────────────────────┤
- │ YES                          │ NO                    │
- │ 1. Wipe events,              │ Keep existing Room    │
- │    participants, eligibility │ cache as-is           │
- │ 2. Re-insert fresh snapshot  │                       │
- │ 3. PRESERVE 'pending_scans'  │                       │
- └──────────────────────────────┴───────────────────────┘
-       │
-       ▼
-[Offline QR Scan]
- 1. Lookup participant by qr_token in local Room DB
- 2. Validate eligibility & duplicate status locally
- 3. Insert into 'pending_scans' (PENDING)
- 4. Show instant UI confirmation (Green / Yellow / Red) + Haptic/Sound
-       │
-       ▼
-[Internet Restored]
- 1. ConnectivityObserver fires NetworkCallback
- 2. Batch-push pending scans to Supabase RPC 'mark_bulk_attendance'
- 3. Mark scans as SYNCED
-```
+Execute `supabase/seed.sql` in the Supabase SQL Editor to populate sample SPOCs, teams, participants, events, and attendance records.
 
 ---
 
 ## Sample QR Code Tokens for Testing
 
-You can generate QR codes using any online QR generator (or phone screen) with these raw string values:
+When testing the QR barcode scanner, participants' QR codes encode their `p_id` values:
 
-| Participant Name | USN | QR Code Content | Status for Lunch in Seed Data |
+| Participant Name | Participant ID (`p_id`) | Team | Seed Status for Event 1 |
 |---|---|---|---|
-| Aditya Sharma | 1RV22CS001 | `QR_TOK_1RV22CS001` | Already Checked In (Yellow warning) |
-| Saanvi Rao | 1RV22CS017 | `QR_TOK_1RV22CS017` | Already Checked In (Yellow warning) |
-| Mohan Kulkarni | 1RV22CS023 | `QR_TOK_1RV22CS023` | Already Checked In (Yellow warning) |
-| Participant 150 | 1RV22CS150 | `QR_TOK_1RV22CS150` | Not checked in (Successful Green Check-in) |
-| Participant 151 | 1RV22CS151 | `QR_TOK_1RV22CS151` | Not checked in (Successful Green Check-in) |
-| Unknown Person | N/A | `INVALID_CODE_12345` | Invalid QR (Red error) |
-
----
-
-## Hidden Admin Mode
-
-1. From the Home screen, tap the **Settings** gear icon in the top-right corner.
-2. Scroll to the bottom of the Settings screen.
-3. Tap **Admin Access**.
-4. Log in using the administrator email (e.g., `admin@hackathon.org`) configured in Supabase.
-5. Once verified against `users.role = 'admin'`, the **Admin Panel** unlocks:
-   - Create new events
-   - Toggle events Open/Closed
-   - View real-time attendee statistics
-   - Export attendance data
+| Aditya Sharma | `P101` | TEAM_A | Already Checked In (Yellow warning) |
+| Saanvi Rao | `P102` | TEAM_A | Already Checked In (Yellow warning) |
+| Mohan Kulkarni | `P103` | TEAM_B | Already Checked In (Yellow warning) |
+| Ishita Verma | `P104` | TEAM_B | Not checked in (Successful Green Check-in) |
+| Rohan Mehta | `P105` | TEAM_C | Not checked in (Successful Green Check-in) |
+| Unknown / Invalid | `INVALID_CODE_999` | N/A | Invalid QR (Red error) |

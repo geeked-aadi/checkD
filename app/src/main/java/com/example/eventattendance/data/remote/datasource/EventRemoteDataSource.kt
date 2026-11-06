@@ -17,11 +17,11 @@ class EventRemoteDataSource @Inject constructor(
             .decodeList<EventDto>()
     }
 
-    suspend fun getEventById(eventId: String): EventDto? {
+    suspend fun getEventById(eventId: Int): EventDto? {
         return supabaseClient.from("events")
             .select(columns = Columns.ALL) {
                 filter {
-                    eq("id", eventId)
+                    eq("event_id", eventId)
                 }
             }
             .decodeSingleOrNull<EventDto>()
@@ -35,14 +35,21 @@ class EventRemoteDataSource @Inject constructor(
             .decodeSingle<EventDto>()
     }
 
-    suspend fun updateEventStatus(eventId: String, status: String) {
-        supabaseClient.from("events")
-            .update({
-                set("status", status)
-            }) {
-                filter {
-                    eq("id", eventId)
-                }
+    suspend fun getNextEventId(): Int {
+        val events = getAllEvents()
+        return (events.maxOfOrNull { it.eventId } ?: 0) + 1
+    }
+
+    suspend fun updateEventTimeWindow(eventId: Int, startsFrom: String, endsOn: String) {
+        supabaseClient.from("events").update(
+            {
+                set("starts_from", startsFrom)
+                set("ends_on", endsOn)
             }
+        ) {
+            filter {
+                eq("event_id", eventId)
+            }
+        }
     }
 }
