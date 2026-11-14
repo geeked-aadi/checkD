@@ -28,3 +28,18 @@ app/src/main/res/drawable-nodpi/
 app/src/main/res/drawable/ic_pixel_*.xml
 app/src/main/res/font/
 .gradle-home/
+
+# Local signing / secrets / generated app artifacts
+*.jks
+*.keystore
+*.p12
+*.pem
+*.apk
+*.aab
+*.aar
+*.log
+.env
+.env.*
+/app/release/
+/app/debug/
+/secrets/s
