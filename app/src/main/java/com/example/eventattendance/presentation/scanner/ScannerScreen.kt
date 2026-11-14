@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -65,14 +66,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.eventattendance.presentation.scanner.components.CameraControls
 import com.example.eventattendance.presentation.scanner.components.ScanFeedbackBanner
 import com.example.eventattendance.presentation.scanner.components.ScannerOverlay
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray500
 import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeCardSurface
 import com.example.eventattendance.presentation.theme.MonochromeWhite
 import com.example.eventattendance.presentation.theme.ScannerBackground
-import com.example.eventattendance.presentation.theme.StatusYellow
+import com.example.eventattendance.presentation.theme.statusColors
 import java.util.concurrent.Executors
+
 
 @Composable
 fun ScannerScreen(
@@ -199,13 +198,14 @@ fun ScannerScreen(
                 bulkHint?.let { hint ->
                     Card(
                         shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = MonochromeCardSurface),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                     ) {
                         Text(
                             text = hint,
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                            color = StatusYellow,
+                            color = MaterialTheme.statusColors.warning,
                             modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
                         )
                     }
@@ -222,11 +222,13 @@ fun ScannerScreen(
             if (isBulkMode) {
                 Card(
                     shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                    colors = CardDefaults.cardColors(containerColor = MonochromeCardSurface),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                     elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
+                        .navigationBarsPadding()
                 ) {
                     Column(
                         modifier = Modifier
@@ -245,12 +247,12 @@ fun ScannerScreen(
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 17.sp
                                     ),
-                                    color = MonochromeBlack
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
                                     text = "${pendingList.size} pending attendee${if (pendingList.size == 1) "" else "s"}",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = Gray500
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
 
@@ -261,7 +263,7 @@ fun ScannerScreen(
                                 ) {
                                     Text(
                                         text = "Clear",
-                                        color = Gray500,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
                                     )
                                 }
@@ -269,18 +271,19 @@ fun ScannerScreen(
                                 Spacer(modifier = Modifier.width(8.dp))
                             }
 
+
                             Button(
                                 onClick = viewModel::submitBulkAttendance,
                                 enabled = pendingList.isNotEmpty() && !isSubmitting,
                                 shape = RoundedCornerShape(12.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = MonochromeBlack,
-                                    contentColor = MonochromeWhite
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary
                                 )
                             ) {
                                 if (isSubmitting) {
                                     CircularProgressIndicator(
-                                        color = MonochromeWhite,
+                                        color = MaterialTheme.colorScheme.onPrimary,
                                         modifier = Modifier.size(18.dp),
                                         strokeWidth = 2.dp
                                     )
@@ -296,7 +299,7 @@ fun ScannerScreen(
                         // List of Scanned Attendees in Queue
                         if (pendingList.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(12.dp))
-                            HorizontalDivider(color = Gray100, thickness = 1.dp)
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), thickness = 1.dp)
 
                             LazyColumn(
                                 modifier = Modifier
@@ -321,7 +324,7 @@ fun ScannerScreen(
                                                 style = MaterialTheme.typography.bodyMedium.copy(
                                                     fontWeight = FontWeight.SemiBold
                                                 ),
-                                                color = MonochromeBlack
+                                                color = MaterialTheme.colorScheme.onSurface
                                             )
                                             val sub = buildString {
                                                 append(attendee.pId)
@@ -333,7 +336,7 @@ fun ScannerScreen(
                                             Text(
                                                 text = sub,
                                                 style = MaterialTheme.typography.bodySmall,
-                                                color = Gray500
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
                                         }
 
@@ -344,12 +347,12 @@ fun ScannerScreen(
                                             Icon(
                                                 imageVector = Icons.Default.Close,
                                                 contentDescription = "Remove",
-                                                tint = Gray500,
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 modifier = Modifier.size(18.dp)
                                             )
                                         }
                                     }
-                                    HorizontalDivider(color = Gray100, thickness = 0.5.dp)
+                                    HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
                                 }
                             }
                         }
@@ -364,7 +367,8 @@ fun ScannerScreen(
                     title = {
                         Text(
                             text = "Attendance Summary",
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     },
                     text = {
@@ -372,20 +376,20 @@ fun ScannerScreen(
                             Text(
                                 text = "Successfully checked in: ${summary.markedCount}",
                                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-                                color = MonochromeBlack
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             if (summary.duplicateNames.isNotEmpty()) {
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Text(
                                     text = "Already Checked In (${summary.duplicateNames.size}):",
                                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                                    color = StatusYellow
+                                    color = MaterialTheme.statusColors.warning
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = summary.duplicateNames.joinToString(", "),
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = Gray500
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
@@ -394,17 +398,18 @@ fun ScannerScreen(
                         Button(
                             onClick = viewModel::dismissBulkSummary,
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MonochromeBlack,
-                                contentColor = MonochromeWhite
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
                             )
                         ) {
                             Text("OK")
                         }
                     },
                     shape = RoundedCornerShape(20.dp),
-                    containerColor = MonochromeCardSurface
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             }
+
         } else {
             // Camera Permission fallback
             Column(
@@ -423,7 +428,7 @@ fun ScannerScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Checkd needs camera access to scan attendee QR codes quickly and continuously.",
+                    text = "checkD needs camera access to scan attendee QR codes quickly and continuously.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MonochromeWhite.copy(alpha = 0.7f),
                     textAlign = TextAlign.Center

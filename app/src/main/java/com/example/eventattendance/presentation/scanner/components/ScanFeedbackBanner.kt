@@ -1,8 +1,10 @@
 package com.example.eventattendance.presentation.scanner.components
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,14 +26,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eventattendance.domain.model.ScanResult
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeCardSurface
-import com.example.eventattendance.presentation.theme.StatusRed
-import com.example.eventattendance.presentation.theme.StatusYellow
+import com.example.eventattendance.domain.model.ThemeMode
+import com.example.eventattendance.presentation.theme.CheckdTheme
+import com.example.eventattendance.presentation.theme.statusColors
 
 @Composable
 fun ScanFeedbackBanner(
@@ -46,9 +47,12 @@ fun ScanFeedbackBanner(
     ) {
         if (scanResult == null) return@AnimatedVisibility
 
+        val statusColors = MaterialTheme.statusColors
+
         Card(
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = MonochromeCardSurface),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
             modifier = Modifier
                 .fillMaxWidth()
@@ -66,7 +70,7 @@ fun ScanFeedbackBanner(
                         Icon(
                             imageVector = Icons.Filled.CheckCircle,
                             contentDescription = "Success",
-                            tint = MonochromeBlack,
+                            tint = statusColors.success,
                             modifier = Modifier.size(36.dp)
                         )
                     }
@@ -74,7 +78,7 @@ fun ScanFeedbackBanner(
                         Icon(
                             imageVector = Icons.Filled.Warning,
                             contentDescription = "Already Checked In",
-                            tint = StatusYellow,
+                            tint = statusColors.warning,
                             modifier = Modifier.size(36.dp)
                         )
                     }
@@ -86,7 +90,7 @@ fun ScanFeedbackBanner(
                         Icon(
                             imageVector = Icons.Filled.Cancel,
                             contentDescription = "Error",
-                            tint = StatusRed,
+                            tint = statusColors.danger,
                             modifier = Modifier.size(36.dp)
                         )
                     }
@@ -103,8 +107,8 @@ fun ScanFeedbackBanner(
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 17.sp
-                               ),
-                                color = MonochromeBlack
+                                ),
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
                                 text = scanResult.participantName,
@@ -112,7 +116,7 @@ fun ScanFeedbackBanner(
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 15.sp
                                 ),
-                                color = MonochromeBlack
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             val sub = buildString {
                                 append(scanResult.participantUsn)
@@ -123,7 +127,7 @@ fun ScanFeedbackBanner(
                             Text(
                                 text = sub,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Gray500
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         is ScanResult.AlreadyCheckedIn -> {
@@ -133,14 +137,14 @@ fun ScanFeedbackBanner(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 17.sp
                                 ),
-                                color = StatusYellow
+                                color = statusColors.warning
                             )
                             Text(
                                 text = scanResult.participantName,
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     fontWeight = FontWeight.SemiBold
                                 ),
-                                color = MonochromeBlack
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             val sub = buildString {
                                 append(scanResult.participantUsn)
@@ -151,7 +155,7 @@ fun ScanFeedbackBanner(
                             Text(
                                 text = sub,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Gray500
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         is ScanResult.NetworkError -> {
@@ -161,12 +165,12 @@ fun ScanFeedbackBanner(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp
                                 ),
-                                color = StatusRed
+                                color = statusColors.danger
                             )
                             Text(
                                 text = "No connection, try again",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Gray500
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         is ScanResult.NotEligible -> {
@@ -176,13 +180,13 @@ fun ScanFeedbackBanner(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp
                                 ),
-                                color = StatusRed
+                                color = statusColors.danger
                             )
                             scanResult.participantName?.let {
                                 Text(
                                     text = "$it (${scanResult.participantUsn})",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = Gray500
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
@@ -193,12 +197,12 @@ fun ScanFeedbackBanner(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp
                                 ),
-                                color = StatusRed
+                                color = statusColors.danger
                             )
                             Text(
                                 text = "Participant QR token not recognized",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Gray500
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         is ScanResult.EventClosed -> {
@@ -208,12 +212,12 @@ fun ScanFeedbackBanner(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp
                                 ),
-                                color = StatusRed
+                                color = statusColors.danger
                             )
                             Text(
                                 text = "This activity is not accepting check-ins",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Gray500
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         is ScanResult.Error -> {
@@ -223,12 +227,12 @@ fun ScanFeedbackBanner(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp
                                 ),
-                                color = StatusRed
+                                color = statusColors.danger
                             )
                             Text(
                                 text = scanResult.message,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Gray500
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -237,3 +241,62 @@ fun ScanFeedbackBanner(
         }
     }
 }
+
+@Preview(name = "Feedback Banner - Success Light")
+@Composable
+private fun ScanFeedbackBannerSuccessLightPreview() {
+    CheckdTheme(themeMode = ThemeMode.LIGHT) {
+        ScanFeedbackBanner(
+            scanResult = ScanResult.Success(
+                participantName = "John Doe",
+                participantUsn = "1MS21CS001",
+                teamName = "Alpha",
+                isPendingSync = false
+            )
+        )
+    }
+}
+
+@Preview(name = "Feedback Banner - Success Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ScanFeedbackBannerSuccessDarkPreview() {
+    CheckdTheme(themeMode = ThemeMode.DARK) {
+        ScanFeedbackBanner(
+            scanResult = ScanResult.Success(
+                participantName = "John Doe",
+                participantUsn = "1MS21CS001",
+                teamName = "Alpha",
+                isPendingSync = false
+            )
+        )
+    }
+}
+
+@Preview(name = "Feedback Banner - Warning Light")
+@Composable
+private fun ScanFeedbackBannerWarningLightPreview() {
+    CheckdTheme(themeMode = ThemeMode.LIGHT) {
+        ScanFeedbackBanner(
+            scanResult = ScanResult.AlreadyCheckedIn(
+                participantName = "John Doe",
+                participantUsn = "1MS21CS001",
+                teamName = "Alpha"
+            )
+        )
+    }
+}
+
+@Preview(name = "Feedback Banner - Warning Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ScanFeedbackBannerWarningDarkPreview() {
+    CheckdTheme(themeMode = ThemeMode.DARK) {
+        ScanFeedbackBanner(
+            scanResult = ScanResult.AlreadyCheckedIn(
+                participantName = "John Doe",
+                participantUsn = "1MS21CS001",
+                teamName = "Alpha"
+            )
+        )
+    }
+}
+

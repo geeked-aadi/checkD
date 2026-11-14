@@ -15,7 +15,7 @@ class ManageEventsUseCase @Inject constructor(
         return eventRepository.updateEventStatus(eventId, isOpen)
     }
 
-    suspend fun updateTimeWindow(eventId: Int, startsFrom: String, endsOn: String): Result<Unit> {
-        return eventRepository.updateTimeWindow(eventId, startsFrom, endsOn)
+    suspend fun updateTimeWindow(eventId: Int, startsFrom: String, endsOn: String, name: String? = null): Result<Unit> {
+        return eventRepository.updateTimeWindow(eventId, startsFrom, endsOn, name)
     }
 }

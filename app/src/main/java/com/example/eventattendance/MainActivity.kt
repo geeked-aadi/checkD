@@ -1,9 +1,11 @@
 package com.example.eventattendance
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -28,10 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.example.eventattendance.domain.model.ThemeMode
 import com.example.eventattendance.navigation.AppNavigation
 import com.example.eventattendance.presentation.theme.CheckdTheme
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,9 +42,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            CheckdTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    val mainViewModel: MainViewModel = hiltViewModel()
+            val mainViewModel: MainViewModel = hiltViewModel()
+            val themeMode by mainViewModel.themeMode.collectAsStateWithLifecycle()
+
+            CheckdTheme(themeMode = themeMode) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
                     val isReady by mainViewModel.isReady.collectAsStateWithLifecycle()
 
                     if (!isReady) {
@@ -72,31 +78,48 @@ fun AppSplashScreen() {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
                 painter = painterResource(id = R.drawable.ic_checkd_logo),
-                contentDescription = "Checkd Logo",
+                contentDescription = "checkD Logo",
                 modifier = Modifier.size(72.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Checkd",
+                text = "checkD",
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
                     letterSpacing = (-0.5).sp
                 ),
-                color = MonochromeBlack
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Event Attendance System",
                 style = MaterialTheme.typography.bodySmall,
-                color = Gray500
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(32.dp))
             CircularProgressIndicator(
-                color = MonochromeBlack,
+                color = MaterialTheme.colorScheme.primary,
                 strokeWidth = 2.5.dp,
                 modifier = Modifier.size(28.dp)
             )
         }
     }
 }
+
+@Preview(name = "Splash - Light")
+@Composable
+private fun AppSplashScreenLightPreview() {
+    CheckdTheme(themeMode = ThemeMode.LIGHT) {
+        AppSplashScreen()
+    }
+}
+
+@Preview(name = "Splash - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun AppSplashScreenDarkPreview() {
+    CheckdTheme(themeMode = ThemeMode.DARK) {
+        AppSplashScreen()
+    }
+}
+

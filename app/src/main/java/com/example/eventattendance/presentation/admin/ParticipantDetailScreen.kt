@@ -1,6 +1,7 @@
 package com.example.eventattendance.presentation.admin
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,20 +57,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.border
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.eventattendance.domain.model.TimeBasedStatus
 import com.example.eventattendance.presentation.common.CallButton
 import com.example.eventattendance.presentation.common.EventStatusChip
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray200
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeWhite
-import com.example.eventattendance.presentation.theme.StatusGreen
-import com.example.eventattendance.presentation.theme.StatusGreenBg
-import com.example.eventattendance.presentation.theme.StatusRed
-import com.example.eventattendance.presentation.theme.StatusRedBg
-import com.example.eventattendance.presentation.theme.StatusYellow
-import com.example.eventattendance.presentation.theme.StatusYellowBg
+import com.example.eventattendance.presentation.theme.CheckdTheme
+import com.example.eventattendance.presentation.theme.statusColors
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -113,12 +108,12 @@ fun ParticipantDetailScreen(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 18.sp
                                 ),
-                                color = MonochromeBlack
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                             Text(
                                 text = "Participant Journey · ID: ${viewModel.pId}",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Gray500
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 
@@ -138,7 +133,7 @@ fun ParticipantDetailScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = MonochromeBlack
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
@@ -147,7 +142,7 @@ fun ParticipantDetailScreen(
                         Icon(
                             imageVector = Icons.Default.Refresh,
                             contentDescription = "Refresh",
-                            tint = MonochromeBlack
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
@@ -170,7 +165,7 @@ fun ParticipantDetailScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = MonochromeBlack)
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             } else {
                 val currentJourney = journey!!
@@ -184,7 +179,8 @@ fun ParticipantDetailScreen(
                     item {
                         Card(
                             shape = RoundedCornerShape(20.dp),
-                            colors = CardDefaults.cardColors(containerColor = MonochromeBlack),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Column(modifier = Modifier.padding(20.dp)) {
@@ -200,14 +196,14 @@ fun ParticipantDetailScreen(
                                                     fontWeight = FontWeight.Bold,
                                                     fontSize = 20.sp
                                                 ),
-                                                color = MonochromeWhite
+                                                color = MaterialTheme.colorScheme.onSurface
                                             )
                                             if (currentJourney.isLeader) {
                                                 Spacer(modifier = Modifier.width(8.dp))
                                                 Box(
                                                     modifier = Modifier
                                                         .clip(RoundedCornerShape(4.dp))
-                                                        .background(MonochromeWhite)
+                                                        .background(MaterialTheme.colorScheme.primary)
                                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                                 ) {
                                                     Text(
@@ -216,7 +212,7 @@ fun ParticipantDetailScreen(
                                                             fontSize = 10.sp,
                                                             fontWeight = FontWeight.Bold
                                                         ),
-                                                        color = MonochromeBlack
+                                                        color = MaterialTheme.colorScheme.onPrimary
                                                     )
                                                 }
                                             }
@@ -226,7 +222,7 @@ fun ParticipantDetailScreen(
                                         Text(
                                             text = "ID: ${currentJourney.participant.pId}",
                                             style = MaterialTheme.typography.bodySmall,
-                                            color = MonochromeWhite.copy(alpha = 0.7f)
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
 
@@ -240,12 +236,12 @@ fun ParticipantDetailScreen(
                                                 fontWeight = FontWeight.Bold,
                                                 fontSize = 26.sp
                                             ),
-                                            color = MonochromeWhite
+                                            color = MaterialTheme.colorScheme.onSurface
                                         )
                                         Text(
                                             text = "${currentJourney.attendedEvents} of ${currentJourney.totalEvents} events",
                                             style = MaterialTheme.typography.bodySmall,
-                                            color = MonochromeWhite.copy(alpha = 0.7f)
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
                                 }
@@ -257,9 +253,10 @@ fun ParticipantDetailScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(8.dp)
-                                        .clip(RoundedCornerShape(4.dp)),
-                                    color = MonochromeWhite,
-                                    trackColor = MonochromeWhite.copy(alpha = 0.25f)
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp)),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    trackColor = MaterialTheme.colorScheme.surfaceVariant
                                 )
                             }
                         }
@@ -269,7 +266,8 @@ fun ParticipantDetailScreen(
                     item {
                         Card(
                             shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(containerColor = Gray100),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
@@ -279,7 +277,7 @@ fun ParticipantDetailScreen(
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 14.sp
                                     ),
-                                    color = MonochromeBlack
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
 
                                 Spacer(modifier = Modifier.height(10.dp))
@@ -292,7 +290,7 @@ fun ParticipantDetailScreen(
                                     Icon(
                                         imageVector = Icons.Outlined.Groups,
                                         contentDescription = null,
-                                        tint = MonochromeBlack,
+                                        tint = MaterialTheme.colorScheme.onSurface,
                                         modifier = Modifier.size(18.dp)
                                     )
                                     Spacer(modifier = Modifier.width(10.dp))
@@ -300,18 +298,18 @@ fun ParticipantDetailScreen(
                                         Text(
                                             text = "Team",
                                             style = MaterialTheme.typography.labelSmall,
-                                            color = Gray500
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         Text(
                                             text = "${currentJourney.participant.teamName ?: "No Team"} (${currentJourney.participant.teamId ?: "N/A"})",
                                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                                            color = MonochromeBlack
+                                            color = MaterialTheme.colorScheme.onSurface
                                         )
                                     }
                                 }
 
                                 Spacer(modifier = Modifier.height(10.dp))
-                                HorizontalDivider(color = Gray200)
+                                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                                 Spacer(modifier = Modifier.height(10.dp))
 
                                 // SPOC Info Row
@@ -322,7 +320,7 @@ fun ParticipantDetailScreen(
                                     Icon(
                                         imageVector = Icons.Outlined.Badge,
                                         contentDescription = null,
-                                        tint = MonochromeBlack,
+                                        tint = MaterialTheme.colorScheme.onSurface,
                                         modifier = Modifier.size(18.dp)
                                     )
                                     Spacer(modifier = Modifier.width(10.dp))
@@ -330,12 +328,12 @@ fun ParticipantDetailScreen(
                                         Text(
                                             text = "Assigned SPOC",
                                             style = MaterialTheme.typography.labelSmall,
-                                            color = Gray500
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         Text(
                                             text = "${currentJourney.participant.spocName ?: "Unassigned"} (${currentJourney.participant.spocId ?: "N/A"})",
                                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                                            color = MonochromeBlack
+                                            color = MaterialTheme.colorScheme.onSurface
                                         )
                                     }
 
@@ -366,13 +364,13 @@ fun ParticipantDetailScreen(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 17.sp
                                 ),
-                                color = MonochromeBlack,
+                                color = MaterialTheme.colorScheme.onBackground,
                                 modifier = Modifier.weight(1f)
                             )
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(Gray100)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
                                     .padding(horizontal = 8.dp, vertical = 3.dp)
                             ) {
                                 Text(
@@ -381,7 +379,7 @@ fun ParticipantDetailScreen(
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 11.sp
                                     ),
-                                    color = MonochromeBlack
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
@@ -393,7 +391,7 @@ fun ParticipantDetailScreen(
                             Text(
                                 text = "No activities registered yet.",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Gray500
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     } else {
@@ -432,17 +430,34 @@ fun ParticipantTimelineItemRow(
         ) {
             // Marker circle based on attendance & event status
             val (markerBg, markerIconColor, markerIcon) = when {
-                item.isPresent -> Triple(StatusGreenBg, StatusGreen, Icons.Default.Check)
-                item.timeStatus == TimeBasedStatus.LIVE -> Triple(StatusYellowBg, StatusYellow, Icons.Outlined.Schedule)
-                item.timeStatus == TimeBasedStatus.ENDED -> Triple(StatusRedBg, StatusRed, Icons.Default.Close)
-                else -> Triple(Gray100, Gray500, Icons.Outlined.Schedule) // UPCOMING
+                item.isPresent -> Triple(
+                    MaterialTheme.statusColors.successContainer,
+                    MaterialTheme.statusColors.onSuccessContainer,
+                    Icons.Default.Check
+                )
+                item.timeStatus == TimeBasedStatus.LIVE -> Triple(
+                    MaterialTheme.statusColors.warningContainer,
+                    MaterialTheme.statusColors.onWarningContainer,
+                    Icons.Outlined.Schedule
+                )
+                item.timeStatus == TimeBasedStatus.ENDED -> Triple(
+                    MaterialTheme.statusColors.dangerContainer,
+                    MaterialTheme.statusColors.onDangerContainer,
+                    Icons.Default.Close
+                )
+                else -> Triple(
+                    MaterialTheme.colorScheme.surfaceVariant,
+                    MaterialTheme.colorScheme.onSurfaceVariant,
+                    Icons.Outlined.Schedule
+                ) // UPCOMING
             }
 
             Box(
                 modifier = Modifier
                     .size(28.dp)
                     .clip(CircleShape)
-                    .background(markerBg),
+                    .background(markerBg)
+                    .border(1.dp, markerIconColor.copy(alpha = 0.5f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -460,7 +475,7 @@ fun ParticipantTimelineItemRow(
                         .width(2.dp)
                         .fillMaxHeight()
                         .padding(vertical = 4.dp)
-                        .background(Gray200)
+                        .background(MaterialTheme.colorScheme.outline)
                 )
             }
         }
@@ -470,7 +485,8 @@ fun ParticipantTimelineItemRow(
         // Content Card
         Card(
             shape = RoundedCornerShape(14.dp),
-            colors = CardDefaults.cardColors(containerColor = Gray100),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = if (isLast) 0.dp else 12.dp)
@@ -483,7 +499,7 @@ fun ParticipantTimelineItemRow(
                     Text(
                         text = item.eventName,
                         style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                        color = MonochromeBlack,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -495,7 +511,7 @@ fun ParticipantTimelineItemRow(
                     Text(
                         text = item.formattedTimeWindow,
                         style = MaterialTheme.typography.bodySmall,
-                        color = Gray500
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -508,16 +524,33 @@ fun ParticipantTimelineItemRow(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     val (statusLabel, statusBg, statusColor) = when {
-                        item.isPresent -> Triple("Checked In", StatusGreenBg, StatusGreen)
-                        item.timeStatus == TimeBasedStatus.LIVE -> Triple("Pending Check-in", StatusYellowBg, StatusYellow)
-                        item.timeStatus == TimeBasedStatus.ENDED -> Triple("Absent / Missed", StatusRedBg, StatusRed)
-                        else -> Triple("Upcoming Activity", Gray200, MonochromeBlack)
+                        item.isPresent -> Triple(
+                            "Checked In",
+                            MaterialTheme.statusColors.successContainer,
+                            MaterialTheme.statusColors.onSuccessContainer
+                        )
+                        item.timeStatus == TimeBasedStatus.LIVE -> Triple(
+                            "Pending Check-in",
+                            MaterialTheme.statusColors.warningContainer,
+                            MaterialTheme.statusColors.onWarningContainer
+                        )
+                        item.timeStatus == TimeBasedStatus.ENDED -> Triple(
+                            "Absent / Missed",
+                            MaterialTheme.statusColors.dangerContainer,
+                            MaterialTheme.statusColors.onDangerContainer
+                        )
+                        else -> Triple(
+                            "Upcoming Activity",
+                            MaterialTheme.colorScheme.surfaceVariant,
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
 
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(6.dp))
                             .background(statusBg)
+                            .border(1.dp, statusColor.copy(alpha = 0.5f), RoundedCornerShape(6.dp))
                             .padding(horizontal = 8.dp, vertical = 3.dp)
                     ) {
                         Text(
@@ -533,10 +566,76 @@ fun ParticipantTimelineItemRow(
                     Text(
                         text = if (item.isPresent) "Attendance Verified" else if (item.timeStatus == TimeBasedStatus.LIVE) "Awaiting Scan" else if (item.timeStatus == TimeBasedStatus.ENDED) "No Check-in" else "Not Started",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Gray500
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun ParticipantTimelineItemRowLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            ParticipantTimelineItemRow(
+                item = ParticipantEventJourneyItem(
+                    eventId = 1,
+                    eventName = "Opening Ceremony",
+                    startsFrom = null,
+                    endsOn = null,
+                    formattedTimeWindow = "09:00 AM - 10:00 AM",
+                    timeStatus = TimeBasedStatus.ENDED,
+                    isPresent = true
+                ),
+                isLast = false
+            )
+            ParticipantTimelineItemRow(
+                item = ParticipantEventJourneyItem(
+                    eventId = 2,
+                    eventName = "Hackathon Phase 1",
+                    startsFrom = null,
+                    endsOn = null,
+                    formattedTimeWindow = "10:00 AM - 01:00 PM",
+                    timeStatus = TimeBasedStatus.LIVE,
+                    isPresent = false
+                ),
+                isLast = true
+            )
+        }
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun ParticipantTimelineItemRowDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            ParticipantTimelineItemRow(
+                item = ParticipantEventJourneyItem(
+                    eventId = 1,
+                    eventName = "Opening Ceremony",
+                    startsFrom = null,
+                    endsOn = null,
+                    formattedTimeWindow = "09:00 AM - 10:00 AM",
+                    timeStatus = TimeBasedStatus.ENDED,
+                    isPresent = true
+                ),
+                isLast = false
+            )
+            ParticipantTimelineItemRow(
+                item = ParticipantEventJourneyItem(
+                    eventId = 2,
+                    eventName = "Hackathon Phase 1",
+                    startsFrom = null,
+                    endsOn = null,
+                    formattedTimeWindow = "10:00 AM - 01:00 PM",
+                    timeStatus = TimeBasedStatus.LIVE,
+                    isPresent = false
+                ),
+                isLast = true
+            )
         }
     }
 }

@@ -40,19 +40,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.border
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.eventattendance.domain.model.EventAttendance
 import com.example.eventattendance.domain.model.UserRole
 import com.example.eventattendance.presentation.admin.SpocAnalytics
 import com.example.eventattendance.presentation.admin.SpocAnalyticsSort
 import com.example.eventattendance.presentation.admin.SpocAnalyticsUiState
 import com.example.eventattendance.presentation.common.CallButton
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray200
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeWhite
+import com.example.eventattendance.presentation.theme.CheckdTheme
 
 @Composable
 fun AdminSpocsTab(
@@ -75,7 +75,8 @@ fun AdminSpocsTab(
         item {
             Card(
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MonochromeBlack),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
@@ -92,12 +93,12 @@ fun AdminSpocsTab(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 15.sp
                             ),
-                            color = MonochromeWhite
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "${uiState.totalSpocs} total SPOCs assigned",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MonochromeWhite.copy(alpha = 0.7f)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -119,14 +120,14 @@ fun AdminSpocsTab(
                         onClick = { onSelectEvent(null) },
                         label = { Text("All events") },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MonochromeBlack,
-                            selectedLabelColor = MonochromeWhite,
-                            containerColor = MonochromeWhite,
-                            labelColor = MonochromeBlack
+                            selectedContainerColor = MaterialTheme.colorScheme.primary,
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            labelColor = MaterialTheme.colorScheme.onSurface
                         ),
                         border = FilterChipDefaults.filterChipBorder(
-                            borderColor = Gray200,
-                            selectedBorderColor = MonochromeBlack,
+                            borderColor = MaterialTheme.colorScheme.outline,
+                            selectedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
                             enabled = true,
                             selected = uiState.selectedEventId == null
                         ),
@@ -142,14 +143,14 @@ fun AdminSpocsTab(
                             },
                             label = { Text(event.eventName) },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MonochromeBlack,
-                                selectedLabelColor = MonochromeWhite,
-                                containerColor = MonochromeWhite,
-                                labelColor = MonochromeBlack
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                labelColor = MaterialTheme.colorScheme.onSurface
                             ),
                             border = FilterChipDefaults.filterChipBorder(
-                                borderColor = Gray200,
-                                selectedBorderColor = MonochromeBlack,
+                                borderColor = MaterialTheme.colorScheme.outline,
+                                selectedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
                                 enabled = true,
                                 selected = isSelected
                             ),
@@ -169,7 +170,7 @@ fun AdminSpocsTab(
                     Text(
                         text = "SPOCs (${uiState.spocs.size})",
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp),
-                        color = MonochromeBlack
+                        color = MaterialTheme.colorScheme.onBackground
                     )
 
                     Box {
@@ -184,13 +185,13 @@ fun AdminSpocsTab(
                                 imageVector = Icons.AutoMirrored.Outlined.Sort,
                                 contentDescription = "Sort",
                                 modifier = Modifier.size(16.dp),
-                                tint = MonochromeBlack
+                                tint = MaterialTheme.colorScheme.onBackground
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = "Sort: ${uiState.sortOption.label}",
                                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
-                                color = MonochromeBlack
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
 
@@ -224,14 +225,15 @@ fun AdminSpocsTab(
                 Text(
                     text = "No SPOCs found.",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Gray500
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else {
             items(items = uiState.spocs, key = { it.spocId }) { spoc ->
                 Card(
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Gray100),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onSpocClick(spoc.spocId) }
@@ -244,21 +246,30 @@ fun AdminSpocsTab(
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = spoc.name,
-                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                    color = MonochromeBlack
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp
+                                    ),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                                 Spacer(modifier = Modifier.height(2.dp))
                                 Text(
                                     text = "ID: ${spoc.spocId} • ${spoc.teamCount} teams • ${spoc.studentCount} students",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = Gray500
+                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
 
                             if (!spoc.phone.isNullOrBlank()) {
                                 CallButton(
                                     phoneNumber = spoc.phone,
-                                    currentRole = currentRole
+                                    currentRole = currentRole,
+                                    size = 30.dp,
+                                    iconSize = 14.dp
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                             }
@@ -266,7 +277,7 @@ fun AdminSpocsTab(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                 contentDescription = null,
-                                tint = Gray500,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -278,7 +289,7 @@ fun AdminSpocsTab(
                             Text(
                                 text = "No teams assigned to this SPOC yet",
                                 style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal),
-                                color = Gray500
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         } else {
                             val pctFloat = spoc.pct ?: 0f
@@ -292,12 +303,12 @@ fun AdminSpocsTab(
                                 Text(
                                     text = "Completion: $pctDisplay",
                                     style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
-                                    color = MonochromeBlack
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
                                     text = "${spoc.pending} pending",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = Gray500
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
 
@@ -308,14 +319,45 @@ fun AdminSpocsTab(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(6.dp)
-                                    .clip(RoundedCornerShape(3.dp)),
-                                color = MonochromeBlack,
-                                trackColor = Gray200
+                                    .clip(RoundedCornerShape(3.dp))
+                                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(3.dp)),
+                                color = MaterialTheme.colorScheme.primary,
+                                trackColor = MaterialTheme.colorScheme.surfaceVariant
                             )
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun AdminSpocsTabLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        AdminSpocsTab(
+            uiState = SpocAnalyticsUiState(totalSpocs = 5, spocs = emptyList()),
+            events = emptyList(),
+            currentRole = UserRole.Admin,
+            onSelectEvent = {},
+            onSortChange = {},
+            onSpocClick = {}
+        )
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun AdminSpocsTabDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        AdminSpocsTab(
+            uiState = SpocAnalyticsUiState(totalSpocs = 5, spocs = emptyList()),
+            events = emptyList(),
+            currentRole = UserRole.Admin,
+            onSelectEvent = {},
+            onSortChange = {},
+            onSpocClick = {}
+        )
     }
 }

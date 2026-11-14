@@ -79,7 +79,13 @@ class SpocDashboardViewModel @Inject constructor(
         spocMemberPIds
     ) { matrixData, memberPIds ->
         val events = matrixData?.events ?: emptyList()
-        events.map { event ->
+        val sorted = ProgressCalculator.sortEventsByTime(
+            events,
+            { it.startsFrom },
+            { it.endsOn },
+            { it.eventId }
+        )
+        sorted.map { event ->
             val progress = ProgressCalculator.eventProgress(memberPIds, event.presentPIds)
             SpocEventCardData(
                 eventId = event.eventId,

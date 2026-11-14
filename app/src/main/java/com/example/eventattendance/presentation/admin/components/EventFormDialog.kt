@@ -41,12 +41,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.eventattendance.domain.calculator.ProgressCalculator
 import com.example.eventattendance.domain.model.Event
 import com.example.eventattendance.presentation.common.EventStatusChip
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeWhite
+import com.example.eventattendance.presentation.theme.CheckdTheme
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -62,16 +62,16 @@ fun EventFormDialog(
 ) {
     val isEditMode = initialEvent != null
 
-    var name by remember { mutableStateOf(initialEvent?.name ?: "") }
+    var name by remember(initialEvent) { mutableStateOf(initialEvent?.name ?: "") }
 
-    val initialStartLocal = remember { ProgressCalculator.parseToIstLocalDateTime(initialEvent?.startsFrom) }
-    val initialEndLocal = remember { ProgressCalculator.parseToIstLocalDateTime(initialEvent?.endsOn) }
+    val initialStartLocal = remember(initialEvent) { ProgressCalculator.parseToIstLocalDateTime(initialEvent?.startsFrom) }
+    val initialEndLocal = remember(initialEvent) { ProgressCalculator.parseToIstLocalDateTime(initialEvent?.endsOn) }
 
-    var startDate by remember { mutableStateOf(initialStartLocal?.toLocalDate() ?: LocalDate.now(ProgressCalculator.IST_ZONE)) }
-    var startTime by remember { mutableStateOf(initialStartLocal?.toLocalTime() ?: LocalTime.of(9, 0)) }
+    var startDate by remember(initialEvent) { mutableStateOf(initialStartLocal?.toLocalDate() ?: LocalDate.now(ProgressCalculator.IST_ZONE)) }
+    var startTime by remember(initialEvent) { mutableStateOf(initialStartLocal?.toLocalTime() ?: LocalTime.of(9, 0)) }
 
-    var endDate by remember { mutableStateOf(initialEndLocal?.toLocalDate() ?: LocalDate.now(ProgressCalculator.IST_ZONE)) }
-    var endTime by remember { mutableStateOf(initialEndLocal?.toLocalTime() ?: LocalTime.of(18, 0)) }
+    var endDate by remember(initialEvent) { mutableStateOf(initialEndLocal?.toLocalDate() ?: LocalDate.now(ProgressCalculator.IST_ZONE)) }
+    var endTime by remember(initialEvent) { mutableStateOf(initialEndLocal?.toLocalTime() ?: LocalTime.of(18, 0)) }
 
     var showStartDatePicker by remember { mutableStateOf(false) }
     var showStartTimePicker by remember { mutableStateOf(false) }
@@ -102,7 +102,7 @@ fun EventFormDialog(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = if (isEditMode) "Edit Time Window" else "New Event",
+                    text = if (isEditMode) "Edit Activity Timeline" else "New Event",
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 EventStatusChip(status = previewStatus)
@@ -114,75 +114,86 @@ fun EventFormDialog(
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
             ) {
-                if (!isEditMode) {
-                    OutlinedTextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        label = { Text("Event Name *") },
-                        placeholder = { Text("e.g. Hackathon Keynote, Lunch") },
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(14.dp))
-                } else {
-                    Text(
-                        text = "Event: ${initialEvent.name}",
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                        color = MonochromeBlack
-                    )
-                    Spacer(modifier = Modifier.height(14.dp))
-                }
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Event Name *") },
+                    placeholder = { Text("e.g. Hackathon Keynote, Lunch") },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(14.dp))
 
                 // Starts From
                 Text(
                     text = "Starts From",
                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = Gray500
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedTextField(
-                        value = startDate.format(displayDateFormatter),
-                        onValueChange = { },
-                        readOnly = true,
-                        label = { Text("Date") },
-                        leadingIcon = {
-                            Icon(Icons.Outlined.CalendarToday, contentDescription = null, modifier = Modifier.size(18.dp))
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { showStartDatePicker = true },
-                        enabled = false,
-                        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                            disabledTextColor = MonochromeBlack,
-                            disabledBorderColor = MaterialTheme.colorScheme.outline,
-                            disabledLabelColor = Gray500,
-                            disabledLeadingIconColor = MonochromeBlack
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    )
+                    Box(modifier = Modifier.weight(1f)) {
+                        OutlinedTextField(
+                            value = startDate.format(displayDateFormatter),
+                            onValueChange = { },
+                            readOnly = true,
+                            label = { Text("Date") },
+                            leadingIcon = {
+                                Icon(Icons.Outlined.CalendarToday, contentDescription = null, modifier = Modifier.size(18.dp))
+                            },
+                            colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clickable { showStartDatePicker = true }
+                        )
+                    }
 
-                    OutlinedTextField(
-                        value = startTime.format(displayTimeFormatter),
-                        onValueChange = { },
-                        readOnly = true,
-                        label = { Text("Time") },
-                        leadingIcon = {
-                            Icon(Icons.Outlined.Schedule, contentDescription = null, modifier = Modifier.size(18.dp))
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { showStartTimePicker = true },
-                        enabled = false,
-                        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                            disabledTextColor = MonochromeBlack,
-                            disabledBorderColor = MaterialTheme.colorScheme.outline,
-                            disabledLabelColor = Gray500,
-                            disabledLeadingIconColor = MonochromeBlack
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    )
+                    Box(modifier = Modifier.weight(1f)) {
+                        OutlinedTextField(
+                            value = startTime.format(displayTimeFormatter),
+                            onValueChange = { },
+                            readOnly = true,
+                            label = { Text("Time") },
+                            leadingIcon = {
+                                Icon(Icons.Outlined.Schedule, contentDescription = null, modifier = Modifier.size(18.dp))
+                            },
+                            colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clickable { showStartTimePicker = true }
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(14.dp))
@@ -191,51 +202,63 @@ fun EventFormDialog(
                 Text(
                     text = "Ends On",
                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = Gray500
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedTextField(
-                        value = endDate.format(displayDateFormatter),
-                        onValueChange = { },
-                        readOnly = true,
-                        label = { Text("Date") },
-                        leadingIcon = {
-                            Icon(Icons.Outlined.CalendarToday, contentDescription = null, modifier = Modifier.size(18.dp))
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { showEndDatePicker = true },
-                        enabled = false,
-                        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                            disabledTextColor = MonochromeBlack,
-                            disabledBorderColor = MaterialTheme.colorScheme.outline,
-                            disabledLabelColor = Gray500,
-                            disabledLeadingIconColor = MonochromeBlack
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    )
+                    Box(modifier = Modifier.weight(1f)) {
+                        OutlinedTextField(
+                            value = endDate.format(displayDateFormatter),
+                            onValueChange = { },
+                            readOnly = true,
+                            label = { Text("Date") },
+                            leadingIcon = {
+                                Icon(Icons.Outlined.CalendarToday, contentDescription = null, modifier = Modifier.size(18.dp))
+                            },
+                            colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clickable { showEndDatePicker = true }
+                        )
+                    }
 
-                    OutlinedTextField(
-                        value = endTime.format(displayTimeFormatter),
-                        onValueChange = { },
-                        readOnly = true,
-                        label = { Text("Time") },
-                        leadingIcon = {
-                            Icon(Icons.Outlined.Schedule, contentDescription = null, modifier = Modifier.size(18.dp))
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { showEndTimePicker = true },
-                        enabled = false,
-                        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                            disabledTextColor = MonochromeBlack,
-                            disabledBorderColor = MaterialTheme.colorScheme.outline,
-                            disabledLabelColor = Gray500,
-                            disabledLeadingIconColor = MonochromeBlack
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    )
+                    Box(modifier = Modifier.weight(1f)) {
+                        OutlinedTextField(
+                            value = endTime.format(displayTimeFormatter),
+                            onValueChange = { },
+                            readOnly = true,
+                            label = { Text("Time") },
+                            leadingIcon = {
+                                Icon(Icons.Outlined.Schedule, contentDescription = null, modifier = Modifier.size(18.dp))
+                            },
+                            colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clickable { showEndTimePicker = true }
+                        )
+                    }
                 }
             }
         },
@@ -248,8 +271,8 @@ fun EventFormDialog(
                 },
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MonochromeBlack,
-                    contentColor = MonochromeWhite
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 enabled = isEditMode || name.isNotBlank()
             ) {
@@ -258,7 +281,7 @@ fun EventFormDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", color = MaterialTheme.colorScheme.onBackground)
+                Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         },
         containerColor = MaterialTheme.colorScheme.surface,
@@ -279,12 +302,12 @@ fun EventFormDialog(
                     }
                     showStartDatePicker = false
                 }) {
-                    Text("OK", color = MonochromeBlack)
+                    Text("OK", color = MaterialTheme.colorScheme.primary)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showStartDatePicker = false }) {
-                    Text("Cancel", color = Gray500)
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         ) {
@@ -305,12 +328,12 @@ fun EventFormDialog(
                     startTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
                     showStartTimePicker = false
                 }) {
-                    Text("OK", color = MonochromeBlack)
+                    Text("OK", color = MaterialTheme.colorScheme.primary)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showStartTimePicker = false }) {
-                    Text("Cancel", color = Gray500)
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             },
             text = {
@@ -335,12 +358,12 @@ fun EventFormDialog(
                     }
                     showEndDatePicker = false
                 }) {
-                    Text("OK", color = MonochromeBlack)
+                    Text("OK", color = MaterialTheme.colorScheme.primary)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showEndDatePicker = false }) {
-                    Text("Cancel", color = Gray500)
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         ) {
@@ -361,12 +384,12 @@ fun EventFormDialog(
                     endTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
                     showEndTimePicker = false
                 }) {
-                    Text("OK", color = MonochromeBlack)
+                    Text("OK", color = MaterialTheme.colorScheme.primary)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showEndTimePicker = false }) {
-                    Text("Cancel", color = Gray500)
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             },
             text = {
@@ -374,6 +397,40 @@ fun EventFormDialog(
                     TimePicker(state = timePickerState)
                 }
             }
+        )
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun EventFormDialogLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        EventFormDialog(
+            initialEvent = Event(
+                id = "1",
+                name = "Opening Ceremony",
+                startsFrom = "2026-11-08T09:00:00",
+                endsOn = "2026-11-08T11:00:00"
+            ),
+            onDismiss = {},
+            onConfirm = { _, _, _ -> }
+        )
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun EventFormDialogDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        EventFormDialog(
+            initialEvent = Event(
+                id = "1",
+                name = "Opening Ceremony",
+                startsFrom = "2026-11-08T09:00:00",
+                endsOn = "2026-11-08T11:00:00"
+            ),
+            onDismiss = {},
+            onConfirm = { _, _, _ -> }
         )
     }
 }

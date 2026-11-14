@@ -2,6 +2,7 @@ package com.example.eventattendance.presentation.spoc.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -53,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eventattendance.domain.calculator.ProgressCalculator
@@ -61,15 +63,13 @@ import com.example.eventattendance.domain.model.EventAttendance
 import com.example.eventattendance.domain.model.TeamMember
 import com.example.eventattendance.domain.model.TeamWithMembers
 import com.example.eventattendance.domain.model.UserRole
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.eventattendance.presentation.common.AttendanceProgressBar
 import com.example.eventattendance.presentation.common.CallButton
 import com.example.eventattendance.presentation.common.LastUpdatedText
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray200
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeWhite
-import com.example.eventattendance.presentation.theme.StatusGreen
+import com.example.eventattendance.presentation.theme.CheckdTheme
+import com.example.eventattendance.presentation.theme.statusColors
 
 enum class TeamSortOption {
     LOWEST_PROGRESS,
@@ -143,6 +143,37 @@ fun TeamProgressContent(
         }
     }
 
+    // Filter teams when showPendingOnly is enabled
+    val displayedTeams = remember(sortedTeams, showPendingOnly, selectedEventId, allEvents) {
+        if (!showPendingOnly) {
+            sortedTeams
+        } else {
+            val startedEvents = allEvents.filter { ProgressCalculator.isStarted(it.startsFrom) }
+            val targetEvents = if (startedEvents.isNotEmpty()) startedEvents else allEvents
+            val selectedEvent = allEvents.find { it.eventId == selectedEventId }
+
+            sortedTeams.filter { team ->
+                if (team.members.isEmpty()) {
+                    false
+                } else if (selectedEventId != null) {
+                    if (selectedEvent != null) {
+                        team.members.any { it.pId !in selectedEvent.presentPIds }
+                    } else {
+                        false
+                    }
+                } else {
+                    if (targetEvents.isNotEmpty()) {
+                        team.members.any { member ->
+                            targetEvents.any { event -> member.pId !in event.presentPIds }
+                        }
+                    } else {
+                        false
+                    }
+                }
+            }
+        }
+    }
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
@@ -152,7 +183,8 @@ fun TeamProgressContent(
         item {
             Card(
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = MonochromeBlack),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
@@ -167,7 +199,7 @@ fun TeamProgressContent(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 17.sp
                             ),
-                            color = MonochromeWhite
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         LastUpdatedText(epochMillis = lastUpdated)
                     }
@@ -183,7 +215,7 @@ fun TeamProgressContent(
                             Text(
                                 text = "Overall Progress",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MonochromeWhite.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
                                 text = overallSpocResult.displayPercent,
@@ -191,7 +223,7 @@ fun TeamProgressContent(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 32.sp
                                 ),
-                                color = MonochromeWhite
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
 
@@ -199,12 +231,12 @@ fun TeamProgressContent(
                             Text(
                                 text = "${teams.size} teams",
                                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                                color = MonochromeWhite
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
                                 text = "${allMemberPIds.size} participants",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MonochromeWhite.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -219,7 +251,7 @@ fun TeamProgressContent(
                             Text(
                                 text = "Contact: $spocPhone",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MonochromeWhite.copy(alpha = 0.8f)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             CallButton(
                                 phoneNumber = spocPhone,
@@ -247,18 +279,17 @@ fun TeamProgressContent(
                         selected = selectedEventId == null,
                         onClick = {
                             setSelectedEventId(null)
-                            setShowPendingOnly(false)
                         },
                         label = { Text("All events") },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MonochromeBlack,
-                            selectedLabelColor = MonochromeWhite,
-                            containerColor = MonochromeWhite,
-                            labelColor = MonochromeBlack
+                            selectedContainerColor = MaterialTheme.colorScheme.primary,
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            labelColor = MaterialTheme.colorScheme.onSurface
                         ),
                         border = FilterChipDefaults.filterChipBorder(
-                            borderColor = Gray200,
-                            selectedBorderColor = MonochromeBlack,
+                            borderColor = MaterialTheme.colorScheme.outline,
+                            selectedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
                             enabled = true,
                             selected = selectedEventId == null
                         ),
@@ -272,18 +303,17 @@ fun TeamProgressContent(
                             onClick = {
                                 val nextId = if (isSelected) null else event.eventId
                                 setSelectedEventId(nextId)
-                                if (nextId == null) setShowPendingOnly(false)
                             },
                             label = { Text(event.eventName) },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MonochromeBlack,
-                                selectedLabelColor = MonochromeWhite,
-                                containerColor = MonochromeWhite,
-                                labelColor = MonochromeBlack
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                labelColor = MaterialTheme.colorScheme.onSurface
                             ),
                             border = FilterChipDefaults.filterChipBorder(
-                                borderColor = Gray200,
-                                selectedBorderColor = MonochromeBlack,
+                                borderColor = MaterialTheme.colorScheme.outline,
+                                selectedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
                                 enabled = true,
                                 selected = isSelected
                             ),
@@ -319,17 +349,17 @@ fun TeamProgressContent(
                             imageVector = Icons.AutoMirrored.Outlined.Sort,
                             contentDescription = "Sort",
                             modifier = Modifier.size(16.dp),
-                            tint = MonochromeBlack
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = if (sortOption == TeamSortOption.LOWEST_PROGRESS) "Lowest progress" else "Name (A-Z)",
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
-                            color = MonochromeBlack
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
 
-                    // Show pending only switch (disabled in All Events mode)
+                    // Show pending only switch
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(start = 8.dp)
@@ -338,18 +368,19 @@ fun TeamProgressContent(
                             text = "Pending only",
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontWeight = FontWeight.Medium,
-                                color = if (selectedEventId != null) MonochromeBlack else Gray500
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Switch(
-                            checked = showPendingOnly && selectedEventId != null,
+                            checked = showPendingOnly,
                             onCheckedChange = { setShowPendingOnly(it) },
-                            enabled = selectedEventId != null,
+                            enabled = true,
                             colors = SwitchDefaults.colors(
-                                checkedThumbColor = MonochromeWhite,
-                                checkedTrackColor = MonochromeBlack,
-                                uncheckedTrackColor = Gray100
+                                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                                uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                uncheckedTrackColor = MaterialTheme.colorScheme.outline
                             ),
                             modifier = Modifier.size(32.dp, 20.dp)
                         )
@@ -359,7 +390,7 @@ fun TeamProgressContent(
         }
 
         // 3. Teams List
-        if (sortedTeams.isEmpty()) {
+        if (displayedTeams.isEmpty()) {
             item {
                 Box(
                     modifier = Modifier
@@ -368,21 +399,26 @@ fun TeamProgressContent(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "No teams assigned.",
+                        text = if (showPendingOnly) {
+                            if (selectedEventId != null) "All participants checked in for this event!"
+                            else "All participants checked in for all activities!"
+                        } else {
+                            "No teams assigned."
+                        },
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Gray500
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
         } else {
             items(
-                items = sortedTeams,
+                items = displayedTeams,
                 key = { it.teamId }
             ) { team ->
                 TeamProgressCard(
                     team = team,
                     selectedEventId = selectedEventId,
-                    showPendingOnly = showPendingOnly && selectedEventId != null,
+                    showPendingOnly = showPendingOnly,
                     allEvents = allEvents,
                     currentRole = currentRole,
                     onParticipantClick = onParticipantClick
@@ -429,7 +465,8 @@ fun TeamProgressCard(
 
     Card(
         shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = Gray100),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier
             .fillMaxWidth()
             .clickable { expanded = !expanded }
@@ -441,23 +478,37 @@ fun TeamProgressCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         Text(
                             text = team.teamName,
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                            color = MonochromeBlack
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(6.dp))
-                                .background(MonochromeBlack.copy(alpha = 0.08f))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
                                 text = team.teamId,
-                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
-                                color = MonochromeBlack
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 11.sp
+                                ),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                                softWrap = false
                             )
                         }
                     }
@@ -469,7 +520,7 @@ fun TeamProgressCard(
                         Text(
                             text = "Leader: $leaderDisplay",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Gray500
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         if (!leaderPhone.isNullOrBlank()) {
                             Spacer(modifier = Modifier.width(6.dp))
@@ -487,13 +538,13 @@ fun TeamProgressCard(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(12.dp))
-                            .background(MonochromeBlack)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
                             text = "${team.members.size} members",
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
-                            color = MonochromeWhite
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                     Spacer(modifier = Modifier.width(4.dp))
@@ -501,7 +552,7 @@ fun TeamProgressCard(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = if (expanded) "Collapse" else "Expand",
                         modifier = Modifier.rotate(rotationAngle),
-                        tint = MonochromeBlack
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -538,8 +589,8 @@ fun TeamProgressCard(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(6.dp))
-                                    .background(MonochromeWhite)
-                                    .border(1.dp, Gray200, RoundedCornerShape(6.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(6.dp))
                                     .padding(horizontal = 8.dp, vertical = 4.dp)
                             ) {
                                 Text(
@@ -548,7 +599,7 @@ fun TeamProgressCard(
                                         fontSize = 11.sp,
                                         fontWeight = FontWeight.Medium
                                     ),
-                                    color = MonochromeBlack
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                         }
@@ -559,21 +610,36 @@ fun TeamProgressCard(
             // Expanded view: Member rows
             AnimatedVisibility(visible = expanded) {
                 Column(modifier = Modifier.padding(top = 16.dp)) {
-                    HorizontalDivider(color = Gray200)
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Filter members if "Show pending only" is active for selected event
-                    val displayedMembers = if (showPendingOnly && selectedEvent != null) {
-                        team.members.filter { it.pId !in selectedEvent.presentPIds }
+                    // Filter members if "Show pending only" is active
+                    val displayedMembers = if (showPendingOnly) {
+                        if (selectedEvent != null) {
+                            team.members.filter { it.pId !in selectedEvent.presentPIds }
+                        } else if (selectedEventId != null) {
+                            emptyList()
+                        } else {
+                            val startedEvents = allEvents.filter { ProgressCalculator.isStarted(it.startsFrom) }
+                            val targetEvents = if (startedEvents.isNotEmpty()) startedEvents else allEvents
+                            team.members.filter { member ->
+                                targetEvents.any { event -> member.pId !in event.presentPIds }
+                            }
+                        }
                     } else {
                         team.members
                     }
 
                     if (displayedMembers.isEmpty()) {
                         Text(
-                            text = if (showPendingOnly) "All members checked in for this event!" else "No members listed.",
+                            text = if (showPendingOnly) {
+                                if (selectedEventId != null) "All members checked in for this event!"
+                                else "All members checked in for all activities!"
+                            } else {
+                                "No members listed."
+                            },
                             style = MaterialTheme.typography.bodySmall,
-                            color = Gray500
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     } else {
                         displayedMembers.forEach { member ->
@@ -607,26 +673,36 @@ fun MemberProgressRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(MonochromeWhite)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
             .clickable(enabled = onParticipantClick != null) {
                 onParticipantClick?.invoke(member.pId)
             }
             .padding(horizontal = 12.dp, vertical = 10.dp)
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text(
                     text = member.name,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = MonochromeBlack
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
                 )
                 if (member.isLeader) {
                     Spacer(modifier = Modifier.width(6.dp))
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(4.dp))
-                            .background(MonochromeBlack)
-                            .padding(horizontal = 5.dp, vertical = 1.dp)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
                         Text(
                             text = "LEADER",
@@ -634,16 +710,20 @@ fun MemberProgressRow(
                                 fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold
                             ),
-                            color = MonochromeWhite
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            maxLines = 1,
+                            softWrap = false
                         )
                     }
                 }
             }
 
+            Spacer(modifier = Modifier.height(2.dp))
+
             Text(
                 text = "ID: ${member.pId}",
-                style = MaterialTheme.typography.bodySmall,
-                color = Gray500
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             // Per-event attendance strip
@@ -651,11 +731,16 @@ fun MemberProgressRow(
             if (selectedEventId != null) {
                 val event = allEvents.find { it.eventId == selectedEventId }
                 val isPresent = event?.presentPIds?.contains(member.pId) == true
+                val badgeBg = if (isPresent) MaterialTheme.statusColors.successContainer else MaterialTheme.colorScheme.surface
+                val badgeText = if (isPresent) MaterialTheme.statusColors.onSuccessContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                val badgeBorder = if (isPresent) MaterialTheme.statusColors.success else MaterialTheme.colorScheme.outline
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(4.dp))
-                            .background(if (isPresent) StatusGreen.copy(alpha = 0.15f) else Gray100)
+                            .background(badgeBg)
+                            .border(1.dp, badgeBorder, RoundedCornerShape(4.dp))
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
                         Text(
@@ -664,7 +749,7 @@ fun MemberProgressRow(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 10.sp
                             ),
-                            color = if (isPresent) StatusGreen else Gray500
+                            color = badgeText
                         )
                     }
                 }
@@ -676,10 +761,15 @@ fun MemberProgressRow(
                     allEvents.forEach { event ->
                         val isPresent = event.presentPIds.contains(member.pId)
                         val shortName = if (event.eventName.length > 8) event.eventName.take(7) + "…" else event.eventName
+                        val badgeBg = if (isPresent) MaterialTheme.statusColors.successContainer else MaterialTheme.colorScheme.surface
+                        val badgeText = if (isPresent) MaterialTheme.statusColors.onSuccessContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                        val badgeBorder = if (isPresent) MaterialTheme.statusColors.success else MaterialTheme.colorScheme.outline
+
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(if (isPresent) StatusGreen.copy(alpha = 0.15f) else Gray100)
+                                .background(badgeBg)
+                                .border(1.dp, badgeBorder, RoundedCornerShape(4.dp))
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
@@ -688,7 +778,7 @@ fun MemberProgressRow(
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 10.sp
                                 ),
-                                color = if (isPresent) StatusGreen else Gray500
+                                color = badgeText
                             )
                         }
                     }
@@ -707,9 +797,81 @@ fun MemberProgressRow(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = "View Journey",
-                tint = Gray500,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(18.dp)
             )
         }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun TeamProgressContentLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        TeamProgressContent(
+            spocId = "SPOC-01",
+            teams = listOf(
+                TeamWithMembers(
+                    teamId = "T-01",
+                    teamName = "Alpha Squad",
+                    spocId = "SPOC-01",
+                    teamLeaderId = "P-101",
+                    teamLeaderName = "Alice",
+                    members = listOf(
+                        TeamMember(
+                            pId = "P-101",
+                            name = "Alice",
+                            isLeader = true,
+                            phoneNumber = "1234567890"
+                        ),
+                        TeamMember(
+                            pId = "P-102",
+                            name = "Bob",
+                            isLeader = false,
+                            phoneNumber = "1234567891"
+                        )
+                    )
+                )
+            ),
+            matrix = null,
+            currentRole = UserRole.Spoc("SPOC-01"),
+            lastUpdated = System.currentTimeMillis()
+        )
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun TeamProgressContentDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        TeamProgressContent(
+            spocId = "SPOC-01",
+            teams = listOf(
+                TeamWithMembers(
+                    teamId = "T-01",
+                    teamName = "Alpha Squad",
+                    spocId = "SPOC-01",
+                    teamLeaderId = "P-101",
+                    teamLeaderName = "Alice",
+                    members = listOf(
+                        TeamMember(
+                            pId = "P-101",
+                            name = "Alice",
+                            isLeader = true,
+                            phoneNumber = "1234567890"
+                        ),
+                        TeamMember(
+                            pId = "P-102",
+                            name = "Bob",
+                            isLeader = false,
+                            phoneNumber = "1234567891"
+                        )
+                    )
+                )
+            ),
+            matrix = null,
+            currentRole = UserRole.Spoc("SPOC-01"),
+            lastUpdated = System.currentTimeMillis()
+        )
     }
 }

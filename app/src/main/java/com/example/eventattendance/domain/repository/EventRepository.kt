@@ -10,6 +10,6 @@ interface EventRepository {
     suspend fun getEventById(eventId: String): Event?
     suspend fun createEvent(event: Event): Result<Event>
     suspend fun updateEventStatus(eventId: String, isOpen: Boolean): Result<Unit>
-    suspend fun updateTimeWindow(eventId: Int, startsFrom: String, endsOn: String): Result<Unit>
+    suspend fun updateTimeWindow(eventId: Int, startsFrom: String, endsOn: String, name: String? = null): Result<Unit>
     suspend fun refreshEventsFromCloud(): Result<Unit>
 }

@@ -13,4 +13,6 @@ interface ParticipantCacheRepository {
     fun getBySpoc(spocId: String): List<CachedParticipant>
     fun getMemberPIds(spocId: String): Set<String>
     fun isCacheEmpty(): Boolean
+    suspend fun clearCache()
 }
+

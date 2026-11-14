@@ -57,14 +57,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import android.content.res.Configuration
+import androidx.compose.foundation.border
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.eventattendance.domain.calculator.ProgressCalculator
+import com.example.eventattendance.domain.model.ThemeMode
 import com.example.eventattendance.presentation.common.EventStatusChip
 import com.example.eventattendance.presentation.eventdetails.components.ParticipantListItem
 import com.example.eventattendance.presentation.eventdetails.components.PendingParticipantListItem
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeWhite
+import com.example.eventattendance.presentation.theme.CheckdTheme
+import com.example.eventattendance.util.DateUtils
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -133,8 +136,8 @@ fun EventDetailScreen(
                     onClick = { onScanClick(viewModel.eventId) },
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MonochromeBlack,
-                        contentColor = MonochromeWhite
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     ),
                     modifier = Modifier
                         .weight(1f)
@@ -161,12 +164,12 @@ fun EventDetailScreen(
                     modifier = Modifier
                         .size(56.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .background(MonochromeBlack)
+                        .background(MaterialTheme.colorScheme.primary)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Bulk Scan",
-                        tint = MonochromeWhite,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(28.dp)
                     )
                 }
@@ -205,6 +208,16 @@ fun EventDetailScreen(
                     EventStatusChip(status = eventStatus)
                 }
 
+                val timeWindow = DateUtils.formatTimeWindow(eventDetail?.startsFrom, eventDetail?.endsOn)
+                if (timeWindow.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = timeWindow,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(14.dp))
 
                 // Stats Count and Percentage Row
@@ -226,7 +239,7 @@ fun EventDetailScreen(
                             style = SpanStyle(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
-                                color = Gray500
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         ) {
                             append(" / $totalExpected")
@@ -241,21 +254,23 @@ fun EventDetailScreen(
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 14.sp
                         ),
-                        color = Gray500
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
 
                 // Linear Progress Bar
+                val trackShape = RoundedCornerShape(4.dp)
                 LinearProgressIndicator(
                     progress = { progress },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(8.dp)
-                        .clip(RoundedCornerShape(4.dp)),
-                    color = MonochromeBlack,
-                    trackColor = Gray100
+                        .clip(trackShape)
+                        .border(1.dp, MaterialTheme.colorScheme.outline, trackShape),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -267,7 +282,7 @@ fun EventDetailScreen(
                     placeholder = {
                         Text(
                             text = "Search by name, ID, or team…",
-                            color = Gray500,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 14.sp
                         )
                     },
@@ -275,16 +290,18 @@ fun EventDetailScreen(
                         Icon(
                             imageVector = Icons.Outlined.Search,
                             contentDescription = "Search",
-                            tint = Gray500,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(20.dp)
                         )
                     },
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = Gray100,
-                        focusedContainerColor = Gray100,
-                        unfocusedBorderColor = Color.Transparent,
-                        focusedBorderColor = Gray500
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary
                     ),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
@@ -296,17 +313,19 @@ fun EventDetailScreen(
                 TabRow(
                     selectedTabIndex = selectedTab,
                     containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MonochromeBlack,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
                     indicator = { tabPositions ->
                         TabRowDefaults.SecondaryIndicator(
                             modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                            color = MonochromeBlack
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 ) {
                     Tab(
                         selected = selectedTab == 0,
                         onClick = { viewModel.selectTab(0) },
+                        selectedContentColor = MaterialTheme.colorScheme.onBackground,
+                        unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         text = {
                             Text(
                                 text = "Checked in (${checkedInList.size})",
@@ -319,6 +338,8 @@ fun EventDetailScreen(
                     Tab(
                         selected = selectedTab == 1,
                         onClick = { viewModel.selectTab(1) },
+                        selectedContentColor = MaterialTheme.colorScheme.onBackground,
+                        unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         text = {
                             Text(
                                 text = "Pending (${pendingList.size})",
@@ -345,7 +366,7 @@ fun EventDetailScreen(
                                 Text(
                                     text = if (searchQuery.isNotBlank()) "No matching checked-in participants" else "No participants checked in yet",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = Gray500
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         } else {
@@ -365,12 +386,12 @@ fun EventDetailScreen(
                                         currentRole = currentRole,
                                         phoneNumber = phone,
                                         modifier = if (onParticipantClick != null) {
-                                            Modifier.clickable { onParticipantClick(record.participantId) }
+                                             Modifier.clickable { onParticipantClick(record.participantId) }
                                         } else {
                                             Modifier
                                         }
                                     )
-                                    HorizontalDivider(color = Gray100, thickness = 1.dp)
+                                    HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
                                 }
                             }
                         }
@@ -386,7 +407,7 @@ fun EventDetailScreen(
                                 Text(
                                     text = if (searchQuery.isNotBlank()) "No matching pending participants" else "All participants have checked in!",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = Gray500
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         } else {
@@ -409,7 +430,7 @@ fun EventDetailScreen(
                                             Modifier
                                         }
                                     )
-                                    HorizontalDivider(color = Gray100, thickness = 1.dp)
+                                    HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
                                 }
                             }
                         }
@@ -419,3 +440,20 @@ fun EventDetailScreen(
         }
     }
 }
+
+@Preview(name = "Event Detail - Light")
+@Composable
+private fun EventDetailScreenLightPreview() {
+    CheckdTheme(themeMode = ThemeMode.LIGHT) {
+        EventDetailScreen(onBackClick = {}, onScanClick = {}, onBulkScanClick = {})
+    }
+}
+
+@Preview(name = "Event Detail - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun EventDetailScreenDarkPreview() {
+    CheckdTheme(themeMode = ThemeMode.DARK) {
+        EventDetailScreen(onBackClick = {}, onScanClick = {}, onBulkScanClick = {})
+    }
+}
+

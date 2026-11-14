@@ -18,4 +18,6 @@ sealed class Screen(val route: String) {
     data object ParticipantDetail : Screen("participant_detail/{pId}") {
         fun createRoute(pId: String) = "participant_detail/$pId"
     }
+    data object QrVerifier : Screen("qr_verifier")
 }
+

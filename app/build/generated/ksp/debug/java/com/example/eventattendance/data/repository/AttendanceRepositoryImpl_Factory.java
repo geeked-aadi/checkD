@@ -2,11 +2,14 @@ package com.example.eventattendance.data.repository;
 
 import android.content.Context;
 import com.example.eventattendance.data.remote.datasource.RpcRemoteDataSource;
+import com.example.eventattendance.domain.repository.AttendanceMatrixRepository;
+import com.example.eventattendance.domain.repository.ParticipantCacheRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
+import io.github.jan.supabase.SupabaseClient;
 import javax.annotation.processing.Generated;
 import kotlinx.coroutines.CoroutineDispatcher;
 
@@ -34,29 +37,47 @@ public final class AttendanceRepositoryImpl_Factory implements Factory<Attendanc
 
   private final Provider<RpcRemoteDataSource> rpcRemoteDataSourceProvider;
 
+  private final Provider<SupabaseClient> supabaseClientProvider;
+
+  private final Provider<ParticipantCacheRepository> participantCacheRepositoryProvider;
+
+  private final Provider<AttendanceMatrixRepository> attendanceMatrixRepositoryProvider;
+
   private final Provider<CoroutineDispatcher> ioDispatcherProvider;
 
   private AttendanceRepositoryImpl_Factory(Provider<Context> contextProvider,
       Provider<RpcRemoteDataSource> rpcRemoteDataSourceProvider,
+      Provider<SupabaseClient> supabaseClientProvider,
+      Provider<ParticipantCacheRepository> participantCacheRepositoryProvider,
+      Provider<AttendanceMatrixRepository> attendanceMatrixRepositoryProvider,
       Provider<CoroutineDispatcher> ioDispatcherProvider) {
     this.contextProvider = contextProvider;
     this.rpcRemoteDataSourceProvider = rpcRemoteDataSourceProvider;
+    this.supabaseClientProvider = supabaseClientProvider;
+    this.participantCacheRepositoryProvider = participantCacheRepositoryProvider;
+    this.attendanceMatrixRepositoryProvider = attendanceMatrixRepositoryProvider;
     this.ioDispatcherProvider = ioDispatcherProvider;
   }
 
   @Override
   public AttendanceRepositoryImpl get() {
-    return newInstance(contextProvider.get(), rpcRemoteDataSourceProvider.get(), ioDispatcherProvider.get());
+    return newInstance(contextProvider.get(), rpcRemoteDataSourceProvider.get(), supabaseClientProvider.get(), participantCacheRepositoryProvider, attendanceMatrixRepositoryProvider, ioDispatcherProvider.get());
   }
 
   public static AttendanceRepositoryImpl_Factory create(Provider<Context> contextProvider,
       Provider<RpcRemoteDataSource> rpcRemoteDataSourceProvider,
+      Provider<SupabaseClient> supabaseClientProvider,
+      Provider<ParticipantCacheRepository> participantCacheRepositoryProvider,
+      Provider<AttendanceMatrixRepository> attendanceMatrixRepositoryProvider,
       Provider<CoroutineDispatcher> ioDispatcherProvider) {
-    return new AttendanceRepositoryImpl_Factory(contextProvider, rpcRemoteDataSourceProvider, ioDispatcherProvider);
+    return new AttendanceRepositoryImpl_Factory(contextProvider, rpcRemoteDataSourceProvider, supabaseClientProvider, participantCacheRepositoryProvider, attendanceMatrixRepositoryProvider, ioDispatcherProvider);
   }
 
   public static AttendanceRepositoryImpl newInstance(Context context,
-      RpcRemoteDataSource rpcRemoteDataSource, CoroutineDispatcher ioDispatcher) {
-    return new AttendanceRepositoryImpl(context, rpcRemoteDataSource, ioDispatcher);
+      RpcRemoteDataSource rpcRemoteDataSource, SupabaseClient supabaseClient,
+      javax.inject.Provider<ParticipantCacheRepository> participantCacheRepositoryProvider,
+      javax.inject.Provider<AttendanceMatrixRepository> attendanceMatrixRepositoryProvider,
+      CoroutineDispatcher ioDispatcher) {
+    return new AttendanceRepositoryImpl(context, rpcRemoteDataSource, supabaseClient, participantCacheRepositoryProvider, attendanceMatrixRepositoryProvider, ioDispatcher);
   }
 }

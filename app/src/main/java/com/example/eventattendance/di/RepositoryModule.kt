@@ -14,8 +14,10 @@ import com.example.eventattendance.domain.repository.EventRepository
 import com.example.eventattendance.domain.repository.ParticipantCacheRepository
 import com.example.eventattendance.domain.repository.ParticipantRepository
 import com.example.eventattendance.data.repository.AttendanceMatrixRepositoryImpl
+import com.example.eventattendance.data.repository.UserPreferencesRepositoryImpl
 import com.example.eventattendance.domain.repository.AttendanceMatrixRepository
 import com.example.eventattendance.domain.repository.SyncRepository
+import com.example.eventattendance.domain.repository.UserPreferencesRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -57,4 +59,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindSyncRepository(impl: SyncRepositoryImpl): SyncRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserPreferencesRepository(impl: UserPreferencesRepositoryImpl): UserPreferencesRepository
 }

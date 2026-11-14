@@ -14,16 +14,25 @@ data class GetAllParticipantsResponseDto(
 data class ParticipantItemDto(
     @SerialName("p_id") val pId: String,
     val name: String? = null,
+    @SerialName("p_name") val pName: String? = null,
+    @SerialName("participant_name") val participantName: String? = null,
     @Serializable(with = FlexibleStringSerializer::class)
     val phonenumber: String? = null,
     @SerialName("team_id") val teamId: String? = null,
     @SerialName("team_name") val teamName: String? = null,
+    @SerialName("team") val team: String? = null,
     @SerialName("team_leader") val teamLeader: String? = null,
     @SerialName("spoc_id") val spocId: String? = null,
     @SerialName("spoc_name") val spocName: String? = null,
+    @SerialName("spoc") val spoc: String? = null,
     @Serializable(with = FlexibleStringSerializer::class)
     @SerialName("spoc_phonenumber") val spocPhonenumber: String? = null
-)
+) {
+    fun resolvedName(): String? = name ?: pName ?: participantName
+    fun resolvedTeamName(): String? = teamName ?: team
+    fun resolvedSpocName(): String? = spocName ?: spoc
+}
+
 
 @Serializable
 data class SyncAllEventsAttendanceResponseDto(

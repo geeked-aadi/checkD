@@ -299,16 +299,16 @@ private data class SpocFilterConfig(
         }
     }
 
-    fun updateEventTimeWindow(eventId: Int, startsFrom: String, endsOn: String) {
+    fun updateEventTimeWindow(eventId: Int, startsFrom: String, endsOn: String, name: String? = null) {
         viewModelScope.launch {
             _isRefreshing.value = true
-            manageEventsUseCase.updateTimeWindow(eventId, startsFrom, endsOn)
+            manageEventsUseCase.updateTimeWindow(eventId, startsFrom, endsOn, name)
                 .onSuccess {
-                    _actionMessage.emit("Time window updated")
+                    _actionMessage.emit("Timeline updated successfully")
                     refresh()
                 }
                 .onFailure { error ->
-                    _actionMessage.emit(error.message ?: "Failed to update time window")
+                    _actionMessage.emit(error.message ?: "Failed to update timeline")
                 }
             _isRefreshing.value = false
         }

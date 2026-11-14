@@ -20,6 +20,7 @@ import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material.icons.outlined.Badge
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.Event
+import androidx.compose.material.icons.outlined.QrCodeScanner
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -54,16 +55,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.eventattendance.presentation.admin.tabs.AdminDirectoryTab
 import com.example.eventattendance.presentation.admin.tabs.AdminEventsTab
 import com.example.eventattendance.presentation.admin.tabs.AdminOverviewTab
 import com.example.eventattendance.presentation.admin.tabs.AdminSettingsTab
 import com.example.eventattendance.presentation.admin.tabs.AdminSpocsTab
 import com.example.eventattendance.presentation.common.OfflineStatusBanner
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.StatusRed
+import com.example.eventattendance.presentation.theme.CheckdTheme
+import com.example.eventattendance.presentation.theme.statusColors
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,6 +74,7 @@ fun AdminDashboardScreen(
     onSpocClick: (String) -> Unit,
     onParticipantClick: (String) -> Unit,
     onLogout: () -> Unit,
+    onVerifierClick: () -> Unit = {},
     onBack: () -> Unit = {},
     viewModel: AdminViewModel = hiltViewModel()
 ) {
@@ -125,39 +127,45 @@ fun AdminDashboardScreen(
                 TopAppBar(
                     title = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Column {
+                            Text(
+                                text = "Administrator",
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp
+                                ),
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            ) {
                                 Text(
-                                    text = "Administrator",
-                                    style = MaterialTheme.typography.titleLarge.copy(
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 19.sp
+                                    text = "SUPERADMIN",
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 10.sp
                                     ),
-                                    color = MonochromeBlack
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(6.dp))
-                                        .background(Gray100)
-                                        .padding(horizontal = 6.dp, vertical = 2.dp)
-                                ) {
-                                    Text(
-                                        text = "SUPERADMIN CONSOLE",
-                                        style = MaterialTheme.typography.labelSmall.copy(
-                                            fontWeight = FontWeight.SemiBold,
-                                            fontSize = 10.sp
-                                        ),
-                                        color = Gray500
-                                    )
-                                }
                             }
                         }
                     },
                     actions = {
+                        IconButton(onClick = onVerifierClick) {
+                            Icon(
+                                imageVector = Icons.Outlined.QrCodeScanner,
+                                contentDescription = "QR Verifier",
+                                tint = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
                         IconButton(onClick = { showMenu = true }) {
                             Icon(
                                 imageVector = Icons.Default.MoreVert,
                                 contentDescription = "Options",
-                                tint = MonochromeBlack
+                                tint = MaterialTheme.colorScheme.onBackground
                             )
                         }
                         DropdownMenu(
@@ -170,11 +178,11 @@ fun AdminDashboardScreen(
                                         Icon(
                                             imageVector = Icons.AutoMirrored.Filled.Logout,
                                             contentDescription = null,
-                                            tint = StatusRed,
+                                            tint = MaterialTheme.statusColors.danger,
                                             modifier = Modifier.size(18.dp)
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
-                                        Text("Sign Out", color = StatusRed, fontWeight = FontWeight.SemiBold)
+                                        Text("Sign Out", color = MaterialTheme.statusColors.danger, fontWeight = FontWeight.SemiBold)
                                     }
                                 },
                                 onClick = {
@@ -196,22 +204,24 @@ fun AdminDashboardScreen(
             }
         },
         bottomBar = {
+            val navItemColors = NavigationBarItemDefaults.colors(
+                selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                selectedTextColor = MaterialTheme.colorScheme.onBackground,
+                indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
             NavigationBar(
-                containerColor = MaterialTheme.colorScheme.background,
-                tonalElevation = 0.dp
+                containerColor = MaterialTheme.colorScheme.surface,
+                tonalElevation = 2.dp
             ) {
                 NavigationBarItem(
                     selected = selectedTab == 0,
                     onClick = { viewModel.selectTab(0) },
                     icon = { Icon(Icons.Outlined.Dashboard, contentDescription = "Overview") },
                     label = { Text("Overview") },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MonochromeBlack,
-                        selectedTextColor = MonochromeBlack,
-                        indicatorColor = Gray100,
-                        unselectedIconColor = Gray500,
-                        unselectedTextColor = Gray500
-                    )
+                    colors = navItemColors
                 )
 
                 NavigationBarItem(
@@ -219,13 +229,7 @@ fun AdminDashboardScreen(
                     onClick = { viewModel.selectTab(1) },
                     icon = { Icon(Icons.Outlined.Event, contentDescription = "Events") },
                     label = { Text("Events") },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MonochromeBlack,
-                        selectedTextColor = MonochromeBlack,
-                        indicatorColor = Gray100,
-                        unselectedIconColor = Gray500,
-                        unselectedTextColor = Gray500
-                    )
+                    colors = navItemColors
                 )
 
                 NavigationBarItem(
@@ -233,13 +237,7 @@ fun AdminDashboardScreen(
                     onClick = { viewModel.selectTab(2) },
                     icon = { Icon(Icons.Outlined.Badge, contentDescription = "Directory") },
                     label = { Text("Directory") },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MonochromeBlack,
-                        selectedTextColor = MonochromeBlack,
-                        indicatorColor = Gray100,
-                        unselectedIconColor = Gray500,
-                        unselectedTextColor = Gray500
-                    )
+                    colors = navItemColors
                 )
 
                 NavigationBarItem(
@@ -247,13 +245,7 @@ fun AdminDashboardScreen(
                     onClick = { viewModel.selectTab(3) },
                     icon = { Icon(Icons.Outlined.Analytics, contentDescription = "SPOCs") },
                     label = { Text("SPOCs") },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MonochromeBlack,
-                        selectedTextColor = MonochromeBlack,
-                        indicatorColor = Gray100,
-                        unselectedIconColor = Gray500,
-                        unselectedTextColor = Gray500
-                    )
+                    colors = navItemColors
                 )
 
                 NavigationBarItem(
@@ -261,13 +253,7 @@ fun AdminDashboardScreen(
                     onClick = { viewModel.selectTab(4) },
                     icon = { Icon(Icons.Outlined.Settings, contentDescription = "Settings") },
                     label = { Text("Settings") },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MonochromeBlack,
-                        selectedTextColor = MonochromeBlack,
-                        indicatorColor = Gray100,
-                        unselectedIconColor = Gray500,
-                        unselectedTextColor = Gray500
-                    )
+                    colors = navItemColors
                 )
             }
         },
@@ -292,7 +278,9 @@ fun AdminDashboardScreen(
                     matrix = matrix,
                     onEventClick = onEventClick,
                     onCreateEvent = viewModel::createEvent,
-                    onUpdateTimeWindow = viewModel::updateEventTimeWindow
+                    onUpdateTimeWindow = { eventId, startsFrom, endsOn, name ->
+                        viewModel.updateEventTimeWindow(eventId, startsFrom, endsOn, name)
+                    }
                 )
                 2 -> AdminDirectoryTab(
                     directoryData = directoryData,
@@ -320,6 +308,42 @@ fun AdminDashboardScreen(
                     onLogout = { viewModel.logout(onLogout) }
                 )
             }
+        }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun AdminDashboardScreenLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            Text(
+                text = "Admin Dashboard Preview",
+                modifier = Modifier.padding(16.dp),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun AdminDashboardScreenDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            Text(
+                text = "Admin Dashboard Preview",
+                modifier = Modifier.padding(16.dp),
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
     }
 }

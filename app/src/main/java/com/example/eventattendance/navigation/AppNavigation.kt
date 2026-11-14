@@ -26,6 +26,8 @@ import com.example.eventattendance.presentation.home.HomeScreen
 import com.example.eventattendance.presentation.scanner.ScannerScreen
 import com.example.eventattendance.presentation.settings.SettingsScreen
 import com.example.eventattendance.presentation.spoc.SpocDashboardScreen
+import com.example.eventattendance.presentation.verifier.QrVerifierScreen
+
 
 @Composable
 fun AppNavigation(
@@ -59,11 +61,15 @@ fun AppNavigation(
                 onEventClick = { eventId ->
                     navController.navigate(Screen.EventDetail.createRoute(eventId, scoped = false))
                 },
+                onVerifierClick = {
+                    navController.navigate(Screen.QrVerifier.route)
+                },
                 onSettingsClick = {
                     navController.navigate(Screen.Settings.route)
                 }
             )
         }
+
 
         // 2. Event Detail Screen (Scoped or Unscoped)
         composable(
@@ -97,9 +103,7 @@ fun AppNavigation(
                     navController.navigate(Screen.Scanner.createRoute(eventId, isBulk = true))
                 },
                 onParticipantClick = { pId ->
-                    if (currentRole is UserRole.Admin || currentRole is UserRole.Spoc) {
-                        navController.navigate(Screen.ParticipantDetail.createRoute(pId))
-                    }
+                    navController.navigate(Screen.ParticipantDetail.createRoute(pId))
                 }
             )
         }
@@ -228,6 +232,9 @@ fun AppNavigation(
                     onParticipantClick = { pId ->
                         navController.navigate(Screen.ParticipantDetail.createRoute(pId))
                     },
+                    onVerifierClick = {
+                        navController.navigate(Screen.QrVerifier.route)
+                    },
                     onLogout = {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(0) { inclusive = true }
@@ -279,6 +286,9 @@ fun AppNavigation(
                     },
                     onParticipantClick = { pId ->
                         navController.navigate(Screen.ParticipantDetail.createRoute(pId))
+                    },
+                    onVerifierClick = {
+                        navController.navigate(Screen.QrVerifier.route)
                     },
                     onLogout = {
                         navController.navigate(Screen.Home.route) {
@@ -366,5 +376,27 @@ fun AppNavigation(
                 )
             }
         }
+
+        // 10. QR Verifier Screen
+        composable(
+            route = Screen.QrVerifier.route,
+            enterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Up,
+                    animationSpec = tween(300)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Down,
+                    animationSpec = tween(300)
+                )
+            }
+        ) {
+            QrVerifierScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
     }
+
 }

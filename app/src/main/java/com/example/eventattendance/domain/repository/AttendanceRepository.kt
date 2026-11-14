@@ -12,6 +12,8 @@ interface AttendanceRepository {
     suspend fun syncAllEventsAttendance(forcePull: Boolean = false): Result<List<EventWithStats>>
     suspend fun syncEventAttendance(eventId: Int): Result<EventDetailData>
     fun getEventAttendanceFlow(eventId: Int): Flow<EventDetailData?>
+    fun updateLocalEvent(eventId: Int, name: String?, startsFrom: String, endsOn: String)
+    fun updateLocalEventTimeWindow(eventId: Int, name: String?, startsFrom: String, endsOn: String)
     suspend fun markAttendance(eventId: Int, pIds: List<String>, role: String): Result<MarkAttendanceResponseDto>
     fun recordScanSuccess(
         eventId: Int,
@@ -32,4 +34,6 @@ interface AttendanceRepository {
         total: Int?
     )
     suspend fun exportAttendanceCsv(eventId: String): Result<String>
+    suspend fun clearCache()
 }
+

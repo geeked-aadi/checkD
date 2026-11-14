@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Checkd</string>
+    <string name="app_name">checkD</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="search_participants">Search participants…</string>
     <string name="open">Open</string>

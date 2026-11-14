@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import javax.inject.Inject
 
 data class PendingAttendee(
@@ -77,6 +78,7 @@ class ScannerViewModel @Inject constructor(
     private var lastScanTimestamp: Long = 0
     private var dismissBannerJob: Job? = null
     private var dismissHintJob: Job? = null
+    private val scanMutex = Mutex()
 
     // Debounce: 1200ms for same token, 500ms general
     private val debounceSameTokenMs = 1200L
@@ -106,13 +108,17 @@ class ScannerViewModel @Inject constructor(
 
     private fun handleSingleScan(token: String) {
         viewModelScope.launch {
-            val participant = lookupParticipantUseCase(token)
-            if (participant == null) {
-                hapticFeedbackUtil.vibrateError()
-                audioFeedbackUtil.playBeepError()
-                showFeedback(ScanResult.InvalidQr)
-                return@launch
+            if (!scanMutex.tryLock()) {
+                return@launch // Scan already in flight, prevent duplicate concurrent dispatch
             }
+            try {
+                val participant = lookupParticipantUseCase(token)
+                if (participant == null) {
+                    hapticFeedbackUtil.vibrateError()
+                    audioFeedbackUtil.playBeepError()
+                    showFeedback(ScanResult.InvalidQr)
+                    return@launch
+                }
 
             // Scoped mode validation: if user is SPOC, participant must belong to this SPOC
             val currentRole = authRepository.currentRole.value
@@ -179,13 +185,24 @@ class ScannerViewModel @Inject constructor(
                         showFeedback(ScanResult.Error(response.message ?: "Attendance failed"))
                     }
                 }
-            }.onFailure {
+            }.onFailure { throwable ->
                 hapticFeedbackUtil.vibrateError()
                 audioFeedbackUtil.playBeepError()
-                showFeedback(ScanResult.NetworkError)
+                val isNetwork = throwable is java.io.IOException ||
+                    throwable is java.net.SocketException ||
+                    throwable is java.net.UnknownHostException
+                if (isNetwork) {
+                    showFeedback(ScanResult.NetworkError)
+                } else {
+                    val msg = sanitizeErrorMessage(throwable.message, "Attendance recording failed")
+                    showFeedback(ScanResult.Error(msg))
+                }
             }
+        } finally {
+            scanMutex.unlock()
         }
     }
+}
 
     private fun handleBulkScan(token: String) {
         viewModelScope.launch {
@@ -244,68 +261,90 @@ class ScannerViewModel @Inject constructor(
         if (currentPending.isEmpty() || _isSubmitting.value) return
 
         viewModelScope.launch {
-            _isSubmitting.value = true
-            val pIds = currentPending.map { it.pId }
-            val result = markAttendanceUseCase(eventIdInt, pIds)
+            if (!scanMutex.tryLock()) return@launch
+            try {
+                _isSubmitting.value = true
+                val pIds = currentPending.map { it.pId }
+                val result = markAttendanceUseCase(eventIdInt, pIds)
 
-            result.onSuccess { response ->
-                if (response.status == "error") {
+                result.onSuccess { response ->
+                    if (response.status == "error") {
+                        hapticFeedbackUtil.vibrateError()
+                        audioFeedbackUtil.playBeepError()
+                        showFeedback(ScanResult.Error(response.message ?: "Bulk attendance rejected"))
+                    } else {
+                        val markedIds = response.markedPresent.toSet()
+                        val duplicateIds = response.duplicates.toSet()
+                        val nowIso = DateUtils.getCurrentIsoTime()
+
+                        val markedAttendees = currentPending.filter { it.pId in markedIds }.map {
+                            AttendanceRecord(
+                                id = "${eventIdInt}_${it.pId}",
+                                eventId = eventId,
+                                participantId = it.pId,
+                                checkedInAt = nowIso,
+                                status = "present",
+                                participantName = it.name,
+                                participantUsn = it.pId,
+                                teamId = it.teamId,
+                                teamName = it.teamName,
+                                isPendingSync = false
+                            )
+                        }
+
+                        attendanceRepository.recordBulkScanSuccess(
+                            eventId = eventIdInt,
+                            markedAttendees = markedAttendees,
+                            progress = response.progress,
+                            newAttendance = response.eventAttendance,
+                            total = response.totalParticipants
+                        )
+
+                        // Immediate optimistic updates to attendance matrix
+                        (markedIds + duplicateIds).forEach { pId ->
+                            attendanceMatrixRepository.addLocalScan(eventIdInt, pId)
+                        }
+
+                        val duplicateNames = currentPending.filter { it.pId in duplicateIds }.map { it.name }
+                            .ifEmpty { response.duplicates }
+
+                        _bulkSummary.value = BulkSummary(
+                            markedCount = response.markedPresent.size,
+                            duplicateNames = duplicateNames
+                        )
+                        _pendingList.value = emptyList()
+                        hapticFeedbackUtil.vibrateSuccess()
+                        audioFeedbackUtil.playBeepSuccess()
+                    }
+                }.onFailure { throwable ->
+                    // Network or DB failure: keep pending list intact so user can retry
                     hapticFeedbackUtil.vibrateError()
                     audioFeedbackUtil.playBeepError()
-                    showFeedback(ScanResult.Error(response.message ?: "Bulk attendance rejected"))
-                } else {
-                    val markedIds = response.markedPresent.toSet()
-                    val duplicateIds = response.duplicates.toSet()
-                    val nowIso = DateUtils.getCurrentIsoTime()
-
-                    val markedAttendees = currentPending.filter { it.pId in markedIds }.map {
-                        AttendanceRecord(
-                            id = "${eventIdInt}_${it.pId}",
-                            eventId = eventId,
-                            participantId = it.pId,
-                            checkedInAt = nowIso,
-                            status = "present",
-                            participantName = it.name,
-                            participantUsn = it.pId,
-                            teamId = it.teamId,
-                            teamName = it.teamName,
-                            isPendingSync = false
-                        )
+                    val isNetwork = throwable is java.io.IOException ||
+                        throwable is java.net.SocketException ||
+                        throwable is java.net.UnknownHostException
+                    if (isNetwork) {
+                        showFeedback(ScanResult.NetworkError)
+                    } else {
+                        val msg = sanitizeErrorMessage(throwable.message, "Bulk submission failed")
+                        showFeedback(ScanResult.Error(msg))
                     }
-
-                    attendanceRepository.recordBulkScanSuccess(
-                        eventId = eventIdInt,
-                        markedAttendees = markedAttendees,
-                        progress = response.progress,
-                        newAttendance = response.eventAttendance,
-                        total = response.totalParticipants
-                    )
-
-                    // Immediate optimistic updates to attendance matrix
-                    (markedIds + duplicateIds).forEach { pId ->
-                        attendanceMatrixRepository.addLocalScan(eventIdInt, pId)
-                    }
-
-                    val duplicateNames = currentPending.filter { it.pId in duplicateIds }.map { it.name }
-                        .ifEmpty { response.duplicates }
-
-                    _bulkSummary.value = BulkSummary(
-                        markedCount = response.markedPresent.size,
-                        duplicateNames = duplicateNames
-                    )
-                    _pendingList.value = emptyList()
-                    hapticFeedbackUtil.vibrateSuccess()
-                    audioFeedbackUtil.playBeepSuccess()
                 }
-            }.onFailure {
-                // Network failure: keep pending list intact so user can retry
-                hapticFeedbackUtil.vibrateError()
-                audioFeedbackUtil.playBeepError()
-                showFeedback(ScanResult.NetworkError)
+            } finally {
+                _isSubmitting.value = false
+                scanMutex.unlock()
             }
-
-            _isSubmitting.value = false
         }
+    }
+
+    private fun sanitizeErrorMessage(raw: String?, fallback: String): String {
+        if (raw.isNullOrBlank()) return fallback
+        val cleaned = if (raw.contains("URL:", ignoreCase = true)) {
+            raw.substringBefore("URL:").trim()
+        } else {
+            raw.trim()
+        }
+        return cleaned.ifBlank { fallback }
     }
 
     private fun showFeedback(result: ScanResult) {

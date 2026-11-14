@@ -67,222 +67,221 @@
 39-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:23:9-53
 40        android:supportsRtl="true"
 40-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:24:9-35
-41        android:testOnly="true"
-42        android:theme="@style/Theme.Checkd" >
-42-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:25:9-44
-43        <activity
-43-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:27:9-36:20
-44            android:name="com.example.eventattendance.MainActivity"
-44-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:28:13-41
-45            android:exported="true"
-45-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:29:13-36
-46            android:theme="@style/Theme.Checkd"
-46-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:31:13-48
-47            android:windowSoftInputMode="adjustResize" >
-47-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:30:13-55
-48            <intent-filter>
-48-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:32:13-35:29
-49                <action android:name="android.intent.action.MAIN" />
-49-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:33:17-69
-49-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:33:25-66
-50
-51                <category android:name="android.intent.category.LAUNCHER" />
-51-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:34:17-77
-51-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:34:27-74
-52            </intent-filter>
-53        </activity>
-54
-55        <meta-data
-55-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:38:9-40:39
-56            android:name="com.google.mlkit.vision.DEPENDENCIES"
-56-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:39:13-64
-57            android:value="barcode" />
-57-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:40:13-36
-58
-59        <service
-59-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:24:9-33:19
-60            android:name="androidx.camera.core.impl.MetadataHolderService"
-60-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:25:13-75
-61            android:enabled="false"
-61-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:26:13-36
-62            android:exported="false" >
-62-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:27:13-37
-63            <meta-data
-63-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:30:13-32:89
-64                android:name="androidx.camera.core.impl.MetadataHolderService.DEFAULT_CONFIG_PROVIDER"
-64-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:31:17-103
-65                android:value="androidx.camera.camera2.Camera2Config$DefaultProvider" />
-65-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:32:17-86
-66        </service>
-67        <service
-67-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:9:9-15:19
-68            android:name="com.google.mlkit.common.internal.MlKitComponentDiscoveryService"
-68-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:10:13-91
-69            android:directBootAware="true"
-69-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:17:13-43
-70            android:exported="false" >
-70-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:11:13-37
-71            <meta-data
-71-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:12:13-14:85
-72                android:name="com.google.firebase.components:com.google.mlkit.vision.barcode.internal.BarcodeRegistrar"
-72-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:13:17-120
-73                android:value="com.google.firebase.components.ComponentRegistrar" />
-73-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:14:17-82
-74            <meta-data
-74-->[com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:12:13-14:85
-75                android:name="com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar"
-75-->[com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:13:17-124
-76                android:value="com.google.firebase.components.ComponentRegistrar" />
-76-->[com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:14:17-82
-77            <meta-data
-77-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:20:13-22:85
-78                android:name="com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar"
-78-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:21:17-120
-79                android:value="com.google.firebase.components.ComponentRegistrar" />
-79-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:22:17-82
-80        </service>
-81
-82        <provider
-82-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:9:9-13:38
-83            android:name="com.google.mlkit.common.internal.MlKitInitProvider"
-83-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:10:13-78
-84            android:authorities="com.example.eventattendance.mlkitinitprovider"
-84-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:11:13-69
-85            android:exported="false"
-85-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:12:13-37
-86            android:initOrder="99" />
-86-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:13:13-35
-87
-88        <activity
-88-->[com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:9-173
-89            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-89-->[com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:19-85
-90            android:exported="false"
-90-->[com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:146-170
-91            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-91-->[com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:86-145
-92
-93        <meta-data
-93-->[com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:9-122
-94            android:name="com.google.android.gms.version"
-94-->[com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:20-65
-95            android:value="@integer/google_play_services_version" />
-95-->[com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:66-119
-96
-97        <provider
-97-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
-98            android:name="androidx.startup.InitializationProvider"
-98-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
-99            android:authorities="com.example.eventattendance.androidx-startup"
-99-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
-100            android:exported="false" >
-100-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
-101            <meta-data
-101-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
-102                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-102-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
-103                android:value="androidx.startup" />
-103-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
-104            <meta-data
-104-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:14:13-16:52
-105                android:name="io.github.jan.supabase.auth.SupabaseInitializer"
-105-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:15:17-79
-106                android:value="androidx.startup" />
-106-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:16:17-49
-107            <meta-data
-107-->[androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:29:13-31:52
-108                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-108-->[androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:30:17-78
-109                android:value="androidx.startup" />
-109-->[androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:31:17-49
-110            <meta-data
-110-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
-111                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-111-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
-112                android:value="androidx.startup" />
-112-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
-113            <meta-data
-113-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:29:13-31:52
-114                android:name="com.russhwolf.settings.SettingsInitializer"
-114-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:30:17-74
-115                android:value="androidx.startup" />
-115-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:31:17-49
-116        </provider>
-117
-118        <activity
-118-->[androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
-119            android:name="androidx.compose.ui.tooling.PreviewActivity"
-119-->[androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
-120            android:exported="true" />
-120-->[androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
-121
-122        <receiver
-122-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
-123            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-123-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
-124            android:directBootAware="false"
-124-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
-125            android:enabled="true"
-125-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
-126            android:exported="true"
-126-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
-127            android:permission="android.permission.DUMP" >
-127-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
-128            <intent-filter>
-128-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
-129                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-129-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
-129-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
-130            </intent-filter>
-131            <intent-filter>
-131-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
-132                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-132-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
-132-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
-133            </intent-filter>
-134            <intent-filter>
-134-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
-135                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-135-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
-135-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
-136            </intent-filter>
-137            <intent-filter>
-137-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
-138                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-138-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
-138-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
-139            </intent-filter>
-140        </receiver>
-141
-142        <service
-142-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:29:9-35:19
-143            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
-143-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:30:13-103
-144            android:exported="false" >
-144-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:31:13-37
-145            <meta-data
-145-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:32:13-34:39
-146                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
-146-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:33:17-94
-147                android:value="cct" />
-147-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:34:17-36
-148        </service>
-149        <service
-149-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:26:9-30:19
-150            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
-150-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:27:13-117
-151            android:exported="false"
-151-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:28:13-37
-152            android:permission="android.permission.BIND_JOB_SERVICE" >
-152-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:29:13-69
-153        </service>
-154
-155        <receiver
-155-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:32:9-34:40
-156            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
-156-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:33:13-132
-157            android:exported="false" />
-157-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:34:13-37
-158    </application>
-159
-160</manifest>
+41        android:theme="@style/Theme.Checkd" >
+41-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:25:9-44
+42        <activity
+42-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:27:9-36:20
+43            android:name="com.example.eventattendance.MainActivity"
+43-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:28:13-41
+44            android:exported="true"
+44-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:29:13-36
+45            android:theme="@style/Theme.Checkd"
+45-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:31:13-48
+46            android:windowSoftInputMode="adjustResize" >
+46-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:30:13-55
+47            <intent-filter>
+47-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:32:13-35:29
+48                <action android:name="android.intent.action.MAIN" />
+48-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:33:17-69
+48-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:33:25-66
+49
+50                <category android:name="android.intent.category.LAUNCHER" />
+50-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:34:17-77
+50-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:34:27-74
+51            </intent-filter>
+52        </activity>
+53
+54        <meta-data
+54-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:38:9-40:39
+55            android:name="com.google.mlkit.vision.DEPENDENCIES"
+55-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:39:13-64
+56            android:value="barcode" />
+56-->/home/mattmurdock/Checkd/app/src/main/AndroidManifest.xml:40:13-36
+57
+58        <service
+58-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:24:9-33:19
+59            android:name="androidx.camera.core.impl.MetadataHolderService"
+59-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:25:13-75
+60            android:enabled="false"
+60-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:26:13-36
+61            android:exported="false" >
+61-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:27:13-37
+62            <meta-data
+62-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:30:13-32:89
+63                android:name="androidx.camera.core.impl.MetadataHolderService.DEFAULT_CONFIG_PROVIDER"
+63-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:31:17-103
+64                android:value="androidx.camera.camera2.Camera2Config$DefaultProvider" />
+64-->[androidx.camera:camera-camera2:1.4.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/180dcecb9b87db048ed380f8114050c7/transformed/camera-camera2-1.4.1/AndroidManifest.xml:32:17-86
+65        </service>
+66        <service
+66-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:9:9-15:19
+67            android:name="com.google.mlkit.common.internal.MlKitComponentDiscoveryService"
+67-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:10:13-91
+68            android:directBootAware="true"
+68-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:17:13-43
+69            android:exported="false" >
+69-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:11:13-37
+70            <meta-data
+70-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:12:13-14:85
+71                android:name="com.google.firebase.components:com.google.mlkit.vision.barcode.internal.BarcodeRegistrar"
+71-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:13:17-120
+72                android:value="com.google.firebase.components.ComponentRegistrar" />
+72-->[com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/d683162cd41ef9384334a8e59a6d0306/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:14:17-82
+73            <meta-data
+73-->[com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:12:13-14:85
+74                android:name="com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar"
+74-->[com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:13:17-124
+75                android:value="com.google.firebase.components.ComponentRegistrar" />
+75-->[com.google.mlkit:vision-common:17.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/b2878cd3bec649ad2189f442979d7d17/transformed/vision-common-17.3.0/AndroidManifest.xml:14:17-82
+76            <meta-data
+76-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:20:13-22:85
+77                android:name="com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar"
+77-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:21:17-120
+78                android:value="com.google.firebase.components.ComponentRegistrar" />
+78-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:22:17-82
+79        </service>
+80
+81        <provider
+81-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:9:9-13:38
+82            android:name="com.google.mlkit.common.internal.MlKitInitProvider"
+82-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:10:13-78
+83            android:authorities="com.example.eventattendance.mlkitinitprovider"
+83-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:11:13-69
+84            android:exported="false"
+84-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:12:13-37
+85            android:initOrder="99" />
+85-->[com.google.mlkit:common:18.11.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/f94c26623d1045fdf382633896676b62/transformed/common-18.11.0/AndroidManifest.xml:13:13-35
+86
+87        <activity
+87-->[com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:9-173
+88            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+88-->[com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:19-85
+89            android:exported="false"
+89-->[com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:146-170
+90            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+90-->[com.google.android.gms:play-services-base:18.5.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/2e0c4bac66aa0d13f7f62e69bb3246bf/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:86-145
+91
+92        <meta-data
+92-->[com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:9-122
+93            android:name="com.google.android.gms.version"
+93-->[com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:20-65
+94            android:value="@integer/google_play_services_version" />
+94-->[com.google.android.gms:play-services-basement:18.4.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/a77b06bc221ca1067510fa0783ed4ca3/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:66-119
+95
+96        <provider
+96-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+97            android:name="androidx.startup.InitializationProvider"
+97-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
+98            android:authorities="com.example.eventattendance.androidx-startup"
+98-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
+99            android:exported="false" >
+99-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
+100            <meta-data
+100-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+101                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+101-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+102                android:value="androidx.startup" />
+102-->[androidx.emoji2:emoji2:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/93c75306b4bc4c9b58411209d4952edc/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+103            <meta-data
+103-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:14:13-16:52
+104                android:name="io.github.jan.supabase.auth.SupabaseInitializer"
+104-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:15:17-79
+105                android:value="androidx.startup" />
+105-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.1.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/749f4a52a68510325b24166000f19c55/transformed/auth-kt-debug/AndroidManifest.xml:16:17-49
+106            <meta-data
+106-->[androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:29:13-31:52
+107                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+107-->[androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:30:17-78
+108                android:value="androidx.startup" />
+108-->[androidx.lifecycle:lifecycle-process:2.8.7] /home/mattmurdock/.gradle/caches/9.1.0/transforms/042d475aea3e3751f351e2e8573df6ad/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:31:17-49
+109            <meta-data
+109-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+110                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+110-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+111                android:value="androidx.startup" />
+111-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+112            <meta-data
+112-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:29:13-31:52
+113                android:name="com.russhwolf.settings.SettingsInitializer"
+113-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:30:17-74
+114                android:value="androidx.startup" />
+114-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.3.0] /home/mattmurdock/.gradle/caches/9.1.0/transforms/91835835bb19736b2ddb3f258de9d57e/transformed/multiplatform-settings-no-arg-debug/AndroidManifest.xml:31:17-49
+115        </provider>
+116
+117        <activity
+117-->[androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+118            android:name="androidx.compose.ui.tooling.PreviewActivity"
+118-->[androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
+119            android:exported="true" />
+119-->[androidx.compose.ui:ui-tooling-android:1.7.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/24a525514faafd441e4489c00d669374/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+120
+121        <receiver
+121-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+122            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+122-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+123            android:directBootAware="false"
+123-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+124            android:enabled="true"
+124-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+125            android:exported="true"
+125-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+126            android:permission="android.permission.DUMP" >
+126-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+127            <intent-filter>
+127-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+128                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+128-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+128-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+129            </intent-filter>
+130            <intent-filter>
+130-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+131                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+131-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+131-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+132            </intent-filter>
+133            <intent-filter>
+133-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+134                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+134-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+134-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+135            </intent-filter>
+136            <intent-filter>
+136-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+137                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+137-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+137-->[androidx.profileinstaller:profileinstaller:1.3.1] /home/mattmurdock/.gradle/caches/9.1.0/transforms/39cbd8ae008be8abe7c2dc0950934a01/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+138            </intent-filter>
+139        </receiver>
+140
+141        <service
+141-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:29:9-35:19
+142            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
+142-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:30:13-103
+143            android:exported="false" >
+143-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:31:13-37
+144            <meta-data
+144-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:32:13-34:39
+145                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
+145-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:33:17-94
+146                android:value="cct" />
+146-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/mattmurdock/.gradle/caches/9.1.0/transforms/3d5ed10ea83e0ca4c04c86b8ec7960ca/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:34:17-36
+147        </service>
+148        <service
+148-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:26:9-30:19
+149            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+149-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:27:13-117
+150            android:exported="false"
+150-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:28:13-37
+151            android:permission="android.permission.BIND_JOB_SERVICE" >
+151-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:29:13-69
+152        </service>
+153
+154        <receiver
+154-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:32:9-34:40
+155            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+155-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:33:13-132
+156            android:exported="false" />
+156-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/mattmurdock/.gradle/caches/9.1.0/transforms/847d1b029e2fc5c9640f4f8e89af906a/transformed/transport-runtime-2.2.6/AndroidManifest.xml:34:13-37
+157    </application>
+158
+159</manifest>

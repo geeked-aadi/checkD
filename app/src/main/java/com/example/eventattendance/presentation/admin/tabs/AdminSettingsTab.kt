@@ -39,11 +39,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeWhite
-import com.example.eventattendance.presentation.theme.StatusRed
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.eventattendance.presentation.theme.CheckdTheme
+import com.example.eventattendance.presentation.theme.statusColors
 
 @Composable
 fun AdminSettingsTab(
@@ -64,13 +64,14 @@ fun AdminSettingsTab(
         Text(
             text = "Scanning Feedback",
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold, fontSize = 15.sp),
-            color = Gray500,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = 12.dp)
         )
 
         Card(
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Gray100),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -84,31 +85,34 @@ fun AdminSettingsTab(
                     Icon(
                         imageVector = Icons.Outlined.Vibration,
                         contentDescription = null,
-                        tint = MonochromeBlack
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.width(14.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "Haptic Vibration",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "Vibrate phone on QR scan feedback",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Gray500
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                     Switch(
                         checked = isHapticEnabled,
                         onCheckedChange = { isHapticEnabled = it },
                         colors = SwitchDefaults.colors(
-                            checkedThumbColor = MonochromeWhite,
-                            checkedTrackColor = MonochromeBlack
+                            checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                            checkedTrackColor = MaterialTheme.colorScheme.primary,
+                            uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            uncheckedTrackColor = MaterialTheme.colorScheme.outline
                         )
                     )
                 }
 
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 
                 // Audio Toggle Row
                 Row(
@@ -120,26 +124,29 @@ fun AdminSettingsTab(
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.VolumeUp,
                         contentDescription = null,
-                        tint = MonochromeBlack
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.width(14.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "Audio Beep",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "Play audio chime on scan result",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Gray500
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                     Switch(
                         checked = isSoundEnabled,
                         onCheckedChange = { isSoundEnabled = it },
                         colors = SwitchDefaults.colors(
-                            checkedThumbColor = MonochromeWhite,
-                            checkedTrackColor = MonochromeBlack
+                            checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                            checkedTrackColor = MaterialTheme.colorScheme.primary,
+                            uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            uncheckedTrackColor = MaterialTheme.colorScheme.outline
                         )
                     )
                 }
@@ -152,13 +159,14 @@ fun AdminSettingsTab(
         Text(
             text = "Data & Offline Cache",
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold, fontSize = 15.sp),
-            color = Gray500,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = 12.dp)
         )
 
         Card(
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Gray100),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
@@ -171,31 +179,32 @@ fun AdminSettingsTab(
                 Icon(
                     imageVector = Icons.Outlined.CloudSync,
                     contentDescription = null,
-                    tint = MonochromeBlack
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.width(14.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "Refresh Participants Cache",
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = "Sync latest participants and teams list",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Gray500
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 if (isRefreshing) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
-                        color = MonochromeBlack,
+                        color = MaterialTheme.colorScheme.primary,
                         strokeWidth = 2.dp
                     )
                 } else {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = "Refresh",
-                        tint = Gray500
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -206,7 +215,8 @@ fun AdminSettingsTab(
         // App Info
         Card(
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Gray100),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
@@ -216,18 +226,19 @@ fun AdminSettingsTab(
                 Icon(
                     imageVector = Icons.Outlined.Info,
                     contentDescription = null,
-                    tint = MonochromeBlack
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.width(14.dp))
                 Column {
                     Text(
                         text = "Checkd Event Attendance",
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = "Version 1.0.0 • Administrator Console",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Gray500
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -239,8 +250,8 @@ fun AdminSettingsTab(
         OutlinedButton(
             onClick = onLogout,
             shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = StatusRed),
-            border = androidx.compose.foundation.BorderStroke(1.dp, StatusRed.copy(alpha = 0.5f)),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.statusColors.danger),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp)
@@ -258,5 +269,29 @@ fun AdminSettingsTab(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun AdminSettingsTabLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        AdminSettingsTab(
+            isRefreshing = false,
+            onRefreshParticipants = {},
+            onLogout = {}
+        )
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun AdminSettingsTabDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        AdminSettingsTab(
+            isRefreshing = false,
+            onRefreshParticipants = {},
+            onLogout = {}
+        )
     }
 }

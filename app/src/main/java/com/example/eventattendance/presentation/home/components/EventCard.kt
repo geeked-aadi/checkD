@@ -32,21 +32,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import android.content.res.Configuration
+import androidx.compose.foundation.border
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eventattendance.domain.calculator.ProgressCalculator
+import com.example.eventattendance.domain.model.Event
 import com.example.eventattendance.domain.model.EventWithStats
+import com.example.eventattendance.domain.model.ThemeMode
 import com.example.eventattendance.presentation.common.EventStatusChip
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeCardBorder
-import com.example.eventattendance.presentation.theme.MonochromeCardSurface
+import com.example.eventattendance.presentation.theme.CheckdTheme
 import com.example.eventattendance.util.DateUtils
+
 
 @Composable
 fun EventCard(
@@ -60,8 +62,8 @@ fun EventCard(
 
     Card(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MonochromeCardSurface),
-        border = BorderStroke(1.dp, MonochromeCardBorder),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         modifier = modifier
             .fillMaxWidth()
@@ -79,14 +81,14 @@ fun EventCard(
             ) {
                 Surface(
                     shape = RoundedCornerShape(10.dp),
-                    color = Gray100,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier.size(36.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = MonochromeBlack,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -118,7 +120,7 @@ fun EventCard(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Normal
                             ),
-                            color = Gray500
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -128,7 +130,7 @@ fun EventCard(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = "Open Event Details",
-                    tint = Gray500,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -150,7 +152,7 @@ fun EventCard(
                     style = SpanStyle(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Normal,
-                        color = Gray500
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 ) {
                     append(" / ${eventWithStats.totalEligibleCount}")
@@ -167,14 +169,16 @@ fun EventCard(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
+                val trackShape = RoundedCornerShape(4.dp)
                 LinearProgressIndicator(
                     progress = { eventWithStats.progress },
                     modifier = Modifier
                         .weight(1f)
                         .height(8.dp)
-                        .clip(RoundedCornerShape(4.dp)),
+                        .clip(trackShape)
+                        .border(1.dp, MaterialTheme.colorScheme.outline, trackShape),
                     color = MaterialTheme.colorScheme.primary,
-                    trackColor = Gray100
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
 
                 Text(
@@ -183,12 +187,43 @@ fun EventCard(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp
                     ),
-                    color = Gray500
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
     }
 }
+
+@Preview(name = "Event Card - Light")
+@Composable
+private fun EventCardLightPreview() {
+    CheckdTheme(themeMode = ThemeMode.LIGHT) {
+        EventCard(
+            eventWithStats = EventWithStats(
+                event = Event(id = "1", name = "Morning Registration", startsFrom = null, endsOn = null),
+                scannedCount = 85,
+                totalEligibleCount = 120
+            ),
+            onClick = {}
+        )
+    }
+}
+
+@Preview(name = "Event Card - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun EventCardDarkPreview() {
+    CheckdTheme(themeMode = ThemeMode.DARK) {
+        EventCard(
+            eventWithStats = EventWithStats(
+                event = Event(id = "1", name = "Morning Registration", startsFrom = null, endsOn = null),
+                scannedCount = 85,
+                totalEligibleCount = 120
+            ),
+            onClick = {}
+        )
+    }
+}
+
 
 private fun getEventIcon(name: String): ImageVector {
     val lower = name.lowercase()

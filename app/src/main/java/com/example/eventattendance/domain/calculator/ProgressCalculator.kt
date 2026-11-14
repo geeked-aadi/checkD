@@ -71,6 +71,43 @@ object ProgressCalculator {
     }
 
     /**
+     * Sorts events chronologically based on their start time, then end time, then event ID.
+     * Events with a start time are ordered chronologically; events without a start time are placed at the end.
+     */
+    fun <T> sortEventsByTime(
+        events: List<T>,
+        startsFrom: (T) -> String?,
+        endsOn: (T) -> String? = { null },
+        eventId: (T) -> Int = { 0 }
+    ): List<T> {
+        return events.sortedWith { a, b ->
+            val aStart = parseToIstLocalDateTime(startsFrom(a))
+            val bStart = parseToIstLocalDateTime(startsFrom(b))
+
+            when {
+                aStart != null && bStart != null -> {
+                    val cmp = aStart.compareTo(bStart)
+                    if (cmp != 0) {
+                        cmp
+                    } else {
+                        val aEnd = parseToIstLocalDateTime(endsOn(a))
+                        val bEnd = parseToIstLocalDateTime(endsOn(b))
+                        if (aEnd != null && bEnd != null) {
+                            val endCmp = aEnd.compareTo(bEnd)
+                            if (endCmp != 0) endCmp else eventId(a).compareTo(eventId(b))
+                        } else if (aEnd != null) -1
+                        else if (bEnd != null) 1
+                        else eventId(a).compareTo(eventId(b))
+                    }
+                }
+                aStart != null -> -1
+                bStart != null -> 1
+                else -> eventId(a).compareTo(eventId(b))
+            }
+        }
+    }
+
+    /**
      * For a set of members M and an event E:
      * present = |M ∩ presentSet(E)|, total = |M|, percent = present / total
      */

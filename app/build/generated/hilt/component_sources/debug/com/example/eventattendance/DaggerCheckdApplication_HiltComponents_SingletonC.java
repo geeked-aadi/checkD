@@ -18,15 +18,21 @@ import com.example.eventattendance.data.repository.DirectoryRepositoryImpl;
 import com.example.eventattendance.data.repository.EventRepositoryImpl;
 import com.example.eventattendance.data.repository.ParticipantCacheRepositoryImpl;
 import com.example.eventattendance.data.repository.SyncRepositoryImpl;
+import com.example.eventattendance.data.repository.UserPreferencesRepositoryImpl;
 import com.example.eventattendance.di.AppModule_ProvideIoDispatcherFactory;
 import com.example.eventattendance.di.AppModule_ProvidePreferencesDataStoreFactory;
 import com.example.eventattendance.di.NetworkModule_ProvideSupabaseClientFactory;
+import com.example.eventattendance.domain.repository.AttendanceMatrixRepository;
+import com.example.eventattendance.domain.repository.AttendanceRepository;
+import com.example.eventattendance.domain.repository.ParticipantCacheRepository;
+import com.example.eventattendance.domain.usecase.ClearLocalCacheUseCase;
 import com.example.eventattendance.domain.usecase.LogoutUseCase;
 import com.example.eventattendance.domain.usecase.LookupParticipantUseCase;
 import com.example.eventattendance.domain.usecase.ManageEventsUseCase;
 import com.example.eventattendance.domain.usecase.MarkAttendanceUseCase;
 import com.example.eventattendance.domain.usecase.StaffLoginUseCase;
 import com.example.eventattendance.domain.usecase.SyncDataUseCase;
+import com.example.eventattendance.domain.usecase.VerifyParticipantUseCase;
 import com.example.eventattendance.presentation.admin.AdminViewModel;
 import com.example.eventattendance.presentation.admin.AdminViewModel_HiltModules;
 import com.example.eventattendance.presentation.admin.AdminViewModel_HiltModules_BindsModule_Binds_LazyMapKey;
@@ -63,6 +69,10 @@ import com.example.eventattendance.presentation.spoc.SpocDashboardViewModel;
 import com.example.eventattendance.presentation.spoc.SpocDashboardViewModel_HiltModules;
 import com.example.eventattendance.presentation.spoc.SpocDashboardViewModel_HiltModules_BindsModule_Binds_LazyMapKey;
 import com.example.eventattendance.presentation.spoc.SpocDashboardViewModel_HiltModules_KeyModule_Provide_LazyMapKey;
+import com.example.eventattendance.presentation.verifier.QrVerifierViewModel;
+import com.example.eventattendance.presentation.verifier.QrVerifierViewModel_HiltModules;
+import com.example.eventattendance.presentation.verifier.QrVerifierViewModel_HiltModules_BindsModule_Binds_LazyMapKey;
+import com.example.eventattendance.presentation.verifier.QrVerifierViewModel_HiltModules_KeyModule_Provide_LazyMapKey;
 import com.example.eventattendance.sync.NetworkConnectivityObserver;
 import com.example.eventattendance.sync.SyncManager;
 import com.example.eventattendance.util.AudioFeedbackUtil;
@@ -417,12 +427,13 @@ public final class DaggerCheckdApplication_HiltComponents_SingletonC {
     }
 
     Map keySetMapOfClassOfObjectAndBooleanBuilder() {
-      MapBuilder mapBuilder = MapBuilder.<String, Boolean>newMapBuilder(10);
+      MapBuilder mapBuilder = MapBuilder.<String, Boolean>newMapBuilder(11);
       mapBuilder.put(AdminViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, AdminViewModel_HiltModules.KeyModule.provide());
       mapBuilder.put(EventDetailViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, EventDetailViewModel_HiltModules.KeyModule.provide());
       mapBuilder.put(HomeViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, HomeViewModel_HiltModules.KeyModule.provide());
       mapBuilder.put(MainViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, MainViewModel_HiltModules.KeyModule.provide());
       mapBuilder.put(ParticipantDetailViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, ParticipantDetailViewModel_HiltModules.KeyModule.provide());
+      mapBuilder.put(QrVerifierViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, QrVerifierViewModel_HiltModules.KeyModule.provide());
       mapBuilder.put(ScannerViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, ScannerViewModel_HiltModules.KeyModule.provide());
       mapBuilder.put(SettingsViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, SettingsViewModel_HiltModules.KeyModule.provide());
       mapBuilder.put(SpocDashboardViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, SpocDashboardViewModel_HiltModules.KeyModule.provide());
@@ -480,6 +491,8 @@ public final class DaggerCheckdApplication_HiltComponents_SingletonC {
 
     Provider<ParticipantDetailViewModel> participantDetailViewModelProvider;
 
+    Provider<QrVerifierViewModel> qrVerifierViewModelProvider;
+
     Provider<ScannerViewModel> scannerViewModelProvider;
 
     Provider<SettingsViewModel> settingsViewModelProvider;
@@ -511,12 +524,20 @@ public final class DaggerCheckdApplication_HiltComponents_SingletonC {
       return new SyncDataUseCase(singletonCImpl.syncRepositoryImplProvider.get());
     }
 
+    VerifyParticipantUseCase verifyParticipantUseCase() {
+      return new VerifyParticipantUseCase((ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()));
+    }
+
     LookupParticipantUseCase lookupParticipantUseCase() {
-      return new LookupParticipantUseCase(singletonCImpl.participantCacheRepositoryImplProvider.get());
+      return new LookupParticipantUseCase((ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()));
     }
 
     MarkAttendanceUseCase markAttendanceUseCase() {
-      return new MarkAttendanceUseCase(singletonCImpl.attendanceRepositoryImplProvider.get(), singletonCImpl.authRepositoryImplProvider.get());
+      return new MarkAttendanceUseCase((AttendanceRepository) (((Provider) (singletonCImpl.attendanceRepositoryImplProvider)).get()), singletonCImpl.authRepositoryImplProvider.get());
+    }
+
+    ClearLocalCacheUseCase clearLocalCacheUseCase() {
+      return new ClearLocalCacheUseCase((ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()), (AttendanceRepository) (((Provider) (singletonCImpl.attendanceRepositoryImplProvider)).get()), (AttendanceMatrixRepository) (((Provider) (singletonCImpl.attendanceMatrixRepositoryImplProvider)).get()));
     }
 
     StaffLoginUseCase staffLoginUseCase() {
@@ -524,12 +545,13 @@ public final class DaggerCheckdApplication_HiltComponents_SingletonC {
     }
 
     Map hiltViewModelMapMapOfClassOfObjectAndProviderOfViewModelBuilder() {
-      MapBuilder mapBuilder = MapBuilder.<String, javax.inject.Provider<ViewModel>>newMapBuilder(10);
+      MapBuilder mapBuilder = MapBuilder.<String, javax.inject.Provider<ViewModel>>newMapBuilder(11);
       mapBuilder.put(AdminViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) (adminViewModelProvider)));
       mapBuilder.put(EventDetailViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) (eventDetailViewModelProvider)));
       mapBuilder.put(HomeViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) (homeViewModelProvider)));
       mapBuilder.put(MainViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) (mainViewModelProvider)));
       mapBuilder.put(ParticipantDetailViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) (participantDetailViewModelProvider)));
+      mapBuilder.put(QrVerifierViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) (qrVerifierViewModelProvider)));
       mapBuilder.put(ScannerViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) (scannerViewModelProvider)));
       mapBuilder.put(SettingsViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) (settingsViewModelProvider)));
       mapBuilder.put(SpocDashboardViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) (spocDashboardViewModelProvider)));
@@ -546,11 +568,12 @@ public final class DaggerCheckdApplication_HiltComponents_SingletonC {
       this.homeViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
       this.mainViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
       this.participantDetailViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
-      this.scannerViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
-      this.settingsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 6);
-      this.spocDashboardViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 7);
-      this.spocDetailViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 8);
-      this.staffAuthViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 9);
+      this.qrVerifierViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
+      this.scannerViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 6);
+      this.settingsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 7);
+      this.spocDashboardViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 8);
+      this.spocDetailViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 9);
+      this.staffAuthViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 10);
     }
 
     @Override
@@ -585,33 +608,36 @@ public final class DaggerCheckdApplication_HiltComponents_SingletonC {
       public T get() {
         switch (id) {
           case 0: // com.example.eventattendance.presentation.admin.AdminViewModel
-          return (T) new AdminViewModel(singletonCImpl.attendanceMatrixRepositoryImplProvider.get(), singletonCImpl.participantCacheRepositoryImplProvider.get(), singletonCImpl.directoryRepositoryImplProvider.get(), singletonCImpl.attendanceRepositoryImplProvider.get(), singletonCImpl.eventRepositoryImplProvider.get(), viewModelCImpl.manageEventsUseCase(), singletonCImpl.authRepositoryImplProvider.get(), viewModelCImpl.logoutUseCase());
+          return (T) new AdminViewModel((AttendanceMatrixRepository) (((Provider) (singletonCImpl.attendanceMatrixRepositoryImplProvider)).get()), (ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()), singletonCImpl.directoryRepositoryImplProvider.get(), (AttendanceRepository) (((Provider) (singletonCImpl.attendanceRepositoryImplProvider)).get()), singletonCImpl.eventRepositoryImplProvider.get(), viewModelCImpl.manageEventsUseCase(), singletonCImpl.authRepositoryImplProvider.get(), viewModelCImpl.logoutUseCase());
 
           case 1: // com.example.eventattendance.presentation.eventdetails.EventDetailViewModel
-          return (T) new EventDetailViewModel(singletonCImpl.attendanceRepositoryImplProvider.get(), singletonCImpl.participantCacheRepositoryImplProvider.get(), singletonCImpl.authRepositoryImplProvider.get(), singletonCImpl.attendanceMatrixRepositoryImplProvider.get(), viewModelCImpl.savedStateHandle);
+          return (T) new EventDetailViewModel((AttendanceRepository) (((Provider) (singletonCImpl.attendanceRepositoryImplProvider)).get()), (ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()), singletonCImpl.authRepositoryImplProvider.get(), (AttendanceMatrixRepository) (((Provider) (singletonCImpl.attendanceMatrixRepositoryImplProvider)).get()), viewModelCImpl.savedStateHandle);
 
           case 2: // com.example.eventattendance.presentation.home.HomeViewModel
-          return (T) new HomeViewModel(singletonCImpl.attendanceRepositoryImplProvider.get(), viewModelCImpl.syncDataUseCase());
+          return (T) new HomeViewModel((AttendanceRepository) (((Provider) (singletonCImpl.attendanceRepositoryImplProvider)).get()), viewModelCImpl.syncDataUseCase());
 
           case 3: // com.example.eventattendance.MainViewModel
-          return (T) new MainViewModel(singletonCImpl.authRepositoryImplProvider.get(), singletonCImpl.participantCacheRepositoryImplProvider.get());
+          return (T) new MainViewModel(singletonCImpl.authRepositoryImplProvider.get(), (ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()), singletonCImpl.userPreferencesRepositoryImplProvider.get());
 
           case 4: // com.example.eventattendance.presentation.admin.ParticipantDetailViewModel
-          return (T) new ParticipantDetailViewModel(viewModelCImpl.savedStateHandle, singletonCImpl.participantCacheRepositoryImplProvider.get(), singletonCImpl.attendanceMatrixRepositoryImplProvider.get(), singletonCImpl.authRepositoryImplProvider.get());
+          return (T) new ParticipantDetailViewModel(viewModelCImpl.savedStateHandle, (ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()), (AttendanceMatrixRepository) (((Provider) (singletonCImpl.attendanceMatrixRepositoryImplProvider)).get()), singletonCImpl.authRepositoryImplProvider.get());
 
-          case 5: // com.example.eventattendance.presentation.scanner.ScannerViewModel
-          return (T) new ScannerViewModel(viewModelCImpl.lookupParticipantUseCase(), viewModelCImpl.markAttendanceUseCase(), singletonCImpl.attendanceRepositoryImplProvider.get(), singletonCImpl.attendanceMatrixRepositoryImplProvider.get(), singletonCImpl.authRepositoryImplProvider.get(), singletonCImpl.hapticFeedbackUtilProvider.get(), singletonCImpl.audioFeedbackUtilProvider.get(), viewModelCImpl.savedStateHandle);
+          case 5: // com.example.eventattendance.presentation.verifier.QrVerifierViewModel
+          return (T) new QrVerifierViewModel(viewModelCImpl.verifyParticipantUseCase(), (ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()), singletonCImpl.hapticFeedbackUtilProvider.get(), singletonCImpl.audioFeedbackUtilProvider.get());
 
-          case 6: // com.example.eventattendance.presentation.settings.SettingsViewModel
-          return (T) new SettingsViewModel(singletonCImpl.authRepositoryImplProvider.get(), viewModelCImpl.logoutUseCase(), singletonCImpl.participantCacheRepositoryImplProvider.get());
+          case 6: // com.example.eventattendance.presentation.scanner.ScannerViewModel
+          return (T) new ScannerViewModel(viewModelCImpl.lookupParticipantUseCase(), viewModelCImpl.markAttendanceUseCase(), (AttendanceRepository) (((Provider) (singletonCImpl.attendanceRepositoryImplProvider)).get()), (AttendanceMatrixRepository) (((Provider) (singletonCImpl.attendanceMatrixRepositoryImplProvider)).get()), singletonCImpl.authRepositoryImplProvider.get(), singletonCImpl.hapticFeedbackUtilProvider.get(), singletonCImpl.audioFeedbackUtilProvider.get(), viewModelCImpl.savedStateHandle);
 
-          case 7: // com.example.eventattendance.presentation.spoc.SpocDashboardViewModel
-          return (T) new SpocDashboardViewModel(singletonCImpl.authRepositoryImplProvider.get(), singletonCImpl.directoryRepositoryImplProvider.get(), singletonCImpl.participantCacheRepositoryImplProvider.get(), singletonCImpl.attendanceMatrixRepositoryImplProvider.get(), viewModelCImpl.logoutUseCase());
+          case 7: // com.example.eventattendance.presentation.settings.SettingsViewModel
+          return (T) new SettingsViewModel(singletonCImpl.authRepositoryImplProvider.get(), viewModelCImpl.logoutUseCase(), (ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()), singletonCImpl.userPreferencesRepositoryImplProvider.get(), viewModelCImpl.clearLocalCacheUseCase());
 
-          case 8: // com.example.eventattendance.presentation.admin.SpocDetailViewModel
-          return (T) new SpocDetailViewModel(singletonCImpl.directoryRepositoryImplProvider.get(), singletonCImpl.participantCacheRepositoryImplProvider.get(), singletonCImpl.attendanceMatrixRepositoryImplProvider.get(), singletonCImpl.authRepositoryImplProvider.get(), viewModelCImpl.savedStateHandle);
+          case 8: // com.example.eventattendance.presentation.spoc.SpocDashboardViewModel
+          return (T) new SpocDashboardViewModel(singletonCImpl.authRepositoryImplProvider.get(), singletonCImpl.directoryRepositoryImplProvider.get(), (ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()), (AttendanceMatrixRepository) (((Provider) (singletonCImpl.attendanceMatrixRepositoryImplProvider)).get()), viewModelCImpl.logoutUseCase());
 
-          case 9: // com.example.eventattendance.presentation.authentication.StaffAuthViewModel
+          case 9: // com.example.eventattendance.presentation.admin.SpocDetailViewModel
+          return (T) new SpocDetailViewModel(singletonCImpl.directoryRepositoryImplProvider.get(), (ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()), (AttendanceMatrixRepository) (((Provider) (singletonCImpl.attendanceMatrixRepositoryImplProvider)).get()), singletonCImpl.authRepositoryImplProvider.get(), viewModelCImpl.savedStateHandle);
+
+          case 10: // com.example.eventattendance.presentation.authentication.StaffAuthViewModel
           return (T) new StaffAuthViewModel(viewModelCImpl.staffLoginUseCase());
 
           default: throw new AssertionError(id);
@@ -722,6 +748,8 @@ public final class DaggerCheckdApplication_HiltComponents_SingletonC {
 
     Provider<SyncRepositoryImpl> syncRepositoryImplProvider;
 
+    Provider<UserPreferencesRepositoryImpl> userPreferencesRepositoryImplProvider;
+
     Provider<HapticFeedbackUtil> hapticFeedbackUtilProvider;
 
     Provider<AudioFeedbackUtil> audioFeedbackUtilProvider;
@@ -748,12 +776,13 @@ public final class DaggerCheckdApplication_HiltComponents_SingletonC {
       this.authRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<AuthRepositoryImpl>(singletonCImpl, 8));
       this.syncManagerProvider = DoubleCheck.provider(new SwitchingProvider<SyncManager>(singletonCImpl, 13));
       this.syncRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<SyncRepositoryImpl>(singletonCImpl, 12));
-      this.hapticFeedbackUtilProvider = DoubleCheck.provider(new SwitchingProvider<HapticFeedbackUtil>(singletonCImpl, 14));
-      this.audioFeedbackUtilProvider = DoubleCheck.provider(new SwitchingProvider<AudioFeedbackUtil>(singletonCImpl, 15));
+      this.userPreferencesRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<UserPreferencesRepositoryImpl>(singletonCImpl, 14));
+      this.hapticFeedbackUtilProvider = DoubleCheck.provider(new SwitchingProvider<HapticFeedbackUtil>(singletonCImpl, 15));
+      this.audioFeedbackUtilProvider = DoubleCheck.provider(new SwitchingProvider<AudioFeedbackUtil>(singletonCImpl, 16));
     }
 
     @Override
-    public void injectCheckdApplication(CheckdApplication checkdApplication) {
+    public void injectCheckdApplication(CheckdApplication arg0) {
     }
 
     @Override
@@ -795,16 +824,16 @@ public final class DaggerCheckdApplication_HiltComponents_SingletonC {
           return (T) NetworkModule_ProvideSupabaseClientFactory.provideSupabaseClient();
 
           case 3: // com.example.eventattendance.data.repository.ParticipantCacheRepositoryImpl
-          return (T) new ParticipantCacheRepositoryImpl(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.rpcRemoteDataSourceProvider.get(), AppModule_ProvideIoDispatcherFactory.provideIoDispatcher());
+          return (T) new ParticipantCacheRepositoryImpl(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.rpcRemoteDataSourceProvider.get(), singletonCImpl.provideSupabaseClientProvider.get(), AppModule_ProvideIoDispatcherFactory.provideIoDispatcher());
 
           case 4: // com.example.eventattendance.data.repository.DirectoryRepositoryImpl
-          return (T) new DirectoryRepositoryImpl(singletonCImpl.participantCacheRepositoryImplProvider.get(), singletonCImpl.provideSupabaseClientProvider.get(), AppModule_ProvideIoDispatcherFactory.provideIoDispatcher());
+          return (T) new DirectoryRepositoryImpl((ParticipantCacheRepository) (((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)).get()), singletonCImpl.provideSupabaseClientProvider.get(), AppModule_ProvideIoDispatcherFactory.provideIoDispatcher());
 
           case 5: // com.example.eventattendance.data.repository.AttendanceRepositoryImpl
-          return (T) new AttendanceRepositoryImpl(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.rpcRemoteDataSourceProvider.get(), AppModule_ProvideIoDispatcherFactory.provideIoDispatcher());
+          return (T) new AttendanceRepositoryImpl(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.rpcRemoteDataSourceProvider.get(), singletonCImpl.provideSupabaseClientProvider.get(), ((Provider) (singletonCImpl.participantCacheRepositoryImplProvider)), ((Provider) (singletonCImpl.attendanceMatrixRepositoryImplProvider)), AppModule_ProvideIoDispatcherFactory.provideIoDispatcher());
 
           case 6: // com.example.eventattendance.data.repository.EventRepositoryImpl
-          return (T) new EventRepositoryImpl(singletonCImpl.eventRemoteDataSourceProvider.get(), singletonCImpl.attendanceRepositoryImplProvider.get());
+          return (T) new EventRepositoryImpl(singletonCImpl.eventRemoteDataSourceProvider.get(), (AttendanceRepository) (((Provider) (singletonCImpl.attendanceRepositoryImplProvider)).get()), (AttendanceMatrixRepository) (((Provider) (singletonCImpl.attendanceMatrixRepositoryImplProvider)).get()));
 
           case 7: // com.example.eventattendance.data.remote.datasource.EventRemoteDataSource
           return (T) new EventRemoteDataSource(singletonCImpl.provideSupabaseClientProvider.get());
@@ -825,12 +854,15 @@ public final class DaggerCheckdApplication_HiltComponents_SingletonC {
           return (T) new SyncRepositoryImpl(singletonCImpl.syncManagerProvider.get(), singletonCImpl.networkConnectivityObserverProvider.get());
 
           case 13: // com.example.eventattendance.sync.SyncManager
-          return (T) new SyncManager(singletonCImpl.networkConnectivityObserverProvider.get());
+          return (T) new SyncManager(singletonCImpl.networkConnectivityObserverProvider.get(), ((Provider) (singletonCImpl.attendanceRepositoryImplProvider)), ((Provider) (singletonCImpl.attendanceMatrixRepositoryImplProvider)));
 
-          case 14: // com.example.eventattendance.util.HapticFeedbackUtil
+          case 14: // com.example.eventattendance.data.repository.UserPreferencesRepositoryImpl
+          return (T) new UserPreferencesRepositoryImpl(singletonCImpl.providePreferencesDataStoreProvider.get());
+
+          case 15: // com.example.eventattendance.util.HapticFeedbackUtil
           return (T) new HapticFeedbackUtil(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 15: // com.example.eventattendance.util.AudioFeedbackUtil
+          case 16: // com.example.eventattendance.util.AudioFeedbackUtil
           return (T) new AudioFeedbackUtil();
 
           default: throw new AssertionError(id);

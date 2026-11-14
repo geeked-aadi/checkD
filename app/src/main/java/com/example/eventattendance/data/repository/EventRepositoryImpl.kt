@@ -3,7 +3,9 @@ package com.example.eventattendance.data.repository
 import com.example.eventattendance.data.remote.datasource.EventRemoteDataSource
 import com.example.eventattendance.data.remote.dto.EventDto
 import com.example.eventattendance.domain.model.Event
+import com.example.eventattendance.domain.model.EventAttendance
 import com.example.eventattendance.domain.model.EventWithStats
+import com.example.eventattendance.domain.repository.AttendanceMatrixRepository
 import com.example.eventattendance.domain.repository.AttendanceRepository
 import com.example.eventattendance.domain.repository.EventRepository
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +16,8 @@ import javax.inject.Singleton
 @Singleton
 class EventRepositoryImpl @Inject constructor(
     private val eventRemoteDataSource: EventRemoteDataSource,
-    private val attendanceRepository: AttendanceRepository
+    private val attendanceRepository: AttendanceRepository,
+    private val attendanceMatrixRepository: AttendanceMatrixRepository
 ) : EventRepository {
 
     override fun getEventsWithStatsFlow(): Flow<List<EventWithStats>> {
@@ -47,21 +50,32 @@ class EventRepositoryImpl @Inject constructor(
 
     override suspend fun createEvent(event: Event): Result<Event> {
         return try {
-            val eventId = if (event.eventId > 0) {
-                event.eventId
-            } else {
-                eventRemoteDataSource.getNextEventId()
-            }
-
-            val eventDto = EventDto(
-                eventId = eventId,
+            val created = eventRemoteDataSource.createEvent(
                 eventName = event.name,
-                startsFrom = event.startsFrom,
-                endsOn = event.endsOn
+                startsFrom = event.startsFrom ?: "",
+                endsOn = event.endsOn ?: ""
             )
 
-            val created = eventRemoteDataSource.createEvent(eventDto)
-            attendanceRepository.syncAllEventsAttendance(forcePull = true)
+            // Immediately reflect in local attendance matrix and repository
+            val starts = created.startsFrom ?: event.startsFrom ?: ""
+            val ends = created.endsOn ?: event.endsOn ?: ""
+            val eName = created.eventName ?: event.name
+
+            attendanceMatrixRepository.addLocalEvent(
+                EventAttendance(
+                    eventId = created.eventId,
+                    eventName = eName,
+                    startsFrom = starts,
+                    endsOn = ends,
+                    presentPIds = emptySet()
+                )
+            )
+            attendanceRepository.updateLocalEvent(created.eventId, eName, starts, ends)
+
+            runCatching {
+                attendanceRepository.syncAllEventsAttendance(forcePull = true)
+                attendanceMatrixRepository.refresh()
+            }
             Result.success(created.toDomain())
         } catch (e: Exception) {
             Result.failure(e)
@@ -70,17 +84,33 @@ class EventRepositoryImpl @Inject constructor(
 
     override suspend fun updateEventStatus(eventId: String, isOpen: Boolean): Result<Unit> {
         return try {
-            attendanceRepository.syncAllEventsAttendance(forcePull = true)
+            runCatching {
+                attendanceRepository.syncAllEventsAttendance(forcePull = true)
+                attendanceMatrixRepository.refresh()
+            }
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun updateTimeWindow(eventId: Int, startsFrom: String, endsOn: String): Result<Unit> {
+    override suspend fun updateTimeWindow(
+        eventId: Int,
+        startsFrom: String,
+        endsOn: String,
+        name: String?
+    ): Result<Unit> {
         return try {
-            eventRemoteDataSource.updateEventTimeWindow(eventId, startsFrom, endsOn)
-            attendanceRepository.syncAllEventsAttendance(forcePull = true)
+            eventRemoteDataSource.updateEventTimeWindow(eventId, startsFrom, endsOn, name)
+
+            // Immediately reflect in local caches and matrix so the edited event shows the new date/time
+            attendanceRepository.updateLocalEvent(eventId, name, startsFrom, endsOn)
+            attendanceMatrixRepository.updateLocalEvent(eventId, name, startsFrom, endsOn)
+
+            runCatching {
+                attendanceRepository.syncAllEventsAttendance(forcePull = true)
+                attendanceMatrixRepository.refresh()
+            }
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -88,6 +118,12 @@ class EventRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshEventsFromCloud(): Result<Unit> {
-        return attendanceRepository.syncAllEventsAttendance(forcePull = true).map { }
+        return try {
+            attendanceRepository.syncAllEventsAttendance(forcePull = true)
+            attendanceMatrixRepository.refresh()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

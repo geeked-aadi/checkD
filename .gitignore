@@ -27,3 +27,4 @@ prototype.html
 app/src/main/res/drawable-nodpi/
 app/src/main/res/drawable/ic_pixel_*.xml
 app/src/main/res/font/
+.gradle-home/

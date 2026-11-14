@@ -1,5 +1,7 @@
 package com.example.eventattendance.presentation.common
 
+import android.content.res.Configuration
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,11 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
+import com.example.eventattendance.domain.model.ThemeMode
+import com.example.eventattendance.presentation.theme.CheckdTheme
 
 @Composable
 fun AttendanceProgressBar(
@@ -44,7 +46,7 @@ fun AttendanceProgressBar(
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     ),
-                    color = MonochromeBlack
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = "$percentage%",
@@ -52,20 +54,39 @@ fun AttendanceProgressBar(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp
                     ),
-                    color = Gray500
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Spacer(modifier = Modifier.height(6.dp))
         }
 
+        val trackShape = RoundedCornerShape(4.dp)
         LinearProgressIndicator(
             progress = { progress },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(8.dp)
-                .clip(RoundedCornerShape(4.dp)),
-            color = MonochromeBlack,
-            trackColor = Gray100
+                .clip(trackShape)
+                .border(1.dp, MaterialTheme.colorScheme.outline, trackShape),
+            color = MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
         )
     }
 }
+
+@Preview(name = "Progress Bar - Light")
+@Composable
+private fun AttendanceProgressBarLightPreview() {
+    CheckdTheme(themeMode = ThemeMode.LIGHT) {
+        AttendanceProgressBar(present = 45, total = 100)
+    }
+}
+
+@Preview(name = "Progress Bar - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun AttendanceProgressBarDarkPreview() {
+    CheckdTheme(themeMode = ThemeMode.DARK) {
+        AttendanceProgressBar(present = 45, total = 100)
+    }
+}
+

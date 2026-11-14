@@ -170,4 +170,39 @@ class ProgressCalculatorTest {
         val parsedUtc = ProgressCalculator.parseToIstLocalDateTime("2026-11-06T04:00:00Z")
         assertEquals(LocalDateTime.parse("2026-11-06T09:30:00"), parsedUtc)
     }
+
+    @Test
+    fun testSortEventsByTime() {
+        data class TestEvent(
+            val id: Int,
+            val start: String?,
+            val end: String?
+        )
+
+        val events = listOf(
+            TestEvent(id = 10, start = "2026-11-07 10:00:00", end = "2026-11-07 12:00:00"),
+            TestEvent(id = 2, start = "2026-11-06 14:00:00", end = "2026-11-06 16:00:00"),
+            TestEvent(id = 99, start = "2026-11-05 09:00:00", end = "2026-11-05 11:00:00"),
+            TestEvent(id = 5, start = "2026-11-06 09:00:00", end = "2026-11-06 12:00:00"),
+            TestEvent(id = 7, start = "2026-11-06 09:00:00", end = "2026-11-06 10:00:00"),
+            TestEvent(id = 1, start = null, end = null),
+            TestEvent(id = 4, start = "invalid-date", end = null)
+        )
+
+        val sorted = ProgressCalculator.sortEventsByTime(
+            events = events,
+            startsFrom = { it.start },
+            endsOn = { it.end },
+            eventId = { it.id }
+        )
+
+        // Expected order:
+        // 1. Nov 5 09:00 (id 99)
+        // 2. Nov 6 09:00 ends 10:00 (id 7)
+        // 3. Nov 6 09:00 ends 12:00 (id 5)
+        // 4. Nov 6 14:00 (id 2)
+        // 5. Nov 7 10:00 (id 10)
+        // 6 & 7: invalid and null timestamps sorted at end with id tie-breaker (id 1, then id 4)
+        assertEquals(listOf(99, 7, 5, 2, 10, 1, 4), sorted.map { it.id })
+    }
 }

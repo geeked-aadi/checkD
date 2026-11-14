@@ -2,10 +2,15 @@ package com.example.eventattendance.data.repository
 
 import android.content.Context
 import com.example.eventattendance.data.remote.datasource.RpcRemoteDataSource
+import com.example.eventattendance.data.remote.dto.ParticipantDto
+import com.example.eventattendance.data.remote.dto.SpocDto
+import com.example.eventattendance.data.remote.dto.TeamDto
 import com.example.eventattendance.di.IoDispatcher
 import com.example.eventattendance.domain.model.CachedParticipant
 import com.example.eventattendance.domain.repository.ParticipantCacheRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +26,7 @@ import javax.inject.Singleton
 class ParticipantCacheRepositoryImpl @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val rpcRemoteDataSource: RpcRemoteDataSource,
+    private val supabaseClient: SupabaseClient,
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ParticipantCacheRepository {
 
@@ -49,6 +55,7 @@ class ParticipantCacheRepositoryImpl @Inject constructor(
     }
 
     override suspend fun initializeCache(): Unit = withContext(ioDispatcher) {
+        // 1. Fast initial load from disk cache for offline availability
         if (cacheFile.exists()) {
             runCatching {
                 val content = cacheFile.readText()
@@ -59,33 +66,111 @@ class ParticipantCacheRepositoryImpl @Inject constructor(
             }
         }
 
-        // If local file was missing or empty, fetch from remote RPC once
-        if (_participantsMap.value.isEmpty()) {
-            refreshParticipants()
-        }
+        // 2. Always fetch fresh participants from remote RPC (get_all_participants) on launch
+        refreshParticipants()
     }
 
     override suspend fun refreshParticipants(): Result<Unit> = withContext(ioDispatcher) {
         runCatching {
-            val response = rpcRemoteDataSource.getAllParticipants()
-            val list = response.participants.map { item ->
+            val rpcResult = runCatching { rpcRemoteDataSource.getAllParticipants() }
+            val rpcParticipants = rpcResult.getOrNull()?.participants ?: emptyList()
+
+            val initialList = rpcParticipants.map { item ->
                 CachedParticipant(
                     pId = item.pId,
-                    name = item.name,
+                    name = item.resolvedName(),
                     phonenumber = item.phonenumber,
                     teamId = item.teamId,
-                    teamName = item.teamName,
+                    teamName = item.resolvedTeamName(),
                     teamLeader = item.teamLeader,
                     spocId = item.spocId,
-                    spocName = item.spocName,
+                    spocName = item.resolvedSpocName(),
                     spocPhonenumber = item.spocPhonenumber
                 )
             }
-            if (list.isNotEmpty()) {
-                val jsonString = json.encodeToString(list)
-                cacheFile.writeText(jsonString)
-                rebuildIndexes(list)
+
+            // Check if any fields need enrichment (missing name, team, or spoc, or if RPC failed completely)
+            val needsEnrichment = (initialList.isEmpty() && rpcResult.isFailure) ||
+                initialList.any {
+                    it.name.isNullOrBlank() ||
+                    (it.teamName.isNullOrBlank() && !it.teamId.isNullOrBlank()) ||
+                    (it.spocName.isNullOrBlank() && !it.spocId.isNullOrBlank()) ||
+                    (it.teamName.isNullOrBlank() && it.spocName.isNullOrBlank())
+                }
+
+            val finalList = if (needsEnrichment) {
+                // If RPC was completely empty/failed, query participants table directly
+                val directParticipants = if (initialList.isEmpty()) {
+                    runCatching {
+                        supabaseClient.from("participants").select().decodeList<ParticipantDto>()
+                    }.getOrDefault(emptyList())
+                } else {
+                    emptyList()
+                }
+
+                // Query teams table
+                val directTeams = runCatching {
+                    supabaseClient.from("teams").select().decodeList<TeamDto>()
+                }.getOrDefault(emptyList()).associateBy { it.teamId }
+
+                // Query spoc table
+                val directSpocs = runCatching {
+                    supabaseClient.from("spoc").select().decodeList<SpocDto>()
+                }.getOrDefault(emptyList()).associateBy { it.spocId }
+
+                // If names are missing in initial list, query direct participants table
+                val directParticipantsMap = if (initialList.any { it.name.isNullOrBlank() }) {
+                    runCatching {
+                        supabaseClient.from("participants").select().decodeList<ParticipantDto>()
+                    }.getOrDefault(emptyList()).associateBy { it.pId }
+                } else {
+                    directParticipants.associateBy { it.pId }
+                }
+
+                val baseList = if (initialList.isNotEmpty()) {
+                    initialList
+                } else {
+                    directParticipants.map { p ->
+                        CachedParticipant(
+                            pId = p.pId,
+                            name = p.name,
+                            phonenumber = p.phonenumber,
+                            teamId = p.teamId,
+                            teamName = null,
+                            teamLeader = null,
+                            spocId = null,
+                            spocName = null,
+                            spocPhonenumber = null
+                        )
+                    }
+                }
+
+                baseList.map { p ->
+                    val directP = directParticipantsMap[p.pId]
+                    val effectiveTeamId = p.teamId ?: directP?.teamId
+                    val team = effectiveTeamId?.let { directTeams[it] }
+                    val effectiveSpocId = p.spocId ?: team?.spocId
+                    val spoc = effectiveSpocId?.let { directSpocs[it] }
+
+                    p.copy(
+                        name = p.name?.takeIf { it.isNotBlank() } ?: directP?.name?.takeIf { it.isNotBlank() },
+                        phonenumber = p.phonenumber ?: directP?.phonenumber,
+                        teamId = effectiveTeamId,
+                        teamName = p.teamName?.takeIf { it.isNotBlank() } ?: team?.teamName,
+                        teamLeader = p.teamLeader?.takeIf { it.isNotBlank() } ?: team?.teamLeader,
+                        spocId = effectiveSpocId,
+                        spocName = p.spocName?.takeIf { it.isNotBlank() } ?: spoc?.name,
+                        spocPhonenumber = p.spocPhonenumber ?: spoc?.phonenumber
+                    )
+                }
+            } else {
+                initialList
             }
+
+            // Always encode and persist even if empty (handles truncated or reset DB)
+            val jsonString = json.encodeToString(finalList)
+            cacheFile.writeText(jsonString)
+            rebuildIndexes(finalList)
             Unit
         }
     }
@@ -113,4 +198,12 @@ class ParticipantCacheRepositoryImpl @Inject constructor(
     override fun isCacheEmpty(): Boolean {
         return _participantsMap.value.isEmpty()
     }
+
+    override suspend fun clearCache(): Unit = withContext(ioDispatcher) {
+        if (cacheFile.exists()) {
+            cacheFile.delete()
+        }
+        rebuildIndexes(emptyList())
+    }
 }
+

@@ -1,5 +1,6 @@
 package com.example.eventattendance.presentation.spoc.tabs
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,13 +36,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.eventattendance.domain.model.Spoc
 import com.example.eventattendance.domain.model.SpocDashboardData
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray200
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeWhite
-import com.example.eventattendance.presentation.theme.StatusRed
+import com.example.eventattendance.presentation.theme.CheckdTheme
+import com.example.eventattendance.presentation.theme.statusColors
 
 @Composable
 fun SpocProfileTab(
@@ -64,7 +64,8 @@ fun SpocProfileTab(
         // SPOC Profile Card
         Card(
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = MonochromeBlack),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
@@ -77,13 +78,13 @@ fun SpocProfileTab(
                     modifier = Modifier
                         .size(72.dp)
                         .clip(CircleShape)
-                        .background(MonochromeWhite.copy(alpha = 0.15f)),
+                        .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Person,
                         contentDescription = null,
-                        tint = MonochromeWhite,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.size(36.dp)
                     )
                 }
@@ -96,7 +97,7 @@ fun SpocProfileTab(
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     ),
-                    color = MonochromeWhite
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -104,13 +105,13 @@ fun SpocProfileTab(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(MonochromeWhite.copy(alpha = 0.2f))
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(horizontal = 10.dp, vertical = 3.dp)
                 ) {
                     Text(
                         text = "SPOC ID: $spocId",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
-                        color = MonochromeWhite
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -121,7 +122,8 @@ fun SpocProfileTab(
         // Details Section Card
         Card(
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Gray100),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
@@ -133,7 +135,7 @@ fun SpocProfileTab(
                     Icon(
                         imageVector = Icons.Outlined.Phone,
                         contentDescription = null,
-                        tint = MonochromeBlack,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
@@ -141,18 +143,18 @@ fun SpocProfileTab(
                         Text(
                             text = "Phone Number",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Gray500
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
                             text = phoneNumber ?: "Not provided",
                             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                            color = MonochromeBlack
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(14.dp))
-                HorizontalDivider(color = Gray200)
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                 Spacer(modifier = Modifier.height(14.dp))
 
                 // Teams Count Row
@@ -163,7 +165,7 @@ fun SpocProfileTab(
                     Icon(
                         imageVector = Icons.Outlined.Groups,
                         contentDescription = null,
-                        tint = MonochromeBlack,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
@@ -171,18 +173,18 @@ fun SpocProfileTab(
                         Text(
                             text = "Assigned Teams",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Gray500
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
                             text = "${teams.size} teams",
                             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                            color = MonochromeBlack
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(14.dp))
-                HorizontalDivider(color = Gray200)
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                 Spacer(modifier = Modifier.height(14.dp))
 
                 // Members Count Row
@@ -193,7 +195,7 @@ fun SpocProfileTab(
                     Icon(
                         imageVector = Icons.Outlined.Badge,
                         contentDescription = null,
-                        tint = MonochromeBlack,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
@@ -201,12 +203,12 @@ fun SpocProfileTab(
                         Text(
                             text = "Total Participants",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Gray500
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
                             text = "$memberCount participants",
                             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                            color = MonochromeBlack
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -219,8 +221,8 @@ fun SpocProfileTab(
         OutlinedButton(
             onClick = onLogout,
             shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = StatusRed),
-            border = androidx.compose.foundation.BorderStroke(1.dp, StatusRed.copy(alpha = 0.5f)),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.statusColors.danger),
+            border = BorderStroke(1.dp, MaterialTheme.statusColors.danger),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp)
@@ -238,5 +240,31 @@ fun SpocProfileTab(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun SpocProfileTabLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        SpocProfileTab(
+            spocData = null,
+            spocId = "SPOC-01",
+            memberCount = 24,
+            onLogout = {}
+        )
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun SpocProfileTabDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        SpocProfileTab(
+            spocData = null,
+            spocId = "SPOC-01",
+            memberCount = 24,
+            onLogout = {}
+        )
     }
 }

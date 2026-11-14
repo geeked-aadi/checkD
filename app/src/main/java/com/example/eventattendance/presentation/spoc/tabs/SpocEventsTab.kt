@@ -27,20 +27,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.eventattendance.domain.calculator.ProgressCalculator
+import com.example.eventattendance.domain.model.ProgressResult
 import com.example.eventattendance.presentation.common.AttendanceProgressBar
 import com.example.eventattendance.presentation.common.EventStatusChip
 import com.example.eventattendance.presentation.spoc.SpocEventCardData
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeCardBorder
-import com.example.eventattendance.presentation.theme.MonochromeCardSurface
+import com.example.eventattendance.presentation.theme.CheckdTheme
 import com.example.eventattendance.util.DateUtils
 
 @Composable
@@ -49,7 +49,16 @@ fun SpocEventsTab(
     onEventClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (events.isEmpty()) {
+    val sortedEvents = remember(events) {
+        ProgressCalculator.sortEventsByTime(
+            events = events,
+            startsFrom = { it.startsFrom },
+            endsOn = { it.endsOn },
+            eventId = { it.eventId }
+        )
+    }
+
+    if (sortedEvents.isEmpty()) {
         Box(
             modifier = modifier
                 .fillMaxSize()
@@ -66,7 +75,7 @@ fun SpocEventsTab(
                 Text(
                     text = "Events configured by event administrators will appear here.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Gray500
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -77,7 +86,7 @@ fun SpocEventsTab(
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             items(
-                items = events,
+                items = sortedEvents,
                 key = { it.eventId }
             ) { item ->
                 SpocEventCard(
@@ -100,8 +109,8 @@ fun SpocEventCard(
 
     Card(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MonochromeCardSurface),
-        border = BorderStroke(1.dp, MonochromeCardBorder),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         modifier = modifier
             .fillMaxWidth()
@@ -119,14 +128,14 @@ fun SpocEventCard(
             ) {
                 Surface(
                     shape = RoundedCornerShape(10.dp),
-                    color = Gray100,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier.size(36.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Outlined.ConfirmationNumber,
                             contentDescription = null,
-                            tint = MonochromeBlack,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -157,7 +166,7 @@ fun SpocEventCard(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Normal
                             ),
-                            color = Gray500
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -167,7 +176,7 @@ fun SpocEventCard(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = "Open Event Details",
-                    tint = Gray500,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -181,5 +190,43 @@ fun SpocEventCard(
                 showCountText = true
             )
         }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun SpocEventsTabLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        SpocEventsTab(
+            events = listOf(
+                SpocEventCardData(
+                    eventId = 1,
+                    eventName = "Opening Keynote",
+                    startsFrom = "2026-11-08T09:00:00",
+                    endsOn = "2026-11-08T11:00:00",
+                    progress = ProgressResult(present = 18, total = 20, percent = 0.9f)
+                )
+            ),
+            onEventClick = {}
+        )
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun SpocEventsTabDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        SpocEventsTab(
+            events = listOf(
+                SpocEventCardData(
+                    eventId = 1,
+                    eventName = "Opening Keynote",
+                    startsFrom = "2026-11-08T09:00:00",
+                    endsOn = "2026-11-08T11:00:00",
+                    progress = ProgressResult(present = 18, total = 20, percent = 0.9f)
+                )
+            ),
+            onEventClick = {}
+        )
     }
 }

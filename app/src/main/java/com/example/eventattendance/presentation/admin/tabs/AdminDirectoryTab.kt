@@ -1,6 +1,7 @@
 package com.example.eventattendance.presentation.admin.tabs
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -34,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,20 +47,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.eventattendance.domain.model.AdminDirectoryData
 import com.example.eventattendance.domain.model.AttendanceMatrix
 import com.example.eventattendance.domain.model.TeamMember
 import com.example.eventattendance.domain.model.TeamWithMembers
 import com.example.eventattendance.domain.model.UserRole
 import com.example.eventattendance.presentation.common.CallButton
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray200
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeWhite
-import com.example.eventattendance.presentation.theme.StatusGreen
+import com.example.eventattendance.presentation.theme.CheckdTheme
+import com.example.eventattendance.presentation.theme.statusColors
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -112,21 +113,23 @@ fun AdminDirectoryTab(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = onSearchChange,
-                    placeholder = { Text("Search by participant, team, or SPOC…", color = Gray500, fontSize = 14.sp) },
+                    placeholder = { Text("Search by participant, team, or SPOC…", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Search,
                             contentDescription = "Search",
-                            tint = Gray500,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(20.dp)
                         )
                     },
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = Gray100,
-                        focusedContainerColor = Gray100,
-                        unfocusedBorderColor = Color.Transparent,
-                        focusedBorderColor = Gray500
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     ),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
@@ -138,7 +141,7 @@ fun AdminDirectoryTab(
                 Text(
                     text = "Filter by SPOC:",
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
-                    color = Gray500
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(
@@ -152,14 +155,14 @@ fun AdminDirectoryTab(
                         onClick = { onSpocFilterChange(null) },
                         label = { Text("All SPOCs") },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MonochromeBlack,
-                            selectedLabelColor = MonochromeWhite,
-                            containerColor = MonochromeWhite,
-                            labelColor = MonochromeBlack
+                            selectedContainerColor = MaterialTheme.colorScheme.primary,
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            labelColor = MaterialTheme.colorScheme.onSurface
                         ),
                         border = FilterChipDefaults.filterChipBorder(
-                            borderColor = Gray200,
-                            selectedBorderColor = MonochromeBlack,
+                            borderColor = MaterialTheme.colorScheme.outline,
+                            selectedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
                             enabled = true,
                             selected = selectedSpocFilter == null
                         ),
@@ -174,14 +177,14 @@ fun AdminDirectoryTab(
                             onClick = { onSpocFilterChange(if (isSelected) null else spoc.spocId) },
                             label = { Text(spoc.name) },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MonochromeBlack,
-                                selectedLabelColor = MonochromeWhite,
-                                containerColor = MonochromeWhite,
-                                labelColor = MonochromeBlack
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                labelColor = MaterialTheme.colorScheme.onSurface
                             ),
                             border = FilterChipDefaults.filterChipBorder(
-                                borderColor = Gray200,
-                                selectedBorderColor = MonochromeBlack,
+                                borderColor = MaterialTheme.colorScheme.outline,
+                                selectedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
                                 enabled = true,
                                 selected = isSelected
                             ),
@@ -204,7 +207,7 @@ fun AdminDirectoryTab(
                     Text(
                         text = if (searchQuery.isNotBlank()) "No participants match '$searchQuery'" else "No teams found",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Gray500
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -234,34 +237,49 @@ fun AdminTeamDirectoryCard(
     onParticipantClick: (String) -> Unit
 ) {
     Card(
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = Gray100),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(18.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             // Team Header: Team Name + ID + SPOC Name
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         Text(
                             text = team.teamName,
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                            color = MonochromeBlack
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(6.dp))
-                                .background(MonochromeBlack.copy(alpha = 0.08f))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
                                 text = team.teamId,
-                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
-                                color = MonochromeBlack
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 11.sp
+                                ),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                                softWrap = false
                             )
                         }
                     }
@@ -270,28 +288,37 @@ fun AdminTeamDirectoryCard(
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "SPOC: $spocName",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Gray500
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
 
+                Spacer(modifier = Modifier.width(8.dp))
+
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MonochromeBlack)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = "${team.members.size} members",
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
-                        color = MonochromeWhite
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 11.sp
+                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        softWrap = false
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
-            HorizontalDivider(color = Gray200)
+            Spacer(modifier = Modifier.height(12.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
             Spacer(modifier = Modifier.height(10.dp))
 
             // Member Rows
@@ -309,8 +336,8 @@ fun AdminTeamDirectoryCard(
             if (displayedMembers.isEmpty()) {
                 Text(
                     text = "No participants in this team.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Gray500
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
                 displayedMembers.forEach { member ->
@@ -337,140 +364,201 @@ fun AdminParticipantRow(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Column(
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(MonochromeWhite)
             .clickable { expanded = !expanded }
-            .padding(12.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Name & ID Column
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = member.name,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.sp
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                        if (member.isLeader) {
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Surface(
+                                shape = RoundedCornerShape(4.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            ) {
+                                Text(
+                                    text = "LEADER",
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                    maxLines = 1,
+                                    softWrap = false
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(2.dp))
+
                     Text(
-                        text = member.name,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                        color = MonochromeBlack
+                        text = "ID: ${member.pId}",
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    if (member.isLeader) {
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(MonochromeBlack)
-                                .padding(horizontal = 5.dp, vertical = 1.dp)
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Actions: Call button & Journey button
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    CallButton(
+                        phoneNumber = member.phoneNumber,
+                        currentRole = currentRole,
+                        size = 30.dp,
+                        iconSize = 14.dp
+                    )
+
+                    Spacer(modifier = Modifier.width(6.dp))
+
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                        modifier = Modifier.clickable { onParticipantClick(member.pId) }
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp)
                         ) {
                             Text(
-                                text = "LEADER",
+                                text = "Journey",
                                 style = MaterialTheme.typography.labelSmall.copy(
-                                    fontSize = 9.sp,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 11.sp
                                 ),
-                                color = MonochromeWhite
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = "View Journey",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(13.dp)
                             )
                         }
                     }
                 }
-
-                Text(
-                    text = "ID: ${member.pId}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Gray500
-                )
             }
 
-            // CallButton (role-gated: visible for admin)
-            CallButton(
-                phoneNumber = member.phoneNumber,
-                currentRole = currentRole
-            )
-
-            Spacer(modifier = Modifier.width(6.dp))
-
-            // Direct button to entire journey
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Gray100)
-                    .clickable { onParticipantClick(member.pId) }
-                    .padding(horizontal = 8.dp, vertical = 6.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+            // Expandable per-event attendance strip
+            AnimatedVisibility(visible = expanded) {
+                Column(modifier = Modifier.padding(top = 10.dp)) {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Journey",
+                        text = "Attendance Summary",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             fontSize = 11.sp
                         ),
-                        color = MonochromeBlack
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.width(2.dp))
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "View Journey",
-                        tint = MonochromeBlack,
-                        modifier = Modifier.size(14.dp)
-                    )
-                }
-            }
-        }
+                    Spacer(modifier = Modifier.height(6.dp))
 
-        // Expandable per-event attendance strip
-        AnimatedVisibility(visible = expanded) {
-            Column(modifier = Modifier.padding(top = 10.dp)) {
-                HorizontalDivider(color = Gray100)
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Attendance Records:",
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
-                        color = Gray500
-                    )
-                    Text(
-                        text = "Tap 'Journey' for full timeline",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Gray500
-                    )
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-
-                if (allEvents.isEmpty()) {
-                    Text(text = "No activities registered.", style = MaterialTheme.typography.bodySmall, color = Gray500)
-                } else {
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        allEvents.forEach { event ->
-                            val isPresent = event.presentPIds.contains(member.pId)
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(6.dp))
-                                    .background(if (isPresent) StatusGreen.copy(alpha = 0.15f) else Gray100)
-                                    .padding(horizontal = 8.dp, vertical = 3.dp)
-                            ) {
-                                Text(
-                                    text = "${event.eventName}: ${if (isPresent) "✓ Present" else "– Absent"}",
-                                    style = MaterialTheme.typography.labelSmall.copy(
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Medium
-                                    ),
-                                    color = if (isPresent) StatusGreen else Gray500
-                                )
+                    if (allEvents.isEmpty()) {
+                        Text(
+                            text = "No activities registered.",
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    } else {
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            allEvents.forEach { event ->
+                                val isPresent = event.presentPIds.contains(member.pId)
+                                val shortName = if (event.eventName.length > 12) event.eventName.take(11) + "…" else event.eventName
+                                val badgeBg = if (isPresent) MaterialTheme.statusColors.successContainer else MaterialTheme.colorScheme.surface
+                                val badgeText = if (isPresent) MaterialTheme.statusColors.onSuccessContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                                val badgeBorder = if (isPresent) MaterialTheme.statusColors.success.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline
+                                Surface(
+                                    shape = RoundedCornerShape(6.dp),
+                                    color = badgeBg,
+                                    border = BorderStroke(1.dp, badgeBorder)
+                                ) {
+                                    Text(
+                                        text = "$shortName: ${if (isPresent) "✓" else "–"}",
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        ),
+                                        color = badgeText,
+                                        modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+                                        maxLines = 1,
+                                        softWrap = false
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun AdminDirectoryTabLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        AdminDirectoryTab(
+            directoryData = null,
+            matrix = null,
+            currentRole = UserRole.Admin,
+            searchQuery = "",
+            onSearchChange = {},
+            selectedSpocFilter = null,
+            onSpocFilterChange = {},
+            selectedTeamFilter = null,
+            onTeamFilterChange = {},
+            onParticipantClick = {}
+        )
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun AdminDirectoryTabDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        AdminDirectoryTab(
+            directoryData = null,
+            matrix = null,
+            currentRole = UserRole.Admin,
+            searchQuery = "",
+            onSearchChange = {},
+            selectedSpocFilter = null,
+            onSpocFilterChange = {},
+            selectedTeamFilter = null,
+            onTeamFilterChange = {},
+            onParticipantClick = {}
+        )
     }
 }

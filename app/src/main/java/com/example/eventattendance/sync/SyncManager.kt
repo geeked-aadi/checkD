@@ -1,6 +1,8 @@
 package com.example.eventattendance.sync
 
 import com.example.eventattendance.domain.model.SyncState
+import com.example.eventattendance.domain.repository.AttendanceMatrixRepository
+import com.example.eventattendance.domain.repository.AttendanceRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -11,11 +13,14 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Singleton
 class SyncManager @Inject constructor(
-    private val connectivityObserver: NetworkConnectivityObserver
+    private val connectivityObserver: NetworkConnectivityObserver,
+    private val attendanceRepositoryProvider: Provider<AttendanceRepository>,
+    private val attendanceMatrixRepositoryProvider: Provider<AttendanceMatrixRepository>
 ) {
     private val _syncState = MutableStateFlow<SyncState>(SyncState.Idle)
     val syncState: StateFlow<SyncState> = _syncState.asStateFlow()
@@ -39,6 +44,12 @@ class SyncManager @Inject constructor(
     suspend fun syncAll(forcePull: Boolean = false): Result<Unit> {
         return try {
             _syncState.value = SyncState.Syncing
+            runCatching {
+                attendanceRepositoryProvider.get().syncAllEventsAttendance(forcePull = true)
+            }
+            runCatching {
+                attendanceMatrixRepositoryProvider.get().refresh()
+            }
             _refreshTrigger.emit(Unit)
             _syncState.value = SyncState.Success("Synced with cloud")
             Result.success(Unit)

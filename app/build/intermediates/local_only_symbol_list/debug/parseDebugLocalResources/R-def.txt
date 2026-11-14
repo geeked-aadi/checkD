@@ -1,12 +1,21 @@
 R_DEF: Internal format may change without notice
 local
 color black
+color border_outline
 color error_red
 color gray_border
 color gray_dark
 color gray_light
 color gray_text
+color screen_background
+color screen_surface
+color screen_surface_variant
+color status_green
+color status_red
+color status_yellow
 color success_green
+color text_primary
+color text_secondary
 color warning_yellow
 color white
 drawable about_bg

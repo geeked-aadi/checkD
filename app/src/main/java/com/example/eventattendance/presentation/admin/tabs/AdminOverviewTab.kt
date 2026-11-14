@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eventattendance.domain.calculator.ProgressCalculator
@@ -38,10 +39,9 @@ import com.example.eventattendance.domain.model.OverallResult
 import com.example.eventattendance.presentation.common.AttendanceProgressBar
 import com.example.eventattendance.presentation.common.EventStatusChip
 import com.example.eventattendance.presentation.common.LastUpdatedText
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeWhite
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.eventattendance.presentation.theme.CheckdTheme
 
 @Composable
 fun AdminOverviewTab(
@@ -51,7 +51,10 @@ fun AdminOverviewTab(
     lastUpdated: Long?,
     modifier: Modifier = Modifier
 ) {
-    val events = matrix?.events ?: emptyList()
+    val events = remember(matrix?.events) {
+        val raw = matrix?.events ?: emptyList()
+        ProgressCalculator.sortEventsByTime(raw, { it.startsFrom }, { it.endsOn }, { it.eventId })
+    }
     val totalParticipants = matrix?.totalParticipants ?: 0
     val totalCheckIns = remember(events) { events.sumOf { it.presentPIds.size } }
 
@@ -64,7 +67,8 @@ fun AdminOverviewTab(
         item {
             Card(
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = MonochromeBlack),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
@@ -79,7 +83,7 @@ fun AdminOverviewTab(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 17.sp
                             ),
-                            color = MonochromeWhite
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         LastUpdatedText(epochMillis = lastUpdated)
                     }
@@ -91,7 +95,7 @@ fun AdminOverviewTab(
                             Text(
                                 text = "Overall Attendance",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MonochromeWhite.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
                                 text = overallResult.displayPercent,
@@ -99,7 +103,7 @@ fun AdminOverviewTab(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 32.sp
                                 ),
-                                color = MonochromeWhite
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
 
@@ -107,7 +111,7 @@ fun AdminOverviewTab(
                             Text(
                                 text = "Total Check-ins",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MonochromeWhite.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
                                 text = "$totalCheckIns",
@@ -115,7 +119,7 @@ fun AdminOverviewTab(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 32.sp
                                 ),
-                                color = MonochromeWhite
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -129,12 +133,12 @@ fun AdminOverviewTab(
                         Text(
                             text = "$totalParticipants total participants",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MonochromeWhite.copy(alpha = 0.8f)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
                             text = "${events.size} activities scheduled",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MonochromeWhite.copy(alpha = 0.8f)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -146,13 +150,13 @@ fun AdminOverviewTab(
             Text(
                 text = "Activities Progress",
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, fontSize = 17.sp),
-                color = MonochromeBlack
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
         if (events.isEmpty()) {
             item {
-                Text(text = "No activities registered yet.", style = MaterialTheme.typography.bodySmall, color = Gray500)
+                Text(text = "No activities registered yet.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         } else {
             items(items = events, key = { it.eventId }) { event ->
@@ -161,7 +165,8 @@ fun AdminOverviewTab(
 
                 Card(
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Gray100),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onEventClick(event.eventId) }
@@ -173,14 +178,14 @@ fun AdminOverviewTab(
                         ) {
                             Surface(
                                 shape = RoundedCornerShape(10.dp),
-                                color = MonochromeWhite,
+                                color = MaterialTheme.colorScheme.surfaceVariant,
                                 modifier = Modifier.size(34.dp)
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
                                     Icon(
                                         imageVector = Icons.Outlined.ConfirmationNumber,
                                         contentDescription = null,
-                                        tint = MonochromeBlack,
+                                        tint = MaterialTheme.colorScheme.onSurface,
                                         modifier = Modifier.size(18.dp)
                                     )
                                 }
@@ -188,8 +193,13 @@ fun AdminOverviewTab(
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
                                 text = event.eventName,
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                                color = MonochromeBlack,
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 15.sp
+                                ),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
@@ -198,7 +208,7 @@ fun AdminOverviewTab(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                 contentDescription = null,
-                                tint = Gray500,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -214,5 +224,31 @@ fun AdminOverviewTab(
                 }
             }
         }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun AdminOverviewTabLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        AdminOverviewTab(
+            matrix = null,
+            overallResult = OverallResult(percent = 0.85f, presentSum = 85, expectedSum = 100, startedEventCount = 1),
+            onEventClick = {},
+            lastUpdated = System.currentTimeMillis()
+        )
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun AdminOverviewTabDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        AdminOverviewTab(
+            matrix = null,
+            overallResult = OverallResult(percent = 0.85f, presentSum = 85, expectedSum = 100, startedEventCount = 1),
+            onEventClick = {},
+            lastUpdated = System.currentTimeMillis()
+        )
     }
 }

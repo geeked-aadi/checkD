@@ -1,0 +1,23 @@
+<resources>
+    <!-- Dark Mode Platform Tokens -->
+    <color name="screen_background">#0F0F12</color>
+    <color name="screen_surface">#18181C</color>
+    <color name="screen_surface_variant">#26262B</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#A1A1AA</color>
+    <color name="border_outline">#3A3A42</color>
+    <color name="status_green">#4ADE80</color>
+    <color name="status_yellow">#FACC15</color>
+    <color name="status_red">#F87171</color>
+
+    <!-- Legacy / Compatibility Tokens for Dark Mode -->
+    <color name="black">#FFFFFF</color>
+    <color name="white">#141416</color>
+    <color name="gray_light">#26262B</color>
+    <color name="gray_border">#3A3A42</color>
+    <color name="gray_text">#A1A1AA</color>
+    <color name="gray_dark">#27272A</color>
+    <color name="success_green">#4ADE80</color>
+    <color name="error_red">#F87171</color>
+    <color name="warning_yellow">#FACC15</color>
+</resources>

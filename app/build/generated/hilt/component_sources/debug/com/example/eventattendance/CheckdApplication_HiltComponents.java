@@ -13,6 +13,7 @@ import com.example.eventattendance.presentation.home.HomeViewModel_HiltModules;
 import com.example.eventattendance.presentation.scanner.ScannerViewModel_HiltModules;
 import com.example.eventattendance.presentation.settings.SettingsViewModel_HiltModules;
 import com.example.eventattendance.presentation.spoc.SpocDashboardViewModel_HiltModules;
+import com.example.eventattendance.presentation.verifier.QrVerifierViewModel_HiltModules;
 import dagger.Binds;
 import dagger.Component;
 import dagger.Module;
@@ -177,6 +178,7 @@ public final class CheckdApplication_HiltComponents {
           HomeViewModel_HiltModules.KeyModule.class,
           MainViewModel_HiltModules.KeyModule.class,
           ParticipantDetailViewModel_HiltModules.KeyModule.class,
+          QrVerifierViewModel_HiltModules.KeyModule.class,
           ScannerViewModel_HiltModules.KeyModule.class,
           SettingsViewModel_HiltModules.KeyModule.class,
           SpocDashboardViewModel_HiltModules.KeyModule.class,
@@ -223,6 +225,7 @@ public final class CheckdApplication_HiltComponents {
           HomeViewModel_HiltModules.BindsModule.class,
           MainViewModel_HiltModules.BindsModule.class,
           ParticipantDetailViewModel_HiltModules.BindsModule.class,
+          QrVerifierViewModel_HiltModules.BindsModule.class,
           ScannerViewModel_HiltModules.BindsModule.class,
           SettingsViewModel_HiltModules.BindsModule.class,
           SpocDashboardViewModel_HiltModules.BindsModule.class,

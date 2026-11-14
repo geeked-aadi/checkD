@@ -37,14 +37,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.eventattendance.domain.model.UserRole
 import com.example.eventattendance.presentation.common.CallButton
 import com.example.eventattendance.presentation.spoc.components.TeamProgressContent
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
+import com.example.eventattendance.presentation.theme.CheckdTheme
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpocDetailScreen(
     onBackClick: () -> Unit,
@@ -73,7 +73,39 @@ fun SpocDetailScreen(
         }
     }
 
+    SpocDetailContent(
+        spocId = viewModel.spocId,
+        spocName = spocName,
+        spocPhone = spocPhone,
+        teams = spocData?.teams ?: emptyList(),
+        matrix = matrix,
+        currentRole = currentRole,
+        lastUpdated = lastUpdated,
+        isRefreshing = isRefreshing,
+        onRefresh = viewModel::refresh,
+        onBackClick = onBackClick,
+        onParticipantClick = onParticipantClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SpocDetailContent(
+    spocId: String,
+    spocName: String,
+    spocPhone: String?,
+    teams: List<com.example.eventattendance.domain.model.TeamWithMembers>,
+    matrix: com.example.eventattendance.domain.model.AttendanceMatrix?,
+    currentRole: UserRole,
+    lastUpdated: Long?,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    onBackClick: () -> Unit,
+    onParticipantClick: ((String) -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
@@ -88,21 +120,21 @@ fun SpocDetailScreen(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 18.sp
                                 ),
-                                color = MonochromeBlack
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(6.dp))
-                                    .background(Gray100)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
                                     .padding(horizontal = 6.dp, vertical = 2.dp)
                             ) {
                                 Text(
-                                    text = "SPOC ID: ${viewModel.spocId}",
+                                    text = "SPOC ID: $spocId",
                                     style = MaterialTheme.typography.labelSmall.copy(
                                         fontWeight = FontWeight.SemiBold,
                                         fontSize = 11.sp
                                     ),
-                                    color = Gray500
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
@@ -123,16 +155,16 @@ fun SpocDetailScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = MonochromeBlack
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
                 actions = {
-                    IconButton(onClick = viewModel::refresh) {
+                    IconButton(onClick = onRefresh) {
                         Icon(
                             imageVector = Icons.Default.Refresh,
                             contentDescription = "Refresh",
-                            tint = MonochromeBlack
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
@@ -145,14 +177,14 @@ fun SpocDetailScreen(
     ) { innerPadding ->
         PullToRefreshBox(
             isRefreshing = isRefreshing,
-            onRefresh = viewModel::refresh,
+            onRefresh = onRefresh,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
             TeamProgressContent(
-                spocId = viewModel.spocId,
-                teams = spocData?.teams ?: emptyList(),
+                spocId = spocId,
+                teams = teams,
                 matrix = matrix,
                 currentRole = currentRole,
                 lastUpdated = lastUpdated,
@@ -160,5 +192,43 @@ fun SpocDetailScreen(
                 onParticipantClick = onParticipantClick
             )
         }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun SpocDetailContentLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        SpocDetailContent(
+            spocId = "SPOC-01",
+            spocName = "Jane Doe",
+            spocPhone = "9876543210",
+            teams = emptyList(),
+            matrix = null,
+            currentRole = UserRole.Admin,
+            lastUpdated = System.currentTimeMillis(),
+            isRefreshing = false,
+            onRefresh = {},
+            onBackClick = {}
+        )
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun SpocDetailContentDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        SpocDetailContent(
+            spocId = "SPOC-01",
+            spocName = "Jane Doe",
+            spocPhone = "9876543210",
+            teams = emptyList(),
+            matrix = null,
+            currentRole = UserRole.Admin,
+            lastUpdated = System.currentTimeMillis(),
+            isRefreshing = false,
+            onRefresh = {},
+            onBackClick = {}
+        )
     }
 }

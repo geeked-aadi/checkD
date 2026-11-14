@@ -38,8 +38,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.eventattendance.domain.calculator.ProgressCalculator
 import com.example.eventattendance.domain.model.AttendanceMatrix
 import com.example.eventattendance.domain.model.Event
@@ -47,11 +50,7 @@ import com.example.eventattendance.domain.model.EventStatus
 import com.example.eventattendance.presentation.admin.components.EventFormDialog
 import com.example.eventattendance.presentation.common.AttendanceProgressBar
 import com.example.eventattendance.presentation.common.EventStatusChip
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray200
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
-import com.example.eventattendance.presentation.theme.MonochromeWhite
+import com.example.eventattendance.presentation.theme.CheckdTheme
 import com.example.eventattendance.util.DateUtils
 
 @Composable
@@ -59,21 +58,29 @@ fun AdminEventsTab(
     matrix: AttendanceMatrix?,
     onEventClick: (Int) -> Unit,
     onCreateEvent: (name: String, startsFrom: String, endsOn: String) -> Unit,
-    onUpdateTimeWindow: (eventId: Int, startsFrom: String, endsOn: String) -> Unit,
+    onUpdateTimeWindow: (eventId: Int, startsFrom: String, endsOn: String, name: String?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showCreateDialog by remember { mutableStateOf(false) }
     var eventToEdit by remember { mutableStateOf<Event?>(null) }
 
-    val events = matrix?.events ?: emptyList()
+    val events = remember(matrix?.events) {
+        val raw = matrix?.events ?: emptyList()
+        ProgressCalculator.sortEventsByTime(
+            events = raw,
+            startsFrom = { it.startsFrom },
+            endsOn = { it.endsOn },
+            eventId = { it.eventId }
+        )
+    }
     val totalParticipants = matrix?.totalParticipants ?: 0
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCreateDialog = true },
-                containerColor = MonochromeBlack,
-                contentColor = MonochromeWhite,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Icon(Icons.Filled.Add, contentDescription = "Create Event")
@@ -100,7 +107,7 @@ fun AdminEventsTab(
                     Text(
                         text = "Tap the + button to create a new activity with custom time window.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Gray500
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -119,7 +126,8 @@ fun AdminEventsTab(
 
                     Card(
                         shape = RoundedCornerShape(18.dp),
-                        colors = CardDefaults.cardColors(containerColor = Gray100),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { onEventClick(event.eventId) }
@@ -130,14 +138,20 @@ fun AdminEventsTab(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
                                         Text(
                                             text = event.eventName,
                                             style = MaterialTheme.typography.titleMedium.copy(
                                                 fontWeight = FontWeight.Bold,
-                                                fontSize = 17.sp
+                                                fontSize = 16.sp
                                             ),
-                                            color = MonochromeBlack
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.weight(1f, fill = false)
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         EventStatusChip(status = status)
@@ -147,8 +161,8 @@ fun AdminEventsTab(
                                         Spacer(modifier = Modifier.height(2.dp))
                                         Text(
                                             text = timeWindow,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = Gray500
+                                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
                                 }
@@ -156,8 +170,8 @@ fun AdminEventsTab(
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                     contentDescription = "Details",
-                                    tint = Gray500,
-                                    modifier = Modifier.size(22.dp)
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
 
@@ -184,8 +198,8 @@ fun AdminEventsTab(
                                     )
                                 },
                                 shape = RoundedCornerShape(10.dp),
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MonochromeBlack),
-                                border = androidx.compose.foundation.BorderStroke(1.dp, Gray200),
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
+                                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Icon(
@@ -223,10 +237,36 @@ fun AdminEventsTab(
         EventFormDialog(
             initialEvent = editing,
             onDismiss = { eventToEdit = null },
-            onConfirm = { _, startsFrom, endsOn ->
-                onUpdateTimeWindow(editing.eventId, startsFrom, endsOn)
+            onConfirm = { updatedName, startsFrom, endsOn ->
+                onUpdateTimeWindow(editing.eventId, startsFrom, endsOn, updatedName)
                 eventToEdit = null
             }
+        )
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun AdminEventsTabLightPreview() {
+    CheckdTheme(darkTheme = false) {
+        AdminEventsTab(
+            matrix = null,
+            onEventClick = {},
+            onCreateEvent = { _, _, _ -> },
+            onUpdateTimeWindow = { _, _, _, _ -> }
+        )
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun AdminEventsTabDarkPreview() {
+    CheckdTheme(darkTheme = true) {
+        AdminEventsTab(
+            matrix = null,
+            onEventClick = {},
+            onCreateEvent = { _, _, _ -> },
+            onUpdateTimeWindow = { _, _, _, _ -> }
         )
     }
 }

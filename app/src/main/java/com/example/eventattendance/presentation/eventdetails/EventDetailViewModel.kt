@@ -46,14 +46,107 @@ class EventDetailViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    val eventDetail: StateFlow<EventDetailData?> = attendanceRepository.getEventAttendanceFlow(eventIdInt)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = null
-        )
+    val eventDetail: StateFlow<EventDetailData?> = combine(
+        attendanceRepository.getEventAttendanceFlow(eventIdInt),
+        attendanceMatrixRepository.matrixFlow,
+        participantCacheRepository.participantsFlow
+    ) { repoDetail, matrix, cache ->
+        val matrixEvent = matrix?.events?.firstOrNull { it.eventId == eventIdInt }
+        val totalExpected = if (matrix?.totalParticipants != null && matrix.totalParticipants > 0) {
+            matrix.totalParticipants
+        } else if (cache.isNotEmpty()) {
+            cache.size
+        } else {
+            repoDetail?.totalExpected ?: 0
+        }
 
-    private val matrix = attendanceMatrixRepository.matrixFlow
+        if (repoDetail != null && repoDetail.attendees.isNotEmpty()) {
+            val existingPids = repoDetail.attendees.map { it.participantId }.toSet()
+            val missingFromRepo = (matrixEvent?.presentPIds ?: emptySet()) - existingPids
+
+            val additionalAttendees = missingFromRepo.map { pId ->
+                val p = cache[pId]
+                AttendanceRecord(
+                    id = "${eventIdInt}_$pId",
+                    eventId = eventId,
+                    participantId = pId,
+                    checkedInAt = "",
+                    status = "present",
+                    participantName = p?.name ?: pId,
+                    participantUsn = pId,
+                    teamId = p?.teamId,
+                    teamName = p?.teamName,
+                    isPendingSync = false
+                )
+            }
+
+            val enrichedAttendees = repoDetail.attendees.map { record ->
+                if (record.participantName == record.participantId || record.teamName == null) {
+                    val p = cache[record.participantId]
+                    if (p != null) {
+                        record.copy(
+                            participantName = if (record.participantName == record.participantId) (p.name ?: p.pId) else record.participantName,
+                            teamId = record.teamId ?: p.teamId,
+                            teamName = record.teamName ?: p.teamName
+                        )
+                    } else {
+                        record
+                    }
+                } else {
+                    record
+                }
+            }
+
+            val allAttendees = additionalAttendees + enrichedAttendees
+            val actualScanned = allAttendees.size
+
+            repoDetail.copy(
+                eventName = if (repoDetail.eventName.startsWith("Event ") && matrixEvent?.eventName != null) {
+                    matrixEvent.eventName
+                } else repoDetail.eventName,
+                startsFrom = repoDetail.startsFrom ?: matrixEvent?.startsFrom,
+                endsOn = repoDetail.endsOn ?: matrixEvent?.endsOn,
+                scannedCount = actualScanned,
+                totalExpected = if (totalExpected > 0) totalExpected else repoDetail.totalExpected,
+                progress = "$actualScanned/$totalExpected",
+                attendees = allAttendees
+            )
+        } else if (matrixEvent != null) {
+            val presentIds = matrixEvent.presentPIds
+            val attendees = presentIds.map { pId ->
+                val p = cache[pId]
+                AttendanceRecord(
+                    id = "${eventIdInt}_$pId",
+                    eventId = eventId,
+                    participantId = pId,
+                    checkedInAt = "",
+                    status = "present",
+                    participantName = p?.name ?: pId,
+                    participantUsn = pId,
+                    teamId = p?.teamId,
+                    teamName = p?.teamName,
+                    isPendingSync = false
+                )
+            }.reversed()
+
+            EventDetailData(
+                eventId = eventIdInt,
+                eventName = matrixEvent.eventName,
+                startsFrom = matrixEvent.startsFrom,
+                endsOn = matrixEvent.endsOn,
+                scannedCount = presentIds.size,
+                totalExpected = totalExpected,
+                progress = "${presentIds.size}/$totalExpected",
+                attendees = attendees
+            )
+        } else {
+            repoDetail
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 
     // Current SPOC member IDs (empty if not scoped or not SPOC)
     val scopedMemberPIds: StateFlow<Set<String>> = combine(

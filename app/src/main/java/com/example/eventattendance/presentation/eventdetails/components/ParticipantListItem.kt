@@ -1,5 +1,7 @@
 package com.example.eventattendance.presentation.eventdetails.components
 
+import android.content.res.Configuration
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,16 +24,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eventattendance.domain.model.AttendanceRecord
 import com.example.eventattendance.domain.model.CachedParticipant
+import com.example.eventattendance.domain.model.ThemeMode
 import com.example.eventattendance.domain.model.UserRole
 import com.example.eventattendance.presentation.common.CallButton
-import com.example.eventattendance.presentation.theme.Gray100
-import com.example.eventattendance.presentation.theme.Gray500
-import com.example.eventattendance.presentation.theme.MonochromeBlack
+import com.example.eventattendance.presentation.theme.CheckdTheme
+import com.example.eventattendance.presentation.theme.statusColors
 import com.example.eventattendance.util.DateUtils
+
 
 @Composable
 fun ParticipantListItem(
@@ -52,12 +56,12 @@ fun ParticipantListItem(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(Gray100)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Icon(
                 imageVector = Icons.Outlined.Person,
                 contentDescription = null,
-                tint = MonochromeBlack,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(22.dp)
             )
         }
@@ -87,7 +91,7 @@ fun ParticipantListItem(
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontSize = 12.sp
                 ),
-                color = Gray500
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
@@ -107,7 +111,7 @@ fun ParticipantListItem(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
             ),
-            color = Gray500,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(end = 10.dp)
         )
 
@@ -115,7 +119,7 @@ fun ParticipantListItem(
         Icon(
             imageVector = Icons.Filled.CheckCircle,
             contentDescription = "Checked In",
-            tint = MonochromeBlack,
+            tint = MaterialTheme.statusColors.success,
             modifier = Modifier.size(20.dp)
         )
     }
@@ -138,12 +142,12 @@ fun PendingParticipantListItem(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(Gray100)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Icon(
                 imageVector = Icons.Outlined.Person,
                 contentDescription = null,
-                tint = MonochromeBlack,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(22.dp)
             )
         }
@@ -174,7 +178,7 @@ fun PendingParticipantListItem(
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontSize = 12.sp
                 ),
-                color = Gray500
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
@@ -185,3 +189,40 @@ fun PendingParticipantListItem(
         )
     }
 }
+
+@Preview(name = "Participant Item - Light")
+@Composable
+private fun ParticipantListItemLightPreview() {
+    CheckdTheme(themeMode = ThemeMode.LIGHT) {
+        ParticipantListItem(
+            record = AttendanceRecord(
+                id = "1",
+                eventId = "1",
+                participantId = "P001",
+                participantName = "Jane Doe",
+                participantUsn = "1MS21CS001",
+                teamId = "T01",
+                checkedInAt = java.time.Instant.now().toString()
+            )
+        )
+    }
+}
+
+@Preview(name = "Participant Item - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ParticipantListItemDarkPreview() {
+    CheckdTheme(themeMode = ThemeMode.DARK) {
+        ParticipantListItem(
+            record = AttendanceRecord(
+                id = "1",
+                eventId = "1",
+                participantId = "P001",
+                participantName = "Jane Doe",
+                participantUsn = "1MS21CS001",
+                teamId = "T01",
+                checkedInAt = java.time.Instant.now().toString()
+            )
+        )
+    }
+}
+

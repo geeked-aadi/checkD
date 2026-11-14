@@ -1,12 +1,24 @@
 <resources>
-    <!-- Monochrome Palette matching the user's reference -->
-    <color name="black">#121212</color>
+    <!-- Light Mode Platform Tokens -->
+    <color name="screen_background">#FFFFFF</color>
+    <color name="screen_surface">#FFFFFF</color>
+    <color name="screen_surface_variant">#F4F4F5</color>
+    <color name="text_primary">#141416</color>
+    <color name="text_secondary">#52525B</color>
+    <color name="border_outline">#E4E4E7</color>
+    <color name="status_green">#16A34A</color>
+    <color name="status_yellow">#854D0E</color>
+    <color name="status_red">#DC2626</color>
+
+    <!-- Legacy / Compatibility Tokens -->
+    <color name="black">#141416</color>
     <color name="white">#FFFFFF</color>
-    <color name="gray_light">#F5F5F7</color>
-    <color name="gray_border">#E5E7EB</color>
-    <color name="gray_text">#6B7280</color>
-    <color name="gray_dark">#1F2937</color>
-    <color name="success_green">#10B981</color>
-    <color name="error_red">#EF4444</color>
-    <color name="warning_yellow">#F59E0B</color>
+    <color name="gray_light">#F4F4F5</color>
+    <color name="gray_border">#E4E4E7</color>
+    <color name="gray_text">#52525B</color>
+    <color name="gray_dark">#27272A</color>
+    <color name="success_green">#16A34A</color>
+    <color name="error_red">#DC2626</color>
+    <color name="warning_yellow">#854D0E</color>
 </resources>
+

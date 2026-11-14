@@ -1,5 +1,7 @@
 package com.example.eventattendance.sync;
 
+import com.example.eventattendance.domain.repository.AttendanceMatrixRepository;
+import com.example.eventattendance.domain.repository.AttendanceRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Provider;
@@ -26,21 +28,33 @@ import javax.annotation.processing.Generated;
 public final class SyncManager_Factory implements Factory<SyncManager> {
   private final Provider<NetworkConnectivityObserver> connectivityObserverProvider;
 
-  private SyncManager_Factory(Provider<NetworkConnectivityObserver> connectivityObserverProvider) {
+  private final Provider<AttendanceRepository> attendanceRepositoryProvider;
+
+  private final Provider<AttendanceMatrixRepository> attendanceMatrixRepositoryProvider;
+
+  private SyncManager_Factory(Provider<NetworkConnectivityObserver> connectivityObserverProvider,
+      Provider<AttendanceRepository> attendanceRepositoryProvider,
+      Provider<AttendanceMatrixRepository> attendanceMatrixRepositoryProvider) {
     this.connectivityObserverProvider = connectivityObserverProvider;
+    this.attendanceRepositoryProvider = attendanceRepositoryProvider;
+    this.attendanceMatrixRepositoryProvider = attendanceMatrixRepositoryProvider;
   }
 
   @Override
   public SyncManager get() {
-    return newInstance(connectivityObserverProvider.get());
+    return newInstance(connectivityObserverProvider.get(), attendanceRepositoryProvider, attendanceMatrixRepositoryProvider);
   }
 
   public static SyncManager_Factory create(
-      Provider<NetworkConnectivityObserver> connectivityObserverProvider) {
-    return new SyncManager_Factory(connectivityObserverProvider);
+      Provider<NetworkConnectivityObserver> connectivityObserverProvider,
+      Provider<AttendanceRepository> attendanceRepositoryProvider,
+      Provider<AttendanceMatrixRepository> attendanceMatrixRepositoryProvider) {
+    return new SyncManager_Factory(connectivityObserverProvider, attendanceRepositoryProvider, attendanceMatrixRepositoryProvider);
   }
 
-  public static SyncManager newInstance(NetworkConnectivityObserver connectivityObserver) {
-    return new SyncManager(connectivityObserver);
+  public static SyncManager newInstance(NetworkConnectivityObserver connectivityObserver,
+      javax.inject.Provider<AttendanceRepository> attendanceRepositoryProvider,
+      javax.inject.Provider<AttendanceMatrixRepository> attendanceMatrixRepositoryProvider) {
+    return new SyncManager(connectivityObserver, attendanceRepositoryProvider, attendanceMatrixRepositoryProvider);
   }
 }
